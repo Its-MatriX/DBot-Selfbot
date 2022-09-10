@@ -1,8 +1,47 @@
 from discord import Status, Streaming, Game, Activity, ActivityType
 from discord.ext import commands
 
+import random
+from re import findall
+
+
+def spam_string_parse(message):
+    if not ('?digit' in message or '?letter' in message or '?prep' in message
+            or '?char' in message):
+        return message
+
+    for x in range(message.count('?digit')):
+        message = message.replace('?digit', str(random.randint(0, 9)), 1)
+
+    for x in range(message.count('?letter')):
+        message = message.replace('?letter',
+                                  random.choice('QWERTYUIOPASDFGHJKLZXCVBNM'),
+                                  1)
+
+    for x in range(message.count('?prep')):
+        message = message.replace('?prep', random.choice('.!?'), 1)
+
+    if '?char' in message:
+        searches_randchar = findall('\?char \d+,\s*\d+', message)
+
+        for s in searches_randchar:
+            vals = s.replace('?char ', '').split(',')
+            start = int(vals[0])
+            end = int(vals[1])
+            if start >= end:
+                raise TypeError(
+                    'Минимальное число не может быть больше максимального')
+            if start < 0 or end < 0:
+                raise TypeError(
+                    '?char <start> или ?char <end> не может быть меньше 0')
+            message = message.replace(s, chr(random.randint(start, end)))
+
+    return message
+
 
 class toolsCog(commands.Cog):
+
+    spammer_is_working = False
 
     def __init__(self, bot):
         self.bot = bot
@@ -198,6 +237,53 @@ class toolsCog(commands.Cog):
             await self.bot.change_presence(activity=Activity(
                 type=ActivityType.competing, name=' '.join(status[2:])),
                                            status=status_icon)
+
+    @commands.command(name='spam')
+    async def spam__(self, ctx, amount=None, *, content=None):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        if not amount and not content:
+            resp =  '🔥 **spam <*количество*> <*текст/модификаторы*>:** `спам`\n' + \
+                    '**Модификаторы:**\n' + \
+                    '`?digit` - *цифра*\n' + \
+                    '`?letter` - *латинская буква*\n' + \
+                    '`?prep` - *знак препинания*\n' + \
+                    '`?char <мин.>, <макс>` - *символ со случайным индексом*\n'
+
+            await ctx.send(resp)
+            return
+
+        try:
+            spam_string_parse(content)
+        except:
+            return
+
+        try:
+            amount=int(amount)
+        except:
+            pass
+
+        self.spammer_is_working = True
+
+        if not self.spammer_is_working:
+            return
+
+        for _ in range(amount):
+            if not self.spammer_is_working:
+                return
+            await ctx.send(spam_string_parse(content))
+
+    @commands.command(name='stop_spam')
+    async def stop_spam__(self, ctx):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        self.spammer_is_working = False
 
 
 def setup(bot):

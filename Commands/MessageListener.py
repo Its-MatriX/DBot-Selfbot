@@ -48,8 +48,7 @@ class messageListenerCog(commands.Cog):
                         if message.author.id == MessageDeleteTroll['userID']:
                             await message.delete()
                 except:
-                    if message.author.id == MessageDeleteTroll['userID']:
-                        await message.delete()
+                    pass
         except:
             pass
 

@@ -7,17 +7,9 @@ ReactionTroll = {
     'reaction': None
 }
 
-RepeatTroll = {
-    'enabled': False,
-    'guildID': None,
-    'userID': None
-}
+RepeatTroll = {'enabled': False, 'guildID': None, 'userID': None}
 
-MessageDeleteTroll = {
-    'enabled': False,
-    'guildID': None,
-    'userID': None
-}
+MessageDeleteTroll = {'enabled': False, 'guildID': None, 'userID': None}
 
 
 class funCog(commands.Cog):
@@ -126,7 +118,7 @@ class funCog(commands.Cog):
             if not self.reactions_command_is_working:
                 return
             await message.add_reaction(reaction)
-        
+
         self.reactions_command_is_working = False
 
 

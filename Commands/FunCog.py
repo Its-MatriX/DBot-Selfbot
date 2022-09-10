@@ -13,6 +13,12 @@ RepeatTroll = {
     'userID': None
 }
 
+MessageDeleteTroll = {
+    'enabled': False,
+    'guildID': None,
+    'userID': None
+}
+
 
 class funCog(commands.Cog):
 
@@ -61,6 +67,27 @@ class funCog(commands.Cog):
         except:
             ReactionTroll['guildID'] = 0
         RepeatTroll['userID'] = int(user.id)
+
+        await ctx.message.delete()
+
+    @commands.command(name='delete_troll')
+    async def delete_troll__(self, ctx, user):
+        if ctx.author != self.bot.user:
+            return
+
+        user = user.replace('<@', '')
+        user = user.replace('!', '')
+        user = user.replace('>', '')
+        user = int(user)
+        user = await self.bot.fetch_user(
+            user) if not ctx.guild else await ctx.guild.fetch_member(user)
+
+        MessageDeleteTroll['enabled'] = True
+        try:
+            MessageDeleteTroll['guildID'] = ctx.guild.id
+        except:
+            MessageDeleteTroll['guildID'] = 0
+        MessageDeleteTroll['userID'] = int(user.id)
 
         await ctx.message.delete()
 

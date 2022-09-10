@@ -1,6 +1,6 @@
 from discord.ext import commands
 
-from Commands.FunCog import ReactionTroll, RepeatTroll
+from Commands.FunCog import ReactionTroll, RepeatTroll, MessageDeleteTroll
 
 
 class messageListenerCog(commands.Cog):
@@ -23,7 +23,7 @@ class messageListenerCog(commands.Cog):
                         for Reaction in ReactionTroll['reaction']:
                             await message.add_reaction(Reaction)
         except:
-            raise
+            pass
 
         try:
             if RepeatTroll['enabled']:
@@ -38,7 +38,20 @@ class messageListenerCog(commands.Cog):
                         await message.reply(message.content,
                                             mention_author=False)
         except:
-            raise
+            pass
+
+        try:
+            if MessageDeleteTroll['enabled']:
+                try:
+                    if message.guild.id == MessageDeleteTroll[
+                            'guildID'] or MessageDeleteTroll['guildID'] == 0:
+                        if message.author.id == MessageDeleteTroll['userID']:
+                            await message.delete()
+                except:
+                    if message.author.id == MessageDeleteTroll['userID']:
+                        await message.delete()
+        except:
+            pass
 
 
 def setup(bot):

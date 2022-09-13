@@ -1,4 +1,9 @@
 {
-    "TOKEN": "token",
-    "COMMAND_PREFIX": "s."
+    "COMMAND_PREFIX": "s.",
+    "TOKEN": "токен",
+    "LOG_WEBHOOK": "вебхук",
+    "LOG_DELETES": false,
+    "LOG_EDITS": false,
+    "SEND_CONSOLE_LOGS": true,
+    "ENABLE_CRASH": false
 }

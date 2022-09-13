@@ -209,6 +209,11 @@ class FunCog(commands.Cog):
 
         await ctx.message.delete()
 
+        if self.bot.show_logs:
+            print(Fore.GREEN + 'Кристальный шар: ' + Fore.CYAN +
+                  f'Запуск')
+            return
+
         selected = choice(magicball)
         resp = f'**{question}**\n:crystal_ball: `Шар думает...`'
 

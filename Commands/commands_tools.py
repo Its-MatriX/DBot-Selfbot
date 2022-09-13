@@ -313,7 +313,7 @@ class ToolsCog(commands.Cog):
             print(Fore.GREEN + 'Спам-атака: ' + Fore.CYAN + f'Готово')
 
     @commands.command(name='lag_spam')
-    async def lag_spam__(self, ctx, amount=None, lag_type=None):
+    async def lag_spam__(self, ctx, lag_type=None, amount=None):
         if ctx.author != self.bot.user:
             return
 
@@ -324,6 +324,16 @@ class ToolsCog(commands.Cog):
                 '**Лаг-атака (вызывает жуткие лаги), варианты: `chains` - цепи, `ascii` - ascii символы.**'
 
             await ctx.send(resp)
+
+        if not amount:
+            print(Fore.GREEN + 'Лаг-атака: ' + Fore.CYAN +
+                  f'Ошибка: Количество не указано')
+            return
+
+        if not lag_type:
+            print(Fore.GREEN + 'Лаг-атака: ' + Fore.CYAN +
+                  f'Ошибка: Тип лаг-атаки не указан')
+            return
 
         try:
             amount = int(amount)
@@ -349,6 +359,8 @@ class ToolsCog(commands.Cog):
                 message = await ctx.send(''.join(
                     [chr(random.randrange(10000)) for x in range(1999)]))
 
+                sended += 1
+
                 if self.bot.show_logs:
                     print(
                         Fore.GREEN + 'Лаг-атака: ' + Fore.CYAN +
@@ -362,6 +374,8 @@ class ToolsCog(commands.Cog):
                 if not self.spammer_is_working:
                     return
                 message = await ctx.send(text + ' ||' + random_chars() + '||')
+
+                sended += 1
 
                 if self.bot.show_logs:
                     print(

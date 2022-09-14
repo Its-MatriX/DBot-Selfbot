@@ -1,8 +1,9 @@
-from discord.ext import commands
-from colorama import Fore
-from time import sleep
 from threading import Thread
+from time import sleep
+
 import requests
+from colorama import Fore
+from discord.ext import commands
 
 
 class AnimatorState:

@@ -1,11 +1,12 @@
-from discord import Status, Streaming, Game, Activity, ActivityType
-from discord.ext import commands
-from colorama import Fore
 import random
-from re import findall
-from translate import Translator
-from json import load, dump
 from base64 import b64decode, b64encode
+from json import dump, load
+from re import findall
+
+from colorama import Fore
+from discord import Activity, ActivityType, Game, Status, Streaming
+from discord.ext import commands
+from translate import Translator
 
 file = open('Commands/auto_response.json', 'r')
 auto_response_messages = load(file)

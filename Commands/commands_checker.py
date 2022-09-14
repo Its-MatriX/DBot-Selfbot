@@ -1,5 +1,5 @@
-from discord.ext import commands
 from colorama import Fore
+from discord.ext import commands
 
 
 class CheckerCog(commands.Cog):

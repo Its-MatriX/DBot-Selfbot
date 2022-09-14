@@ -1,6 +1,6 @@
+from colorama import Fore
 from discord import Status, User
 from discord.ext import commands
-from colorama import Fore
 
 
 class InfoCog(commands.Cog):

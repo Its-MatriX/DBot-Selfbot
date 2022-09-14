@@ -1,8 +1,9 @@
-from discord.ext import commands
-from discord import User
-from colorama import Fore
-from random import choice, uniform
 from asyncio import sleep
+from random import choice, uniform
+
+from colorama import Fore
+from discord import User
+from discord.ext import commands
 
 magicball = [
     "Да",

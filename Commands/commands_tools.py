@@ -614,8 +614,8 @@ class ToolsCog(commands.Cog):
 
         await ctx.send(resp)
 
-    @commands.command(name='rand_number')
-    async def rand_number__(self, ctx, min: int, max: int):
+    @commands.command(name='rand')
+    async def rand__(self, ctx, min: int, max: int):
         if ctx.author != self.bot.user:
             return
 

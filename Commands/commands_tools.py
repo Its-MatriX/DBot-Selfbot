@@ -400,13 +400,17 @@ class ToolsCog(commands.Cog):
         self.spammer_is_working = False
 
     @commands.command(name='clear')
-    async def clear__(self, ctx, history_limit: int = 100):
+    async def clear__(self, ctx, history_limit: int = 100, reversed: bool = False):
         if ctx.author != self.bot.user:
             return
 
         await ctx.message.delete()
 
         messages = await ctx.channel.history(limit=history_limit).flatten()
+
+        if reversed:
+            messages.reverse()
+
         messages_amount = len(
             [x for x in messages if x.author.id == ctx.author.id])
 

@@ -72,10 +72,6 @@ class FunCog(commands.Cog):
         ReactionTroll['userID'] = int(user.id)
         ReactionTroll['reaction'] = react
 
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Троллинг реакциями: ' + Fore.CYAN +
-                  f'Троллинг {user} - включено, реакция - {react}')
-
         await ctx.message.delete()
 
     @commands.command(name='repeat_troll')
@@ -94,10 +90,6 @@ class FunCog(commands.Cog):
         except:
             ReactionTroll['guildID'] = 0
         RepeatTroll['userID'] = int(user.id)
-
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Троллинг повторением: ' + Fore.CYAN +
-                  f'Троллинг {user} - включено')
 
         await ctx.message.delete()
 
@@ -118,10 +110,6 @@ class FunCog(commands.Cog):
             MessageDeleteTroll['guildID'] = 0
         MessageDeleteTroll['userID'] = int(user.id)
 
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Троллинг удалением: ' + Fore.CYAN +
-                  f'Троллинг {user} - включено')
-
         await ctx.message.delete()
 
     @commands.command(name='untroll')
@@ -132,10 +120,6 @@ class FunCog(commands.Cog):
         ReactionTroll['enabled'] = False
         RepeatTroll['enabled'] = False
         MessageDeleteTroll['enabled'] = False
-
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Троллинг: ' + Fore.CYAN +
-                  f'Троллинг - выключен')
 
         await ctx.message.delete()
 
@@ -158,28 +142,12 @@ class FunCog(commands.Cog):
         try:
             limit = int(limit)
         except:
-            if self.bot.show_logs:
-                print(
-                    Fore.GREEN + 'Авто-реакция: ' + Fore.CYAN +
-                    f'Ошибка конвертации limit в число'
-                )
             return
 
         if limit > 10000:
-            if self.bot.show_logs:
-                print(
-                    Fore.GREEN + 'Авто-реакция: ' + Fore.CYAN +
-                    f'Ошибка: Не поддерживается больше 10К реакций'
-                )
             return
 
         message_number = 1
-
-        if self.bot.show_logs:
-            print(
-                Fore.GREEN + 'Авто-реакция: ' + Fore.CYAN +
-                f'Загрузка истории сообщений'
-            )
 
         history = await ctx.channel.history(limit=limit).flatten()
 
@@ -190,18 +158,9 @@ class FunCog(commands.Cog):
                 return
             await message.add_reaction(reaction)
 
-            if self.bot.show_logs:
-                print(
-                    Fore.GREEN + 'Авто-реакция: ' + Fore.CYAN +
-                    f'Поставлена реакция на {message.id} [{message_number}/{messages_amount}]'
-                )
-
             message_number += 1
 
         self.reactions_command_is_working = False
-
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Авто-реакция: ' + Fore.CYAN + f'Готово')
 
     @commands.command(name='ball')
     async def ball__(self, ctx, *, question):
@@ -209,10 +168,6 @@ class FunCog(commands.Cog):
             return
 
         await ctx.message.delete()
-
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Кристальный шар: ' + Fore.CYAN +
-                  f'Запуск')
 
         selected = choice(magicball)
         resp = f'**{question}**\n:crystal_ball: `Шар думает...`'
@@ -245,10 +200,6 @@ class FunCog(commands.Cog):
                                 selected = choice(ReactionTroll['reaction'])
                                 await message.add_reaction(selected)
 
-                            if self.bot.show_logs:
-                                print(Fore.GREEN + 'Тролинг реакциями: ' +
-                                      Fore.CYAN + f'Троллинг {message.id}')
-
             else:
                 if message.author.id == ReactionTroll['userID']:
                     if ReactionTroll['enabled']:
@@ -261,38 +212,22 @@ class FunCog(commands.Cog):
                             selected = choice(ReactionTroll['reaction'])
                             await message.add_reaction(selected)
 
-                        if self.bot.show_logs:
-                            print(Fore.GREEN + 'Тролинг реакциями: ' +
-                                  Fore.CYAN + f'Троллинг {message.id}')
-
             if message.guild:
                 if message.author.id == RepeatTroll['userID']:
                     if message.guild.id == RepeatTroll['guildID']:
                         if RepeatTroll['enabled']:
                             await message.channel.send(message.content)
 
-                            if self.bot.show_logs:
-                                print(Fore.GREEN + 'Тролинг повторением: ' +
-                                      Fore.CYAN + f'Троллинг {message.id}')
-
             else:
                 if message.author.id == RepeatTroll['userID']:
                     if RepeatTroll['enabled']:
                         await message.channel.send(message.content)
-
-                        if self.bot.show_logs:
-                            print(Fore.GREEN + 'Тролинг повторением: ' +
-                                  Fore.CYAN + f'Троллинг {message.id}')
 
             if message.guild:
                 if message.author.id == MessageDeleteTroll['userID']:
                     if message.guild.id == MessageDeleteTroll['guildID']:
                         if MessageDeleteTroll['enabled']:
                             await message.delete()
-
-                            if self.bot.show_logs:
-                                print(Fore.GREEN + 'Тролинг удалением: ' +
-                                      Fore.CYAN + f'Троллинг {message.id}')
 
             else:
                 pass

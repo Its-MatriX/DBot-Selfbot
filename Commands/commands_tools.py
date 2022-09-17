@@ -129,30 +129,18 @@ class ToolsCog(commands.Cog):
 
         if status == 'online':
             await self.bot.change_presence(status=Status.online)
-            if self.bot.show_logs:
-                print(Fore.GREEN + 'Статус: ' + Fore.CYAN +
-                      f'Установлена иконка: В сети')
             return
 
         elif status == 'idle':
             await self.bot.change_presence(status=Status.idle)
-            if self.bot.show_logs:
-                print(Fore.GREEN + 'Статус: ' + Fore.CYAN +
-                      f'Установлена иконка: Неактивен')
             return
 
         elif status == 'dnd':
             await self.bot.change_presence(status=Status.dnd)
-            if self.bot.show_logs:
-                print(Fore.GREEN + 'Статус: ' + Fore.CYAN +
-                      f'Установлена иконка: Не беспокоить')
             return
 
         elif status == 'invisible':
             await self.bot.change_presence(status=Status.invisible)
-            if self.bot.show_logs:
-                print(Fore.GREEN + 'Статус: ' + Fore.CYAN +
-                      f'Установлена иконка: Невидимка')
             return
 
         if ' ' not in status:
@@ -175,10 +163,6 @@ class ToolsCog(commands.Cog):
             await self.bot.change_presence(activity=Streaming(name=stream_name,
                                                               url=twitch_url))
 
-            if self.bot.show_logs:
-                print(Fore.GREEN + 'Статус: ' + Fore.CYAN +
-                      f'Стрим - {twitch_url}, {stream_name}')
-
             return
 
         elif status[0] == 'game':
@@ -197,10 +181,6 @@ class ToolsCog(commands.Cog):
             await self.bot.change_presence(
                 activity=Game(name=' '.join(status[2:])), status=status_icon)
 
-            if self.bot.show_logs:
-                print(Fore.GREEN + 'Статус: ' + Fore.CYAN +
-                      f'Установлен статус: Играет')
-
         elif status[0] == 'watch':
             if status[1] == 'online':
                 status_icon = Status.online
@@ -217,10 +197,6 @@ class ToolsCog(commands.Cog):
             await self.bot.change_presence(activity=Activity(
                 type=ActivityType.watching, name=' '.join(status[2:])),
                 status=status_icon)
-
-            if self.bot.show_logs:
-                print(Fore.GREEN + 'Статус: ' + Fore.CYAN +
-                      f'Установлен статус: Смотрит')
 
         elif status[0] == 'listening':
             if status[1] == 'online':
@@ -239,10 +215,6 @@ class ToolsCog(commands.Cog):
                 type=ActivityType.listening, name=' '.join(status[2:])),
                 status=status_icon)
 
-            if self.bot.show_logs:
-                print(Fore.GREEN + 'Статус: ' + Fore.CYAN +
-                      f'Установлен статус: Слушает')
-
         elif status[0] == 'competing':
             if status[1] == 'online':
                 status_icon = Status.online
@@ -259,10 +231,6 @@ class ToolsCog(commands.Cog):
             await self.bot.change_presence(activity=Activity(
                 type=ActivityType.competing, name=' '.join(status[2:])),
                 status=status_icon)
-
-            if self.bot.show_logs:
-                print(Fore.GREEN + 'Статус: ' + Fore.CYAN +
-                      f'Установлен статус: Соревнуется')
 
     @commands.command(name='spam')
     async def spam__(self, ctx, amount=None, *, content=None):
@@ -295,23 +263,11 @@ class ToolsCog(commands.Cog):
         self.spammer_is_working = True
         sended = 0
 
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Спам-атака: ' + Fore.CYAN +
-                  f'Запущено на канал: {ctx.channel.id}')
-
         for _ in range(amount):
             if not self.spammer_is_working:
                 return
             message = await ctx.send(spam_string_parse(content))
             sended += 1
-
-            if self.bot.show_logs:
-                print(
-                    Fore.GREEN + 'Спам-атака: ' + Fore.CYAN +
-                    f'Отправлено сообщение: {message.id} [{sended}/{amount}]')
-
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Спам-атака: ' + Fore.CYAN + f'Готово')
 
     @commands.command(name='lag_spam')
     async def lag_spam__(self, ctx, lag_type=None, amount=None):
@@ -349,10 +305,6 @@ class ToolsCog(commands.Cog):
         self.spammer_is_working = True
         sended = 0
 
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Лаг-атака: ' + Fore.CYAN +
-                  f'Запущено на канал: {ctx.channel.id}')
-
         if lag_type == 'ascii':
             for _ in range(amount):
                 if not self.spammer_is_working:
@@ -361,12 +313,6 @@ class ToolsCog(commands.Cog):
                     [chr(random.randrange(10000)) for x in range(1999)]))
 
                 sended += 1
-
-                if self.bot.show_logs:
-                    print(
-                        Fore.GREEN + 'Лаг-атака: ' + Fore.CYAN +
-                        f'Отправлено сообщение: {message.id} [{sended}/{amount}]'
-                    )
 
         elif lag_type == 'chains':
             text = ':chains:' * 200
@@ -378,24 +324,12 @@ class ToolsCog(commands.Cog):
 
                 sended += 1
 
-                if self.bot.show_logs:
-                    print(
-                        Fore.GREEN + 'Лаг-атака: ' + Fore.CYAN +
-                        f'Отправлено сообщение: {message.id} [{sended}/{amount}]'
-                    )
-
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Спам-атака: ' + Fore.CYAN + f'Готово')
-
     @commands.command(name='stop_spam')
     async def stop_spam__(self, ctx):
         if ctx.author != self.bot.user:
             return
 
         await ctx.message.delete()
-
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Спам-атака: ' + Fore.CYAN + f'Остановлено')
 
         self.spammer_is_working = False
 
@@ -420,14 +354,6 @@ class ToolsCog(commands.Cog):
             if message.author.id == self.bot.user.id:
                 await message.delete()
                 removed += 1
-                if self.bot.show_logs:
-                    print(
-                        Fore.GREEN + 'Удаление сообщений: ' + Fore.CYAN +
-                        f'Удалено сообщение {message.id} [{removed}/{messages_amount}]'
-                    )
-
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Удаление сообщений: ' + Fore.CYAN + f'Готово')
 
     @commands.command(name='masspin')
     async def masspin__(self, ctx, limit: int = 10):
@@ -444,12 +370,6 @@ class ToolsCog(commands.Cog):
         for message in history:
             await message.pin()
             pinned += 1
-            if self.bot.show_logs:
-                print(Fore.GREEN + 'Массовый закреп: ' + Fore.CYAN +
-                      f'Закреплено сообщение {message.id} [{pinned}/{to_pin}]')
-
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Массовый закреп: ' + Fore.CYAN + f'Готово')
 
     @commands.command(name='case_translate')
     async def case_translate__(self, ctx, *, text):

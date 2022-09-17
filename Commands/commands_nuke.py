@@ -46,7 +46,6 @@ async def BAN(member):
 
 
 class NukerCog(commands.Cog):
-
     def __init__(self, bot):
         self.bot = bot
 
@@ -56,9 +55,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            print(Fore.GREEN + 'Краш-команды: ' + Fore.CYAN +
-                  'Ошибка: Краш-команды не включены, включите их в config.json')
-            return
+            raise TypeError(
+                'Краш-команды не включены, включите их в config.json')
 
         await ctx.message.delete()
 
@@ -71,9 +69,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            print(Fore.GREEN + 'Краш-команды: ' + Fore.CYAN +
-                  'Ошибка: Краш-команды не включены, включите их в config.json')
-            return
+            raise TypeError(
+                'Краш-команды не включены, включите их в config.json')
 
         await ctx.message.delete()
 
@@ -86,9 +83,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            print(Fore.GREEN + 'Краш-команды: ' + Fore.CYAN +
-                  'Ошибка: Краш-команды не включены, включите их в config.json')
-            return
+            raise TypeError(
+                'Краш-команды не включены, включите их в config.json')
 
         await ctx.message.delete()
 
@@ -101,9 +97,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            print(Fore.GREEN + 'Краш-команды: ' + Fore.CYAN +
-                  'Ошибка: Краш-команды не включены, включите их в config.json')
-            return
+            raise TypeError(
+                'Краш-команды не включены, включите их в config.json')
 
         await ctx.message.delete()
 
@@ -116,9 +111,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            print(Fore.GREEN + 'Краш-команды: ' + Fore.CYAN +
-                  'Ошибка: Краш-команды не включены, включите их в config.json')
-            return
+            raise TypeError(
+                'Краш-команды не включены, включите их в config.json')
 
         await ctx.message.delete()
 
@@ -131,9 +125,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            print(Fore.GREEN + 'Краш-команды: ' + Fore.CYAN +
-                  'Ошибка: Краш-команды не включены, включите их в config.json')
-            return
+            raise TypeError(
+                'Краш-команды не включены, включите их в config.json')
 
         await ctx.message.delete()
 
@@ -146,9 +139,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            print(Fore.GREEN + 'Краш-команды: ' + Fore.CYAN +
-                  'Ошибка: Краш-команды не включены, включите их в config.json')
-            return
+            raise TypeError(
+                'Краш-команды не включены, включите их в config.json')
 
         await ctx.message.delete()
 
@@ -161,9 +153,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            print(Fore.GREEN + 'Краш-команды: ' + Fore.CYAN +
-                  'Ошибка: Краш-команды не включены, включите их в config.json')
-            return
+            raise TypeError(
+                'Краш-команды не включены, включите их в config.json')
 
         await ctx.message.delete()
 
@@ -171,14 +162,13 @@ class NukerCog(commands.Cog):
             create_task(SPAM_WEBHOOK(channel, message))
 
     @commands.command(name='nuke')
-    async def nuke__(self, ctx, names='КРАШ', *, message='КРАШНУТО КОМАНДОЙ ХАКЕРОВ'):
+    async def nuke__(self, ctx, names='КРАШ', *, message='СЕРВЕР КРАШНУТ'):
         if ctx.author != self.bot.user:
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            print(Fore.GREEN + 'Краш-команды: ' + Fore.CYAN +
-                  'Ошибка: Краш-команды не включены, включите их в config.json')
-            return
+            raise TypeError(
+                'Краш-команды не включены, включите их в config.json')
 
         await ctx.message.delete()
 
@@ -200,7 +190,7 @@ class NukerCog(commands.Cog):
         for emoji in ctx.guild.emojis:
             create_task(DELETE(emoji))
 
-        for invite in ctx.guild.invites:
+        for invite in await ctx.guild.invites():
             create_task(DELETE(invite))
 
 

@@ -25,10 +25,6 @@ class InfoCog(commands.Cog):
 
         await ctx.message.delete()
 
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Данные о пользователе: ' + Fore.CYAN +
-                  f'Получение данных о {user}')
-
         if ctx.guild:
             try:
                 user_ = ctx.guild.get_member(user.id)
@@ -97,10 +93,6 @@ class InfoCog(commands.Cog):
 
         if not ctx.guild:
             return
-
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Данные о сервере: ' + Fore.CYAN +
-                  f'Получение данных о {ctx.guild.name}')
 
         resp = ''
 

@@ -82,34 +82,18 @@ class AnimationCog(commands.Cog):
         await ctx.message.delete()
 
         if not animation:
-            if self.bot.show_logs:
-                print(Fore.GREEN + 'Анимация статуса: ' + Fore.CYAN +
-                      f'Ошибка: animation: не задано')
             return
 
         if AnimatorState.is_working:
-            if self.bot.show_logs:
-                print(Fore.GREEN + 'Анимация статуса: ' + Fore.CYAN +
-                      f'Ошибка: Анимация и так работает, чтобы остановить - stop_animate')
             return
 
         if delay < 0.01 or delay > 3600:
-            if self.bot.show_logs:
-                print(Fore.GREEN + 'Анимация статуса: ' + Fore.CYAN +
-                      f'Ошибка: Задержка должна быть между 0.01 и 3600 (в секундах)')
             return
 
         if '\n' not in animation:
-            if self.bot.show_logs:
-                print(Fore.GREEN + 'Анимация статуса: ' + Fore.CYAN +
-                      f'Ошибка: Требуется как минимум 2 строки')
             return
 
         AnimatorState.is_working = True
-
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Анимация статуса: ' + Fore.CYAN +
-                  f'Запуск потока')
 
         animation = animation.split('\n')
         Thread(target=lambda: animate(delay, self.bot.http.token,
@@ -123,10 +107,6 @@ class AnimationCog(commands.Cog):
         await ctx.message.delete()
 
         AnimatorState.is_working = False
-
-        if self.bot.show_logs:
-            print(Fore.GREEN + 'Анимация статусы: ' + Fore.CYAN +
-                  f'Остановка')
 
 
 def setup(bot):

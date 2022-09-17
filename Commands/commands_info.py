@@ -1,4 +1,3 @@
-from colorama import Fore
 from discord import Status, User
 from discord.ext import commands
 

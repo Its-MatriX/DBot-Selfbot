@@ -1,30 +1,39 @@
+import io
 import random
 from base64 import b64decode, b64encode
 from json import dump, load
 from re import findall
 
+import requests
 from colorama import Fore
-from discord import Activity, ActivityType, Game, Status, Streaming
+from colour import Color
+from discord import (Activity, ActivityType, File, Game, Status,
+                     Streaming)
 from discord.ext import commands
+from PIL import Image
 from translate import Translator
+
+from sys import stdin
 
 file = open('Commands/auto_response.json', 'r')
 auto_response_messages = load(file)
 file.close()
 
+case_translate_layout_en_ru = dict(
+    zip(
+        map(
+            ord, "qwertyuiop[]asdfghjkl;'zxcvbnm,./`"
+            'QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>?~'),
+        "йцукенгшщзхъфывапролджэячсмитьбю.ё"
+        'ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,Ё'))
 
-case_translate_layout_en_ru = dict(zip(map(ord, "qwertyuiop[]asdfghjkl;'zxcvbnm,./`"
-                                           'QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>?~'),
-                                       "йцукенгшщзхъфывапролджэячсмитьбю.ё"
-                                       'ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,Ё'))
-
-
-case_translate_layout_ru_en = dict(zip(map(ord, "йцукенгшщзхъфывапролджэячсмитьбю.ё"
-                                       'ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,Ё'),
-                                       "qwertyuiop[]asdfghjkl;'zxcvbnm,./`"
-                                       'QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>?~'
-                                       ))
-
+case_translate_layout_ru_en = dict(
+    zip(
+        map(
+            ord, "йцукенгшщзхъфывапролджэячсмитьбю.ё"
+            'ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,Ё'),
+        "qwertyuiop[]asdfghjkl;'zxcvbnm,./`"
+        'QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>?~'))
 
 letters_ru = 'йцукенгшщзхъфывапролджэячсмитьбю'
 letters_en = 'qwertyuiopasdfghjklzxcvbnm'
@@ -96,6 +105,15 @@ class ToolsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        content = message.content.lower().replace(' ', '').replace('.', '')
+        keys = list(auto_response_messages.keys())
+
+        if content in keys:
+            await message.reply(auto_response_messages[content],
+                                mention_author=False)
+
     @commands.command(name='status')
     async def status__(self, ctx, *, status=None):
         if ctx.author != self.bot.user:
@@ -152,7 +170,8 @@ class ToolsCog(commands.Cog):
             if 'https://' not in status[1] and 'http://' not in status[1]:
                 status[1] = 'https://' + status[1]
 
-            if 'youtube.com/watch?v=' not in status[1] and 'twitch.tv/' not in status[1]:
+            if 'youtube.com/watch?v=' not in status[
+                    1] and 'twitch.tv/' not in status[1]:
                 status[1] = 'https://youtube.com/watch?v=' + \
                     status[1].replace('https://', '').replace('http://', '')
 
@@ -160,8 +179,8 @@ class ToolsCog(commands.Cog):
 
             stream_name = ' '.join(status[2:])
 
-            await self.bot.change_presence(activity=Streaming(name=stream_name,
-                                                              url=twitch_url))
+            await self.bot.change_presence(
+                activity=Streaming(name=stream_name, url=twitch_url))
 
             return
 
@@ -196,7 +215,7 @@ class ToolsCog(commands.Cog):
 
             await self.bot.change_presence(activity=Activity(
                 type=ActivityType.watching, name=' '.join(status[2:])),
-                status=status_icon)
+                                           status=status_icon)
 
         elif status[0] == 'listening':
             if status[1] == 'online':
@@ -213,7 +232,7 @@ class ToolsCog(commands.Cog):
 
             await self.bot.change_presence(activity=Activity(
                 type=ActivityType.listening, name=' '.join(status[2:])),
-                status=status_icon)
+                                           status=status_icon)
 
         elif status[0] == 'competing':
             if status[1] == 'online':
@@ -230,7 +249,7 @@ class ToolsCog(commands.Cog):
 
             await self.bot.change_presence(activity=Activity(
                 type=ActivityType.competing, name=' '.join(status[2:])),
-                status=status_icon)
+                                           status=status_icon)
 
     @commands.command(name='spam')
     async def spam__(self, ctx, amount=None, *, content=None):
@@ -267,6 +286,43 @@ class ToolsCog(commands.Cog):
             if not self.spammer_is_working:
                 return
             message = await ctx.send(spam_string_parse(content))
+            sended += 1
+
+    @commands.command(name='ttsspam')
+    async def ttsspam__(self, ctx, amount=None, *, content=None):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        if not amount and not content:
+            resp = '🔥 **spam <*количество*> <*текст/модификаторы*>:** `спам (+TTS)`\n' + \
+                '**Модификаторы:**\n' + \
+                '`?digit` - *цифра*\n' + \
+                '`?letter` - *латинская буква*\n' + \
+                '`?prep` - *знак препинания*\n' + \
+                '`?char <мин.>, <макс>` - *символ со случайным индексом*\n'
+
+            await ctx.send(resp)
+            return
+
+        try:
+            spam_string_parse(content)
+        except:
+            return
+
+        try:
+            amount = int(amount)
+        except:
+            pass
+
+        self.spammer_is_working = True
+        sended = 0
+
+        for _ in range(amount):
+            if not self.spammer_is_working:
+                return
+            message = await ctx.send(spam_string_parse(content), tts=True)
             sended += 1
 
     @commands.command(name='lag_spam')
@@ -334,7 +390,10 @@ class ToolsCog(commands.Cog):
         self.spammer_is_working = False
 
     @commands.command(name='clear')
-    async def clear__(self, ctx, history_limit: int = 100, reversed: bool = False):
+    async def clear__(self,
+                      ctx,
+                      history_limit: int = 100,
+                      reversed: bool = False):
         if ctx.author != self.bot.user:
             return
 
@@ -399,7 +458,8 @@ class ToolsCog(commands.Cog):
         check_to_safe = expression.replace(' ', '').replace('\'', '"')
 
         if 'bot' in check_to_safe:
-            await ctx.send('**❌ Вы не можете вычислить выражения с переменной `bot`.**')
+            await ctx.send(
+                '**❌ Вы не можете вычислить выражения с переменной `bot`.**')
             return
 
         try:
@@ -447,7 +507,8 @@ class ToolsCog(commands.Cog):
             await ctx.send(resp)
             return
 
-        message = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+        message = await ctx.channel.fetch_message(
+            ctx.message.reference.message_id)
 
         resp = message.content.replace('||', '')
         resp = f'**Раскрытие спойлеров:** \n{resp}'
@@ -490,8 +551,8 @@ class ToolsCog(commands.Cog):
         await ctx.message.delete()
 
         global auto_response_messages
-        del auto_response_messages[
-            phrase.lower().replace(' ', '').replace('.', '')]
+        del auto_response_messages[phrase.lower().replace(' ',
+                                                          '').replace('.', '')]
 
         file = open('Commands/auto_response.json', 'w')
 
@@ -549,13 +610,37 @@ class ToolsCog(commands.Cog):
 
         await ctx.send(resp)
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        content = message.content.lower().replace(' ', '').replace('.', '')
-        keys = list(auto_response_messages.keys())
+    @commands.command(name='tinyurl')
+    async def tinyurl__(self, ctx, *, original_url):
+        if ctx.author != self.bot.user:
+            return
 
-        if content in keys:
-            await message.reply(auto_response_messages[content], mention_author=False)
+        await ctx.message.delete()
+
+        url = 'http://tinyurl.com/api-create.php?url=' + original_url
+        resp = requests.get(url).text
+        await ctx.send(resp)
+
+    @commands.command(name='color')
+    async def color__(self, ctx, *, color):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        col_name = color
+
+        color = Color(color)
+
+        file = io.BytesIO()
+
+        Image.new(
+            'RGB', (200, 100),
+            (round(color.get_red() * 255), round(color.get_green() * 255),
+             round(color.get_blue() * 255))).save(file, format='PNG')
+        file.seek(0)
+
+        await ctx.send(f'**Цвет:** `{col_name}`', file=File(file, 'color.png'))
 
 
 def setup(bot):

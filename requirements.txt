@@ -1,0 +1,6 @@
+discord.py-self
+requests
+colour
+colorama
+translate
+Pillow

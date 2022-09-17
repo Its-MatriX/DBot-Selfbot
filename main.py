@@ -4,9 +4,8 @@ from os import listdir
 from colorama import Fore
 from discord.ext import commands
 
-from logger import log
-
 from intro import intro
+from logger import log
 
 intro()
 

@@ -497,8 +497,8 @@ class ToolsCog(commands.Cog):
 
         dump(auto_response_messages, file, indent=4)
 
-    @commands.command(name='spoilers')
-    async def spoliers__(self, ctx, *, text):
+    @commands.command(name='spoiler')
+    async def spolier__(self, ctx, *, text):
         if ctx.author != self.bot.user:
             return
 

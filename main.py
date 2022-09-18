@@ -10,7 +10,7 @@ from colorama import Fore
 from discord.ext import commands
 
 from intro import intro
-from Commands.logger import log
+from Commands.logger import log, recovery_logs, logged
 
 loaded_extensions = 0
 
@@ -36,6 +36,8 @@ def start_screen():
 
 
 def terminal_resize_listener():
+    global logged
+
     terminal_cols_old = 0
 
     while True:
@@ -48,7 +50,8 @@ def terminal_resize_listener():
             start_screen()
 
             print('_' * terminal_cols)
-            print()
+
+            recovery_logs()
 
         non_async_sleep(.2)
 

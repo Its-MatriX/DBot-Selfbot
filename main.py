@@ -1,10 +1,15 @@
 from json import load
 from os import get_terminal_size, listdir, name, system
+from os.path import split, sep
+
+folder = split(__file__)[0]
 
 if name == 'nt':
     system('title Dbot')
 
 clear = lambda: system('cls') if name == 'nt' else system('clear')
+
+clear()
 
 from threading import Thread
 from time import sleep as non_async_sleep
@@ -19,7 +24,7 @@ loaded_extensions = 0
 
 intro()
 
-config = load(open('config.json', 'r'))
+config = load(open(folder + sep + 'config.json', 'r'))
 
 bot = commands.Bot(config['COMMAND_PREFIX'], self_bot=True)
 bot.remove_command('help')
@@ -63,7 +68,7 @@ async def on_connect():
 
     global loaded_extensions
 
-    extensions = listdir('Commands/')
+    extensions = listdir(folder + sep + 'Commands/')
     loaded_extensions = 0
 
     for file in extensions:

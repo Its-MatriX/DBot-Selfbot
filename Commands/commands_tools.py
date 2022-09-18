@@ -1,3 +1,12 @@
+IS_COMPILED_TO_EXECUTABLE = False
+
+from sys import executable
+
+if IS_COMPILED_TO_EXECUTABLE:
+    folder = split(executable)[0]
+else:
+    folder = split(__file__)[0]
+
 import io
 import random
 from base64 import b64decode, b64encode

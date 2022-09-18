@@ -1,6 +1,9 @@
 from json import load
 from os import get_terminal_size, listdir, name, system
 
+if name == 'nt':
+    system('title Dbot')
+
 clear = lambda: system('cls') if name == 'nt' else system('clear')
 
 from threading import Thread

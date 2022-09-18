@@ -10,7 +10,7 @@ from colorama import Fore
 from discord.ext import commands
 
 from intro import intro
-from Commands.logger import log, recovery_logs, logged
+from Commands.logger import log, recovery_logs
 
 loaded_extensions = 0
 
@@ -21,7 +21,6 @@ config = load(open('config.json', 'r'))
 bot = commands.Bot(config['COMMAND_PREFIX'], self_bot=True)
 bot.remove_command('help')
 
-# bot.show_logs = config['SEND_CONSOLE_LOGS']
 bot.config = config
 
 

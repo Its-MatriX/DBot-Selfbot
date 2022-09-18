@@ -1,8 +1,14 @@
+IS_COMPILED_TO_EXECUTABLE = False
+
 from json import load
 from os import get_terminal_size, listdir, name, system
-from os.path import split, sep
+from os.path import sep, split
+from sys import executable
 
-folder = split(__file__)[0]
+if IS_COMPILED_TO_EXECUTABLE:
+    folder = split(executable)[0]
+else:
+    folder = split(__file__)[0]
 
 if name == 'nt':
     system('title Dbot')
@@ -17,14 +23,47 @@ from time import sleep as non_async_sleep
 from colorama import Fore
 from discord.ext import commands
 
-from intro import intro
 from Commands.logger import log, recovery_logs
+from intro import intro
 
 loaded_extensions = 0
 
 intro()
 
-config = load(open(folder + sep + 'config.json', 'r'))
+try:
+    config = load(open(folder + sep + 'config.json', 'r'))
+except FileNotFoundError:
+    path_config = folder + sep + 'config.json'
+    print(
+        Fore.RED +
+        f'Не удалось найти файл с конфигурацией. Расположение файла должно быть: {path_config}'
+    )
+    print('Создайте config.json по указанному пути!\n')
+    print('Пример config.json:')
+    print()
+    print(Fore.CYAN + '{')
+    print('    "TOKEN": "токен",')
+    print('    "LOG_WEBHOOK": "вебхук",')
+    print('    "LOG_DELETES": false,')
+    print('    "LOG_EDITS": false,')
+    print('    "ENABLE_CRASH": false')
+    print('}')
+
+    print()
+
+    input(Fore.GREEN + 'Нажмите [Enter] для выхода > ')
+    exit(0)
+except Exception as e:
+    print(
+        Fore.RED +
+        f'Ошибка чтения файла config.json'
+    )
+    print(f'Ошибка: {e}')
+
+    print()
+
+    input(Fore.GREEN + 'Нажмите [Enter] для выхода > ')
+    exit(0)
 
 bot = commands.Bot(config['COMMAND_PREFIX'], self_bot=True)
 bot.remove_command('help')

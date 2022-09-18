@@ -2,20 +2,20 @@ import io
 import random
 from base64 import b64decode, b64encode
 from json import dump, load
+from os.path import sep, split
 from re import findall
 
 import requests
 from colorama import Fore
 from colour import Color
-from discord import (Activity, ActivityType, File, Game, Status,
-                     Streaming)
+from discord import Activity, ActivityType, File, Game, Status, Streaming
 from discord.ext import commands
 from PIL import Image
 from translate import Translator
 
-from sys import stdin
+folder = split(__file__)[0]
 
-file = open('Commands/auto_response.json', 'r')
+file = open(folder + sep + 'auto_response.json', 'r')
 auto_response_messages = load(file)
 file.close()
 

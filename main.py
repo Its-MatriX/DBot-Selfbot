@@ -1,11 +1,18 @@
 from json import load
-from os import listdir
+from os import get_terminal_size, listdir, name, system
+
+clear = lambda: system('cls') if name == 'nt' else system('clear')
+
+from threading import Thread
+from time import sleep as non_async_sleep
 
 from colorama import Fore
 from discord.ext import commands
 
 from intro import intro
-from logger import log
+from Commands.logger import log
+
+loaded_extensions = 0
 
 intro()
 
@@ -18,13 +25,38 @@ bot.remove_command('help')
 bot.config = config
 
 
-@bot.event
-async def on_connect():
+def start_screen():
+    intro()
     print(Fore.GREEN + 'Логин: ' + Fore.CYAN + str(bot.user))
     print(Fore.GREEN + 'ID: ' + Fore.CYAN + str(bot.user.id))
     print(Fore.GREEN + 'Префикс: ' + Fore.CYAN + config['COMMAND_PREFIX'])
-
     print()
+    print(Fore.GREEN + 'Загружено расширений: ' + Fore.CYAN +
+          str(loaded_extensions))
+
+
+def terminal_resize_listener():
+    terminal_cols_old = 0
+
+    while True:
+        terminal_cols = get_terminal_size().columns
+
+        if terminal_cols != terminal_cols_old:
+            terminal_cols_old = get_terminal_size().columns
+            clear()
+
+            start_screen()
+
+            print('_' * terminal_cols)
+            print()
+
+        non_async_sleep(.2)
+
+
+@bot.event
+async def on_connect():
+
+    global loaded_extensions
 
     extensions = listdir('Commands/')
     loaded_extensions = 0
@@ -35,21 +67,20 @@ async def on_connect():
             bot.load_extension(f'Commands.{file}')
             loaded_extensions += 1
 
-    print(Fore.GREEN + 'Загружено расширений: ' + Fore.CYAN +
-          str(loaded_extensions))
-
     print()
+
+    Thread(target=terminal_resize_listener).start()
 
 
 @bot.event
 async def on_command_error(ctx, error):
     lines = str(error).split('\n') if '\n' in str(error) else [str(error)]
-    log('; '.join(lines), 'ОШИБКА ', Fore.RED)
+    log('; '.join(lines), 'ОШИБКА', Fore.RED, 1)
 
 
 @bot.event
 async def on_command(ctx):
-    log(ctx.invoked_with, 'КОМАНДА')
+    log(ctx.invoked_with, 'КОМАНДА', Fore.YELLOW, 0)
 
 
 try:

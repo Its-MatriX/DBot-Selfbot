@@ -1,5 +1,7 @@
 IS_COMPILED_TO_EXECUTABLE = False
 
+from os.path import sep, split
+
 from sys import executable
 
 if IS_COMPILED_TO_EXECUTABLE:
@@ -11,7 +13,6 @@ import io
 import random
 from base64 import b64decode, b64encode
 from json import dump, load
-from os.path import sep, split
 from re import findall
 
 import requests

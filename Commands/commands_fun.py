@@ -361,8 +361,7 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
 
             await ctx.trigger_typing()
             await sleep(2)
-            await ctx.send(user.mention +
-                           ''.join('!' for x in range(randint(1, 5))))
+            await ctx.send(user.mention * randint(1, 5))
             await sleep(3)
 
     @commands.command(name='hehe')

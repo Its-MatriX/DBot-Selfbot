@@ -472,7 +472,6 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
             '8==✊===D',
             '8=✊====D',
             '8✊=====D',
-            '8✊=====D',
             '8=✊====D',
             '8==✊===D',
             '8===✊==D',

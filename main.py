@@ -54,10 +54,7 @@ except FileNotFoundError:
     input(Fore.GREEN + 'Нажмите [Enter] для выхода > ')
     exit(0)
 except Exception as e:
-    print(
-        Fore.RED +
-        f'Ошибка чтения файла config.json'
-    )
+    print(Fore.RED + f'Ошибка чтения файла config.json')
     print(f'Ошибка: {e}')
 
     print()

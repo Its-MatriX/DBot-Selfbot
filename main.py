@@ -11,7 +11,7 @@ else:
     folder = split(__file__)[0]
 
 if name == 'nt':
-    system('title Dbot')
+    system('title DBot: Запускается')
 
 clear = lambda: system('cls') if name == 'nt' else system('clear')
 
@@ -105,6 +105,9 @@ def terminal_resize_listener():
 @bot.event
 async def on_connect():
 
+    if name == 'nt':
+        system(f'title DBot: {bot.user}')
+
     global loaded_extensions
 
     extensions = listdir(folder + sep + 'Commands/')
@@ -135,4 +138,7 @@ async def on_command(ctx):
 try:
     bot.run(config['TOKEN'])
 except Exception as e:
-    log(e, 'ОШИБКА', Fore.RED)
+    if name == 'nt':
+        system('title DBot: Ошибка')
+    log(e, 'ОШИБКА', Fore.RED, 1)
+    input()

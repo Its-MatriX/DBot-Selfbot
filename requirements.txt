@@ -4,3 +4,4 @@ colour
 colorama
 translate
 Pillow
+textblob

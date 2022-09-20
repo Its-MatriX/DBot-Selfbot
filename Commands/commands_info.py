@@ -2,6 +2,7 @@ from discord import Status, Member, http
 from discord.ext import commands
 import requests
 
+
 class InfoCog(commands.Cog):
 
     def __init__(self, bot):
@@ -88,14 +89,16 @@ class InfoCog(commands.Cog):
                 premium_since = round(user.premium_since.timestamp())
                 resp += f'> **Купил Nitro**: **<t:{premium_since}:R>**'
 
-                user_http = await self.bot.http.request(http.Route("GET", f"/users/{user.id}"))
+                user_http = await self.bot.http.request(
+                    http.Route("GET", f"/users/{user.id}"))
 
                 banner_id = user_http["banner"]
 
                 if banner_id:
                     banner_url = f"https://cdn.discordapp.com/banners/{user.id}/{banner_id}?size=1024"
 
-                    url = 'http://tinyurl.com/api-create.php?url=' + str(banner_url)
+                    url = 'http://tinyurl.com/api-create.php?url=' + str(
+                        banner_url)
                     banner_url = requests.get(url).text
 
                     resp += f'\n> **Баннер**: **{banner_url}**'
@@ -160,13 +163,15 @@ class InfoCog(commands.Cog):
 
         resp += f'> **Описание:** `{ctx.guild.description}`\n'
 
-        url = 'http://tinyurl.com/api-create.php?url=' + str(ctx.guild.icon_url)
+        url = 'http://tinyurl.com/api-create.php?url=' + str(
+            ctx.guild.icon_url)
         icon_url = requests.get(url).text
-    
+
         resp += f'> **Иконка:** **{icon_url}**\n'
 
         try:
-            url = 'http://tinyurl.com/api-create.php?url=' + str(ctx.guild.banner.url)
+            url = 'http://tinyurl.com/api-create.php?url=' + str(
+                ctx.guild.banner.url)
             banner_url = requests.get(url).text
             resp += f'> **Баннер:** **{banner_url}**\n'
         except:

@@ -38,7 +38,7 @@ def print_line(line_length):
             reverse_mode = False
             color_index = 0
 
-        resp += get_color(colors_main[color_index]) + '_'
+        resp += get_color(colors_main[color_index]) + '—'
 
     print(resp)
 

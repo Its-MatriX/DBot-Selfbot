@@ -502,7 +502,7 @@ class ToolsCog(commands.Cog):
         if resp_upper > resp_lower:
             resp = resp.lower()
 
-        resp = f'**Перевод с `{lang_from}` в `{lang_to}**`\n' + resp
+        resp = f'**Перевод с `{lang_from}` в `{lang_to}`**\n' + resp
 
         await ctx.send(resp)
 

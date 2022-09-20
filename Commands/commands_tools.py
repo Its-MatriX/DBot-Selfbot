@@ -1,7 +1,6 @@
 IS_COMPILED_TO_EXECUTABLE = False
 
 from os.path import sep, split
-
 from sys import executable
 
 if IS_COMPILED_TO_EXECUTABLE:
@@ -653,7 +652,6 @@ class ToolsCog(commands.Cog):
         file.seek(0)
 
         await ctx.send(f'**Цвет:** `{col_name}`', file=File(file, 'color.png'))
-
 
 
 def setup(bot):

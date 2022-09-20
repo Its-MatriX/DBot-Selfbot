@@ -158,7 +158,7 @@ class InfoCog(commands.Cog):
 
         await ctx.message.delete()
 
-        ping = round(self.bot.latency*1000)
+        ping = round(self.bot.latency * 1000)
 
         resp = f'**Пинг:** `{ping} МС`'
         await ctx.send(resp)

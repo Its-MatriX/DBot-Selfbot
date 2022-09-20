@@ -30,10 +30,9 @@ def set_custom_status(token, status_text=None, status_icon=None):
 
     headers = {'Authorization': token}
 
-    resp = requests.patch(
-        'https://discord.com/api/v9/users/@me/settings',
-        json=body,
-        headers=headers)
+    resp = requests.patch('https://discord.com/api/v9/users/@me/settings',
+                          json=body,
+                          headers=headers)
 
     return resp.status_code
 
@@ -64,8 +63,8 @@ def animate(delay, token, statuses, show_logs):
                 else:
                     status_text = status
 
-            Thread(target=lambda: set_custom_status(token, status_text, status_icon
-                                                    )).start()
+            Thread(target=lambda: set_custom_status(token, status_text,
+                                                    status_icon)).start()
             sleep(delay)
 
 
@@ -96,8 +95,8 @@ class AnimationCog(commands.Cog):
         AnimatorState.is_working = True
 
         animation = animation.split('\n')
-        Thread(target=lambda: animate(delay, self.bot.http.token,
-               animation, self.bot.show_logs)).start()
+        Thread(target=lambda: animate(delay, self.bot.http.token, animation,
+                                      self.bot.show_logs)).start()
 
     @commands.command(name='stop_animate')
     async def stop_animate__(self, ctx):

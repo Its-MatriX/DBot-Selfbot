@@ -87,7 +87,7 @@ class HelpCog(commands.Cog):
             elif command == 'hehe':
                 resp = '> **hehe** [<***длина:30 по умолчанию***>]\n' + \
                     '> `Вам лень смеяться в чате? Эта команда сделает это за вас!`'
-                    
+
             elif command == 'oof':
                 resp = '> **oof** [<***длина***>]\n' + \
                     '> `Oof! (поймут те, кто играли в roblox)`'

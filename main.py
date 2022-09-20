@@ -90,8 +90,6 @@ def start_screen():
 
 
 def terminal_resize_listener():
-    global logged
-
     terminal_cols_old = 0
 
     while True:

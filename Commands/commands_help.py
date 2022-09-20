@@ -20,7 +20,7 @@ class HelpCog(commands.Cog):
                     \
                 '>   ***Веселье 🎉:***\n' + \
                 '>  `reaction_troll`, `repeat_troll`, `delete_troll`, ' + \
-                '`untroll`, `ball`, `reaction`,' + \
+                '`untroll`, `ball`, `reaction`, ' + \
                 '`textmoji`, `virus`, `pings`, ' + \
                 '`hehe`, `oof`, `flip`' + \
                     \

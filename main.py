@@ -23,7 +23,8 @@ from time import sleep as non_async_sleep
 from colorama import Fore
 from discord.ext import commands
 
-from Commands.logger import log, recovery_logs
+from Commands.logger import log, log_error, recovery_logs
+from Commands.colors import print_line, gradient_horizontal, colors_text, colors_text_v2, colors_error
 from intro import intro
 
 loaded_extensions = 0
@@ -70,12 +71,22 @@ bot.config = config
 
 def start_screen():
     intro()
-    print(Fore.GREEN + 'Логин: ' + Fore.CYAN + str(bot.user))
-    print(Fore.GREEN + 'ID: ' + Fore.CYAN + str(bot.user.id))
-    print(Fore.GREEN + 'Префикс: ' + Fore.CYAN + config['COMMAND_PREFIX'])
+
+    print(Fore.GREEN + gradient_horizontal('Логин: ', colors_text_v2) +
+          gradient_horizontal(str(bot.user), colors_text))
+
+    print(Fore.GREEN + gradient_horizontal('ID: ', colors_text_v2) +
+          Fore.CYAN + gradient_horizontal(str(bot.user.id), colors_text))
+
+    print(Fore.GREEN + gradient_horizontal('Префикс: ', colors_text_v2) +
+          Fore.CYAN +
+          gradient_horizontal(config['COMMAND_PREFIX'], colors_text))
+
     print()
-    print(Fore.GREEN + 'Загружено расширений: ' + Fore.CYAN +
-          str(loaded_extensions))
+
+    print(Fore.GREEN +
+          gradient_horizontal('Загружено расшрений: ', colors_text_v2) +
+          Fore.CYAN + gradient_horizontal(str(loaded_extensions)))
 
 
 def terminal_resize_listener():
@@ -92,7 +103,7 @@ def terminal_resize_listener():
 
             start_screen()
 
-            print('_' * terminal_cols)
+            print_line(terminal_cols)
 
             recovery_logs()
 
@@ -124,12 +135,12 @@ async def on_connect():
 @bot.event
 async def on_command_error(ctx, error):
     lines = str(error).split('\n') if '\n' in str(error) else [str(error)]
-    log('; '.join(lines), 'ОШИБКА', Fore.RED, 1)
+    log_error('; '.join(lines), 'ОШИБКА', 1)
 
 
 @bot.event
 async def on_command(ctx):
-    log(ctx.invoked_with, 'КОМАНДА', Fore.YELLOW, 0)
+    log(ctx.invoked_with, 'КОМАНДА', 0)
 
 
 try:

@@ -24,7 +24,7 @@ from colorama import Fore
 from discord.ext import commands
 
 from Commands.logger import log, log_error, recovery_logs
-from Commands.colors import print_line, gradient_horizontal, colors_text, colors_text_v2, colors_error
+from Commands.colors import print_line, gradient_horizontal, colors_text, colors_text_v2
 from intro import intro
 
 loaded_extensions = 0

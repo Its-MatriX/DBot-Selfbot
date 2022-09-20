@@ -2,7 +2,6 @@ from threading import Thread
 from time import sleep
 
 import requests
-from colorama import Fore
 from discord.ext import commands
 
 
@@ -38,10 +37,6 @@ def set_custom_status(token, status_text=None, status_icon=None):
 
 
 def animate(delay, token, statuses, show_logs):
-    if show_logs:
-        print(Fore.GREEN + 'Анимация статуса: ' + Fore.CYAN +
-              f'Поток анимации запущен')
-
     while AnimatorState.is_working:
         for status in statuses:
             if not AnimatorState.is_working:

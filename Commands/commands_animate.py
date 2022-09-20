@@ -36,7 +36,7 @@ def set_custom_status(token, status_text=None, status_icon=None):
     return resp.status_code
 
 
-def animate(delay, token, statuses, show_logs):
+def animate(delay, token, statuses):
     while AnimatorState.is_working:
         for status in statuses:
             if not AnimatorState.is_working:
@@ -90,8 +90,7 @@ class AnimationCog(commands.Cog):
         AnimatorState.is_working = True
 
         animation = animation.split('\n')
-        Thread(target=lambda: animate(delay, self.bot.http.token, animation,
-                                      self.bot.show_logs)).start()
+        Thread(target=lambda: animate(delay, self.bot.http.token, animation)).start()
 
     @commands.command(name='stop_animate')
     async def stop_animate__(self, ctx):

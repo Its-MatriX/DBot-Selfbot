@@ -481,7 +481,7 @@ class ToolsCog(commands.Cog):
         await ctx.send(resp)
 
     @commands.command(name='translate')
-    async def translate(self, ctx, lang_from, lang_to, *, text):
+    async def translate__(self, ctx, lang_from, lang_to, *, text):
         if ctx.author != self.bot.user:
             return
 
@@ -502,7 +502,7 @@ class ToolsCog(commands.Cog):
         if resp_upper > resp_lower:
             resp = resp.lower()
 
-        resp = f'**Перевод с `{lang_from}` в `{lang_to}`\n' + resp
+        resp = f'**Перевод с `{lang_from}` в `{lang_to}**`\n' + resp
 
         await ctx.send(resp)
 

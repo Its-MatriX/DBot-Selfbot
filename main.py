@@ -85,8 +85,8 @@ def start_screen():
     print()
 
     print(Fore.GREEN +
-          gradient_horizontal('Загружено расшрений: ', colors_text) +
-          Fore.CYAN + gradient_horizontal(str(loaded_extensions)))
+          gradient_horizontal('Загружено расшрений: ', colors_text_v2) +
+          Fore.CYAN + gradient_horizontal(str(loaded_extensions), colors_text))
 
 
 def terminal_resize_listener():
@@ -100,6 +100,7 @@ def terminal_resize_listener():
             clear()
             start_screen()
 
+            print()
             print_line(terminal_cols)
             recovery_logs()
 

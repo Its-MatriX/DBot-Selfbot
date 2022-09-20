@@ -655,5 +655,6 @@ class ToolsCog(commands.Cog):
         await ctx.send(f'**Цвет:** `{col_name}`', file=File(file, 'color.png'))
 
 
+
 def setup(bot):
     bot.add_cog(ToolsCog(bot))

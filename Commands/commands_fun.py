@@ -453,6 +453,60 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
             await message.edit(content='``' + frame + '``')
             await sleep(.3)
 
+    @commands.command(name='handjob')
+    async def handjob__(self, ctx):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        anim = [
+            '8✊=====D',
+            '8=✊====D',
+            '8==✊===D',
+            '8===✊==D',
+            '8====✊=D',
+            '8=====✊D',
+            '8====✊=D',
+            '8===✊==D',
+            '8==✊===D',
+            '8=✊====D',
+            '8✊=====D',
+            '8✊=====D',
+            '8=✊====D',
+            '8==✊===D',
+            '8===✊==D',
+            '8====✊=D💦',
+            '8=====✊D💦',
+        ]
+
+        message = await ctx.send(anim[0])
+
+        for frame in anim[1:]:
+            await message.edit(content=frame )
+            await sleep(.3)
+
+    @commands.command(name='token')
+    async def token__(self, ctx, user: User):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        starts = ['OTgW', 'OTg0', 'OTIw', 'MTAx', 'MTAw', 'OTE3']
+
+        characters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890"
+        part_a = "".join(choice(characters) for x in range(20))
+        part_b = "".join(choice(characters) for x in range(6))
+        part_c = "".join(choice(characters) for x in range(27))
+
+        resp = choice(starts) + part_a + '.' + part_b + '.' + part_c
+        
+        resp = f'> **Token Hacker** - fetched token for **{user.name}**\n' + \
+            f'> `{resp}`'
+
+        await ctx.send(resp)
+
 
 def setup(bot):
     bot.add_cog(FunCog(bot))

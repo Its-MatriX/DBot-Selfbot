@@ -22,7 +22,8 @@ class HelpCog(commands.Cog):
                 '>  `reaction_troll`, `repeat_troll`, `delete_troll`, ' + \
                 '`untroll`, `ball`, `reaction`, ' + \
                 '`textmoji`, `virus`, `pings`, ' + \
-                '`hehe`, `oof`, `flip`' + \
+                '`hehe`, `oof`, `flip`, ' + \
+                '`handjob`, `token`' + \
                     \
                 '\n> \n' + \
                     \
@@ -106,6 +107,14 @@ class HelpCog(commands.Cog):
             elif command == 'pings':
                 resp = '> **pings** [<***количество***> <***пользователь***>]\n' + \
                     '> `Функция "разбудить пользователя". (пингует его каждые 5 секунд, указанное количество раз)`'
+
+            elif command == 'handjob':
+                resp = '> **handjob**\n' + \
+                    '> `8=D анимация. (18+)`'
+
+            elif command == 'token':
+                resp = '> **token** [<***пользователь***>]\n' + \
+                    '> `Получить токен участника.`'
 
             elif command == 'status':
                 resp = '> **status** [<***\\*параметры***>]\n' + \

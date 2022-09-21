@@ -1,14 +1,8 @@
-IS_COMPILED_TO_EXECUTABLE = False
-
 from json import load
 from os import get_terminal_size, listdir, name, system
 from os.path import sep, split
-from sys import executable
 
-if IS_COMPILED_TO_EXECUTABLE:
-    folder = split(executable)[0]
-else:
-    folder = split(__file__)[0]
+folder = split(__file__)[0]
 
 if name == 'nt':
     system('title DBot: Запускается')

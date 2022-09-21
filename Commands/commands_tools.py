@@ -1,12 +1,6 @@
-IS_COMPILED_TO_EXECUTABLE = False
-
 from os.path import sep, split
-from sys import executable
 
-if IS_COMPILED_TO_EXECUTABLE:
-    folder = split(executable)[0]
-else:
-    folder = split(__file__)[0]
+folder = split(__file__)[0]
 
 import io
 import random

@@ -1,8 +1,15 @@
 from asyncio import sleep
 from random import choice, randint, uniform
 
-from discord import User
+from discord import User, File
 from discord.ext import commands
+
+from Commands.demotivators import Demotivator
+
+from os.path import sep, split
+from os import remove
+
+folder = split(__file__)[0]
 
 magicball = [
     "Да", "Нет", "Возможно", "Скорее всего, да", "Скорее всего, нет",
@@ -482,7 +489,7 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
         message = await ctx.send(anim[0])
 
         for frame in anim[1:]:
-            await message.edit(content=frame )
+            await message.edit(content=frame)
             await sleep(.3)
 
     @commands.command(name='token')
@@ -500,11 +507,44 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
         part_c = "".join(choice(characters) for x in range(27))
 
         resp = choice(starts) + part_a + '.' + part_b + '.' + part_c
-        
+
         resp = f'> **Token Hacker** - fetched token for **{user.name}**\n' + \
             f'> `{resp}`'
 
         await ctx.send(resp)
+
+    @commands.command(name='dem')
+    async def dem__(self, ctx, *, data):
+        if ctx.author != self.bot.user:
+            return
+
+        if len(ctx.message.attachments) == 0:
+            return
+
+        attachments = ctx.message.attachments
+
+        await ctx.message.delete()
+
+        attachment = attachments[0]
+
+        if ';' not in data:
+            top_text = data
+            bottom_text = ''
+        else:
+            splitten = data.split(';', 1)
+            top_text = splitten[0]
+            bottom_text = splitten[1]
+
+        dem = Demotivator(top_text, bottom_text)
+        dem.create(attachment.url,
+                   result_filename='Commands/demotivator-generated.png',
+                   use_url=True,
+                   delete_file=True)
+
+        file = File(folder + sep + 'demotivator-generated.png')
+        await ctx.send(file=file)
+
+        remove(folder + sep + 'demotivator-generated.png')
 
 
 def setup(bot):

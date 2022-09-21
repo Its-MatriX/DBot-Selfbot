@@ -1,4 +1,4 @@
-from discord import Status, Member, http
+from discord import Status, User, http
 from discord.ext import commands
 import requests
 
@@ -9,7 +9,7 @@ class InfoCog(commands.Cog):
         self.bot = bot
 
     @commands.command(name='user')
-    async def user__(self, ctx, user: Member = None):
+    async def user__(self, ctx, user: User = None):
         if ctx.author != self.bot.user:
             return
 
@@ -22,7 +22,12 @@ class InfoCog(commands.Cog):
             user_fetched = ctx.guild.get_member(user.id)
 
         if ctx.guild:
-            global_user = False
+            user_inguild = ctx.guild.get_member(user.id)
+            if user_inguild:
+                user = user_inguild
+                global_user = False
+            else:
+                global_user = True
         else:
             global_user = True
 
@@ -39,11 +44,6 @@ class InfoCog(commands.Cog):
             resp += f'> **Аватар:** **{avatar_url}**\n'
             created_at = round(user.created_at.timestamp())
             resp += f'> **Создано:** **<t:{created_at}:R>**'
-
-            if user.premium_since:
-                resp += f'\n> \n> ***Дополнительно (Nitro)***\n'
-                premium_since = round(user.premium_since.timestamp())
-                resp += f'> **Купил Nitro**: **<t:{premium_since}:R>**'
 
         else:
             resp += f'> **Имя пользователя:** `{user}`\n'

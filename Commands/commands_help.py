@@ -7,7 +7,7 @@ class HelpCog(commands.Cog):
         self.bot = bot
 
     @commands.command(name='help')
-    async def help__(self, ctx, command=None):
+    async def help__(self, ctx, command=None): # TODO: DEMOTIVATORS DESCRIPTION
         if ctx.author != self.bot.user:
             return
 
@@ -23,7 +23,7 @@ class HelpCog(commands.Cog):
                 '`untroll`, `ball`, `reaction`, ' + \
                 '`textmoji`, `virus`, `pings`, ' + \
                 '`hehe`, `oof`, `flip`, ' + \
-                '`handjob`, `token`' + \
+                '`handjob`, `token`, `dem`' + \
                     \
                 '\n> \n' + \
                     \
@@ -115,6 +115,10 @@ class HelpCog(commands.Cog):
             elif command == 'token':
                 resp = '> **token** [<***пользователь***>]\n' + \
                     '> `Получить токен участника.`'
+
+            elif command == 'dem':
+                resp = '> **dem** [<***верхний текст;нижний текст***>]\n' + \
+                    '> `Создать демотиватор.`'
 
             elif command == 'status':
                 resp = '> **status** [<***\\*параметры***>]\n' + \

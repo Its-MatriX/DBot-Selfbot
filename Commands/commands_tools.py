@@ -15,6 +15,7 @@ from discord import Activity, ActivityType, File, Game, Status, Streaming
 from discord.ext import commands
 from PIL import Image
 from translate import Translator
+from os import _exit
 
 folder = split(__file__)[0]
 
@@ -657,7 +658,20 @@ class ToolsCog(commands.Cog):
         resp = text[::-1]
 
         await ctx.send(resp)
+        
+    @commands.command(name='logout')
+    async def logout__(self, ctx):
+        if ctx.author != self.bot.user:
+            return
 
+        await ctx.message.delete()
+        
+        await ctx.send('> **⏹ Выход из аккаунта**')
+        
+        await self.bot.close()
+        
+        _exit(0)
+        
 
 def setup(bot):
     bot.add_cog(ToolsCog(bot))

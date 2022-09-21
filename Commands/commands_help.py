@@ -62,7 +62,8 @@ class HelpCog(commands.Cog):
                 '> `copy_avatar`, `copy_status`, `copy_guild_nick`, ' + \
                 '`copy_all`' + \
                 '\n> \n' + \
-                '>  **Подробности по команде: `help <команда>`**'
+                '>  **Подробности по команде: `help <команда>`**' + \
+                '> **Выйти: `logout`**'
 
         else:
             if command == 'reaction_troll':

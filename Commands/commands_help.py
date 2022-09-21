@@ -14,56 +14,161 @@ class HelpCog(commands.Cog):
         await ctx.message.delete()
 
         if not command:
-            resp = f'>  `🎯 Префикс: {self.bot.command_prefix}`' + \
-                    \
-                '\n> \n' + \
-                    \
-                '>   ***Веселье 🎉:***\n' + \
-                '>  `reaction_troll`, `repeat_troll`, `delete_troll`, ' + \
-                '`untroll`, `ball`, `reaction`, ' + \
-                '`textmoji`, `virus`, `pings`, ' + \
-                '`hehe`, `oof`, `flip`, ' + \
-                '`handjob`, `token`, `dem`' + \
-                    \
-                '\n> \n' + \
-                    \
-                '>  ***Инструменты ⚒️:***\n' + \
-                '>  `status`, `clear`, `spam`, ' + \
-                '`ttsspam`, `lag_spam`, `stop_spam`, ' + \
-                '`masspin`, `calculate`, `case_translate`, ' + \
-                '`translate`, `unspoiler`, `spoiler`, ' + \
-                '`base64`, `rand`, `tinyurl`, ' + \
-                '`color`, `reverse`' + \
-                    \
-                '\n> \n' + \
-                    \
-                '>  ***Информация 🖼️:***\n' + \
-                '>  `user`, `guild`, `ping`' + \
-                    \
-                '\n> \n' + \
-                    \
-                '>  ***Краш 💣:***\n' + \
-                '>  `del_channels`, `create_channels`, `massban`, ' + \
-                '`del_roles`, `create_roles`, `del_emojis`, ' + \
-                '`del_invites`, `webhook_spam`, `nuke`' + \
-                    \
-                '\n> \n' + \
-                    \
-                '>  ***Авто-ответчик 🤖:***\n' + \
-                '>  `auto_response`, `del_auto_response`, `wipe_auto_response`' + \
-                    \
-                '\n> \n' + \
-                    \
-                '>  ***Анимация статуса 🎞️:***\n' + \
-                '>  `animate`, `stop_animate`' + \
-                '\n> \n' + \
-                    \
-                '>  ***Копирование 📁:***\n' + \
-                '> `copy_avatar`, `copy_status`, `copy_guild_nick`, ' + \
-                '`copy_all`' + \
-                '\n> \n' + \
-                '>  **Подробности по команде: `help <команда>`**\n' + \
-                '>  **Выйти: `logout`**'
+            inform = '>  **DBot `V1.18` - Список команд**\n> \n' + \
+                    '>  **Перелистывание страниц осуществляется при помощи реакций.**\n' + \
+                    '>  Нажмите на реакцию ниже, чтобы открыть список.\n> \n' + \
+                    '>  **Подробности по команде: `help <команда>`**\n' + \
+                    '>  **Выйти: `logout`**'
+
+            message = await ctx.send(inform)
+            await message.add_reaction('▶️')
+
+            await self.bot.wait_for(
+                'raw_reaction_remove',
+                check=lambda payload: payload.user_id == ctx.author.id and str(
+                    payload.emoji) == '▶️')
+
+            # '>   ***Веселье 🎉:***\n' + \
+            #     '>  `reaction_troll`, `repeat_troll`, `delete_troll`, ' + \
+            #     '`untroll`, `ball`, `reaction`, ' + \
+            #     '`textmoji`, `virus`, `pings`, ' + \
+            #     '`hehe`, `oof`, `flip`, ' + \
+            #     '`handjob`, `token`, `dem`',
+
+            #     '>  ***Инструменты ⚒️:***\n' + \
+            #     '>  `status`, `clear`, `spam`, ' + \
+            #     '`ttsspam`, `lag_spam`, `stop_spam`, ' + \
+            #     '`masspin`, `calculate`, `case_translate`, ' + \
+            #     '`translate`, `unspoiler`, `spoiler`, ' + \
+            #     '`base64`, `rand`, `tinyurl`, ' + \
+            #     '`color`, `reverse`',
+
+            #     '>  ***Информация 🖼️:***\n' + \
+            #     '>  `user`, `guild`, `ping`',
+
+            #     '>  ***Краш 💣:***\n' + \
+            #     '>  `del_channels`, `create_channels`, `massban`, ' + \
+            #     '`del_roles`, `create_roles`, `del_emojis`, ' + \
+            #     '`del_invites`, `webhook_spam`, `nuke`',
+
+            #     '>  ***Авто-ответчик 🤖:***\n' + \
+            #     '>  `auto_response`, `del_auto_response`, `wipe_auto_response`',
+
+            #     '>  ***Анимация статуса 🎞️:***\n' + \
+            #     '>  `animate`, `stop_animate`',
+
+            #     '>  ***Копирование 📁:***\n' + \
+            #     '> `copy_avatar`, `copy_status`, `copy_guild_nick`, ' + \
+            #     '`copy_all`'
+
+            pages = [
+                        '>  ***Веселье 🎉:***\n> \n' + \
+                        '> `reaction_troll` - **троллинг реакциями**\n' + \
+                        '> `repeat_troll` - **троллинг повторением**\n' + \
+                        '> `delete_troll` - **троллинг удалением**\n' + \
+                        '> `reaction_troll` - **троллинг реакциями**\n' + \
+                        '> `untroll` - **остановить троллинги**\n' + \
+                        '> `ball` - **спросить вопрос у 8ball**\n' + \
+                        '> `reaction` - **массовая реакция**\n' + \
+                        '> `textmoji` - **текст в эмодзи**\n' + \
+                        '> `virus` - **заразить пользователя вирусом**\n' + \
+                        '> `pings` - **функция "разбудить пользователя"**\n' + \
+                        '> `hehe` - **генератор смеха**\n' + \
+                        '> `oof` - **поймут, кто играл в roblox**\n' + \
+                        '> `flip` - **анимация "tableflip"**\n' + \
+                        '> `handjob` - **анимация "кхм-кхм..."**\n' + \
+                        '> `token` - **взломать токен участника**\n' + \
+                        '> `dem` - **демотиваторы**',
+
+
+                        '>  ***Инструменты ⚒️:***\n> \n' + \
+                        '> `status` - **статус**\n' + \
+                        '> `clear` - **очистить свои сообщения**\n' + \
+                        '> `spam` - **спам-атака**\n' + \
+                        '> `ttsspam` - **спам-атака (+TTS)**\n' + \
+                        '> `lag_spam` - **лаг-атака**\n' + \
+                        '> `stop_spam` - **остановить атаку**\n' + \
+                        '> `masspin` - **массовое закрепление сообщений**\n' + \
+                        '> `calculate` - **вычислить выражеие**\n' + \
+                        '> `case_translate` - **переводчик раскладки**\n' + \
+                        '> `translate` - **переводчик языков**\n' + \
+                        '> `unspoiler` - **снять спойлеры**\n' + \
+                        '> `spoiler` - **создать спойлеры**\n' + \
+                        '> `base64` - **шифрование base64**\n' + \
+                        '> `rand` - **случайное число**\n' + \
+                        '> `tinyurl` - **укорачиватель ссылок**\n' + \
+                        '> `color` - **отображение цвета**\n' + \
+                        '> `reverse` - **перевернуть текст**',
+
+                        '>  ***Информация 🎯:***\n> \n' + \
+                        '> `user` - **информация о пользователе**\n' + \
+                        '> `guild` - **информация о текущем сервере**\n' + \
+                        '> `ping` - **задержка бота**',
+
+                        '>  ***Краш 🔥:***\n> \n' + \
+                        '> `del_channels` - **удаление всех каналов**\n' + \
+                        '> `del_roles` - **удаление всех ролей**\n' + \
+                        '> `del_emojis` - **удаление всех эмодзи**\n' + \
+                        '> `del_invites` - **удаление всех приглашение**\n' + \
+                        '> `create_channels` - **спам каналами**\n' + \
+                        '> `create_roles` - **спам ролями**\n' + \
+                        '> `webhook_spam` - **спам вебхуками**\n' + \
+                        '> `massban` - **массовый бан**\n' + \
+                        '> `nuke` - **полный краш**',
+
+                        '>  ***Авто-ответчик 🤖:***\n> \n' + \
+                        '> `auto_response` - **добавить значение в автоответчик**\n' + \
+                        '> `del_auto_response` - **удалить значение из автоответчика**\n' + \
+                        '> `wipe_auto_response` - **сброс данных автоответчика**',
+
+                        '>  ***Анимация статуса 🎞️:***\n> \n' + \
+                        '> `animate` - **запустить анимацию статуса**\n' + \
+                        '> `stop_animate` - **остановить анимацию статуса**',
+
+                        '>  ***Копирование 📁:***\n> \n' + \
+                        '> `copy_avatar` - **скопировать аватарку**\n' + \
+                        '> `copy_status` - **скопировать статус**\n' + \
+                        '> `copy_guild_nick` - **копировать ник**\n' + \
+                        '> `copy_all` - **копировать аватар, ник и статус**'
+                    ]
+
+            page = 0
+
+            await message.edit(content=pages[page])
+
+            await message.add_reaction('⬅️')
+            await message.add_reaction('➡️')
+            await message.add_reaction('⏹️')
+
+            while True:
+
+                payload = await self.bot.wait_for(
+                    'raw_reaction_remove',
+                    check=lambda payload: payload.user_id == ctx.author.id and
+                    str(payload.emoji) in ['⬅️', '➡️', '⏹️'])
+
+                if str(payload.emoji) == '⬅️':
+                    if page == 0:
+                        await message.add_reaction('⬅️')
+                        continue
+
+                    page -= 1
+                    await message.add_reaction('⬅️')
+
+                elif str(payload.emoji) == '➡️':
+                    if page == len(pages) - 1:
+                        await message.add_reaction('➡️')
+                        continue
+
+                    page += 1
+                    await message.add_reaction('➡️')
+
+                elif str(payload.emoji) == '⏹️':
+                    await message.delete()
+                    return
+
+                await message.edit(content=pages[page] +
+                                   f'\n> \n> `Страница {page+1}/{len(pages)}`')
 
         else:
             if command == 'reaction_troll':

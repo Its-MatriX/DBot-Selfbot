@@ -7,7 +7,7 @@ class HelpCog(commands.Cog):
         self.bot = bot
 
     @commands.command(name='help')
-    async def help__(self, ctx, command=None): # TODO: DEMOTIVATORS DESCRIPTION
+    async def help__(self, ctx, command=None):
         if ctx.author != self.bot.user:
             return
 
@@ -33,7 +33,7 @@ class HelpCog(commands.Cog):
                 '`masspin`, `calculate`, `case_translate`, ' + \
                 '`translate`, `unspoiler`, `spoiler`, ' + \
                 '`base64`, `rand`, `tinyurl`, ' + \
-                '`color`' + \
+                '`color`, `reverse`' + \
                     \
                 '\n> \n' + \
                     \
@@ -56,6 +56,11 @@ class HelpCog(commands.Cog):
                     \
                 '>  ***Анимация статуса 🎞️:***\n' + \
                 '>  `animate`, `stop_animate`' + \
+                '\n> \n' + \
+                    \
+                '>  ***Копирование 📁️:***\n' + \
+                '> `copy_avatar`, `copy_status`, `copy_guild_nick`, ' + \
+                '`copy_all`' + \
                 '\n> \n' + \
                 '>  **Подробности по команде: `help <команда>`**'
 
@@ -208,6 +213,10 @@ class HelpCog(commands.Cog):
                 resp = '> **color** [<***тег/название цвета***>]\n' + \
                     '> `Отображение цвета в виде картинки.`'
 
+            elif command == 'reverse':
+                resp = '> **reverse** [<***\\*текст***>]\n' + \
+                    '> Перевернуть текст.`'
+
             elif command == 'user':
                 resp = '> **user** [<***ID/упоминание пользователя***>]\n' + \
                     '> `Получить данные о пользователе.`'
@@ -281,6 +290,22 @@ class HelpCog(commands.Cog):
             elif command == 'stop_animate':
                 resp = '> **stop_animate**\n' + \
                     '> `Остановить анимацию статуса.`'
+
+            elif command == 'copy_avatar':
+                resp = '> **copy_avatar** [<***пользователь***>]\n' + \
+                    '> `Скопировать аватар у пользователя.`'
+
+            elif command == 'copy_status':
+                resp = '> **copy_status** [<***пользователь***>]\n' + \
+                    '> `Скопировать статус у пользователя.`'
+
+            elif command == 'copy_guild_nick':
+                resp = '> **copy_guild_nick** [<***пользователь***>]\n' + \
+                    '> `Скопировать имя пользователя на сервер.`'
+
+            elif command == 'copy_all':
+                resp = '> **copy_all** [<***пользователь***>]\n' + \
+                    '> `Скопировать аватарку, статус и имя у пользователя.`'
 
             else:
                 resp = f'> **Неизвестная команда - `{command}`. Введите `help` для получения полного списка команд.**'

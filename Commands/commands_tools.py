@@ -647,6 +647,17 @@ class ToolsCog(commands.Cog):
 
         await ctx.send(f'**Цвет:** `{col_name}`', file=File(file, 'color.png'))
 
+    @commands.command(name='reverse')
+    async def reverse__(self, ctx, *, text):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        resp = text[::-1]
+
+        await ctx.send(resp)
+
 
 def setup(bot):
     bot.add_cog(ToolsCog(bot))

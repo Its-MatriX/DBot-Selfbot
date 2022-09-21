@@ -90,7 +90,8 @@ class AnimationCog(commands.Cog):
         AnimatorState.is_working = True
 
         animation = animation.split('\n')
-        Thread(target=lambda: animate(delay, self.bot.http.token, animation)).start()
+        Thread(target=lambda: animate(delay, self.bot.http.token, animation)
+               ).start()
 
     @commands.command(name='stop_animate')
     async def stop_animate__(self, ctx):

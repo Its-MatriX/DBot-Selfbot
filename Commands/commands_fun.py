@@ -539,7 +539,8 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
         dem.create(attachment.url,
                    result_filename='Commands/demotivator-generated.png',
                    use_url=True,
-                   delete_file=True)
+                   delete_file=True,
+                   font_name=folder + sep + 'times.ttf')
 
         file = File(folder + sep + 'demotivator-generated.png')
         await ctx.send(file=file)

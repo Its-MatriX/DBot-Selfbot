@@ -138,6 +138,6 @@ try:
     bot.run(config['TOKEN'])
 except Exception as e:
     if name == 'nt':
-        system('title DBot: Ошибка')
-    log(e, 'ОШИБКА', Fore.RED, 1)
+        system('title DBot: Ошибка логина')
+    log_error(e, 'ОШИБКА', 1)
     input()

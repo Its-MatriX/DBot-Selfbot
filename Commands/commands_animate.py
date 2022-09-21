@@ -10,7 +10,7 @@ class AnimatorState:
     animation = None
 
 
-def set_custom_status(token, status_text=None, status_icon=None):
+def set_custom_status(token, status_text=None, status_icon=None):  
     if status_text:
         if status_icon:
             body = {
@@ -41,6 +41,15 @@ def animate(delay, token, statuses):
         for status in statuses:
             if not AnimatorState.is_working:
                 return
+
+            if status.lower().startswith('wait'):
+                wait = status.replace(' ', '').replace('wait', '')
+                try:
+                    sleep(float(wait))
+                    continue
+                except:
+                    pass
+
             status_icon = None
             status_text = None
             if status.lower() in ['online', 'idle', 'dnd', 'invisible']:

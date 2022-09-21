@@ -41,6 +41,7 @@ class Demotivator:
             img.paste(border, (111, 96))
             img.paste(user_img, (118, 103))
             drawer = ImageDraw.Draw(img)
+
         else:
             img = Image.new('RGB', (1280, 1024), color=fill_color)
             img_border = Image.new('RGB', (1060, 720), color='#000000')
@@ -50,10 +51,7 @@ class Demotivator:
             img.paste(border, (111, 96))
             img.paste(user_img, (118, 103))
             drawer = ImageDraw.Draw(img)
-        """Подбираем оптимальный размер шрифта
-        
-        Добавляем текст в шаблон для демотиватора
-        """
+
         font_1 = ImageFont.truetype(font=font_name,
                                     size=top_size,
                                     encoding='UTF-8')

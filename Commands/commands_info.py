@@ -82,7 +82,7 @@ class InfoCog(commands.Cog):
             resp += f'> **Администратор:** `{"Да" if user.guild_permissions.administrator else "Нет"}`'
 
             if user.guild.owner:
-                resp += f'> **Владелец:** `{"Да" if user.id == user.guild.owner.id else "Нет"}`'
+                resp += f'\n> **Владелец:** `{"Да" if user.id == user.guild.owner.id else "Нет"}`'
 
             if user.premium_since:
                 resp += f'\n> \n> ***Дополнительно (Nitro)***\n'

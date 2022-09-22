@@ -223,6 +223,11 @@ class HelpCog(commands.Cog):
                         await message.add_reaction('➡️')
 
                     elif str(payload.emoji) == '⏹️':
+                        HelpCommandListenerState.is_waiting_user_response = False
+                        HelpCommandListenerState.method = None
+                        HelpCommandListenerState.payload = None
+                        HelpCommandListenerState.is_on_start_page = False
+
                         await message.delete()
                         return
 
@@ -240,6 +245,11 @@ class HelpCog(commands.Cog):
                         page += 1
 
                     elif payload == 'down':
+                        HelpCommandListenerState.is_waiting_user_response = False
+                        HelpCommandListenerState.method = None
+                        HelpCommandListenerState.payload = None
+                        HelpCommandListenerState.is_on_start_page = False
+
                         await message.delete()
                         return
 

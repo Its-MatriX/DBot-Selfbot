@@ -1,16 +1,12 @@
 from colorama import Fore
 from Commands.colors import colors_text_v2, gradient_vertical
 
-# Some remake logo and
-# fix display on Pydroid 3 (for android)
-
-intro_text = '''
-╔═══╦╗⠀⠀⠀⠀╔╗⠀⠀
-╚╗╔╗║║⠀⠀⠀╔╝╚╗⠀⠀
-⠀║║║║╚═╦═╩╗╔╝⠀⠀
-⠀║║║║╔╗║╔╗║║⠀⠀
-╔╝╚╝║╚╝║╚╝║╚╗⠀⠀
-╚═══╩══╩══╩═╝⠀⠀
+intro_text = '''┏━━━┳┓    ┏┓
+┗┓┏┓┃┃   ┏┛┗┓
+ ┃┃┃┃┗━┳━┻┓┏┛
+ ┃┃┃┃┏┓┃┏┓┃┃
+┏┛┗┛┃┗┛┃┗┛┃┗┓
+┗━━━┻━━┻━━┻━┛
 '''
 
 

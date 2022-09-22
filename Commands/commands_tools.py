@@ -1,4 +1,3 @@
-from asyncio import create_task
 from os.path import sep, split
 
 folder = split(__file__)[0]
@@ -7,6 +6,7 @@ import io
 import random
 from base64 import b64decode, b64encode
 from json import dump, load
+from os import _exit
 from re import findall
 
 import requests
@@ -16,7 +16,6 @@ from discord import Activity, ActivityType, File, Game, Status, Streaming
 from discord.ext import commands
 from PIL import Image
 from translate import Translator
-from os import _exit
 
 folder = split(__file__)[0]
 

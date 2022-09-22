@@ -1,10 +1,90 @@
+from asyncio import sleep
+from time import sleep as non_async_sleep
+from threading import Thread
 from discord.ext import commands
+from keyboard import is_pressed
+import platform
+from Commands.logger import log_error
+from os import environ
+
+allow_run_keyboard_listeners = True
+
+if platform.system() == 'Linux':
+    if not 'SUDO_UID' in environ.keys():
+        log_error(
+            'Root is required for control help command with arrows (keyboard)!'
+        )
+        allow_run_keyboard_listeners = False
+
+
+class HelpCommandListenerState:
+    is_waiting_user_response = False
+    payload = None
+    method = None
+    is_on_start_page = False
+
+
+def helpcog_keyboard_listener_thread():
+    if not allow_run_keyboard_listeners:
+        return
+
+    if not HelpCommandListenerState.is_on_start_page:
+        while HelpCommandListenerState.is_waiting_user_response:
+            if is_pressed('left') or is_pressed('right') or is_pressed('down'):
+
+                if is_pressed('left'):
+                    payload = 'left'
+
+                if is_pressed('right'):
+                    payload = 'right'
+
+                if is_pressed('down'):
+                    payload = 'down'
+
+                HelpCommandListenerState.method = 'keypress'
+                HelpCommandListenerState.payload = payload
+                HelpCommandListenerState.is_waiting_user_response = False
+                return
+
+            non_async_sleep(.05)
+
+    else:
+        while HelpCommandListenerState.is_waiting_user_response:
+            if is_pressed('down'):
+                HelpCommandListenerState.method = 'keypress'
+                HelpCommandListenerState.is_waiting_user_response = False
+                return
+
+            non_async_sleep(.05)
 
 
 class HelpCog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_raw_reaction_remove(self, payload):
+        if payload.user_id != self.bot.user.id:
+            return
+
+        if not HelpCommandListenerState.is_waiting_user_response:
+            return
+
+        if not HelpCommandListenerState.is_on_start_page:
+            if str(payload.emoji) not in ['⬅️', '➡️', '⏹️', '▶️']:
+                return
+
+            HelpCommandListenerState.method = 'empress'
+            HelpCommandListenerState.payload = payload
+            HelpCommandListenerState.is_waiting_user_response = False
+
+        else:
+            if str(payload.emoji) != '▶️':
+                return
+
+            HelpCommandListenerState.method = 'empress'
+            HelpCommandListenerState.is_waiting_user_response = False
 
     @commands.command(name='help')
     async def help__(self, ctx, command=None):
@@ -15,51 +95,25 @@ class HelpCog(commands.Cog):
 
         if not command:
             inform = '>  **DBot `V1.18` - Список команд**\n> \n' + \
-                    '>  **Перелистывание страниц осуществляется при помощи реакций.**\n' + \
+                    '>  **Перелистывание страниц осуществляется при помощи реакций, или стрелок на клавиатуре.**\n' + \
                     '>  Нажмите на реакцию ниже, чтобы открыть список.\n> \n' + \
                     '>  **Подробности по команде: `help <команда>`**\n' + \
                     '>  **Выйти: `logout`**'
 
+            HelpCommandListenerState.is_on_start_page = True
+            HelpCommandListenerState.is_waiting_user_response = True
             message = await ctx.send(inform)
             await message.add_reaction('▶️')
 
-            await self.bot.wait_for(
-                'raw_reaction_remove',
-                check=lambda payload: payload.user_id == ctx.author.id and str(
-                    payload.emoji) == '▶️')
+            Thread(target=helpcog_keyboard_listener_thread).start()
 
-            # '>   ***Веселье 🎉:***\n' + \
-            #     '>  `reaction_troll`, `repeat_troll`, `delete_troll`, ' + \
-            #     '`untroll`, `ball`, `reaction`, ' + \
-            #     '`textmoji`, `virus`, `pings`, ' + \
-            #     '`hehe`, `oof`, `flip`, ' + \
-            #     '`handjob`, `token`, `dem`',
+            while HelpCommandListenerState.is_waiting_user_response:
+                await sleep(.1)
 
-            #     '>  ***Инструменты ⚒️:***\n' + \
-            #     '>  `status`, `clear`, `spam`, ' + \
-            #     '`ttsspam`, `lag_spam`, `stop_spam`, ' + \
-            #     '`masspin`, `calculate`, `case_translate`, ' + \
-            #     '`translate`, `unspoiler`, `spoiler`, ' + \
-            #     '`base64`, `rand`, `tinyurl`, ' + \
-            #     '`color`, `reverse`',
+            if HelpCommandListenerState.method == 'keypress':
+                await message.remove_reaction('▶️', ctx.author)
 
-            #     '>  ***Информация 🖼️:***\n' + \
-            #     '>  `user`, `guild`, `ping`',
-
-            #     '>  ***Краш 💣:***\n' + \
-            #     '>  `del_channels`, `create_channels`, `massban`, ' + \
-            #     '`del_roles`, `create_roles`, `del_emojis`, ' + \
-            #     '`del_invites`, `webhook_spam`, `nuke`',
-
-            #     '>  ***Авто-ответчик 🤖:***\n' + \
-            #     '>  `auto_response`, `del_auto_response`, `wipe_auto_response`',
-
-            #     '>  ***Анимация статуса 🎞️:***\n' + \
-            #     '>  `animate`, `stop_animate`',
-
-            #     '>  ***Копирование 📁:***\n' + \
-            #     '> `copy_avatar`, `copy_status`, `copy_guild_nick`, ' + \
-            #     '`copy_all`'
+            HelpCommandListenerState.is_on_start_page = False
 
             pages = [
                         '>  ***Веселье 🎉:***\n> \n' + \
@@ -134,7 +188,8 @@ class HelpCog(commands.Cog):
 
             page = 0
 
-            await message.edit(content=pages[page])
+            await message.edit(content=pages[page] +
+                               f'\n> \n> `Страница {page+1}/{len(pages)}`')
 
             await message.add_reaction('⬅️')
             await message.add_reaction('➡️')
@@ -142,30 +197,51 @@ class HelpCog(commands.Cog):
 
             while True:
 
-                payload = await self.bot.wait_for(
-                    'raw_reaction_remove',
-                    check=lambda payload: payload.user_id == ctx.author.id and
-                    str(payload.emoji) in ['⬅️', '➡️', '⏹️'])
+                HelpCommandListenerState.is_waiting_user_response = True
+                Thread(target=helpcog_keyboard_listener_thread).start()
 
-                if str(payload.emoji) == '⬅️':
-                    if page == 0:
+                while HelpCommandListenerState.is_waiting_user_response:
+                    await sleep(.1)
+
+                payload = HelpCommandListenerState.payload
+
+                if HelpCommandListenerState.method == 'empress':
+                    if str(payload.emoji) == '⬅️':
+                        if page == 0:
+                            await message.add_reaction('⬅️')
+                            continue
+
+                        page -= 1
                         await message.add_reaction('⬅️')
-                        continue
 
-                    page -= 1
-                    await message.add_reaction('⬅️')
+                    elif str(payload.emoji) == '➡️':
+                        if page == len(pages) - 1:
+                            await message.add_reaction('➡️')
+                            continue
 
-                elif str(payload.emoji) == '➡️':
-                    if page == len(pages) - 1:
+                        page += 1
                         await message.add_reaction('➡️')
-                        continue
 
-                    page += 1
-                    await message.add_reaction('➡️')
+                    elif str(payload.emoji) == '⏹️':
+                        await message.delete()
+                        return
 
-                elif str(payload.emoji) == '⏹️':
-                    await message.delete()
-                    return
+                else:
+                    if payload == 'left':
+                        if page == 0:
+                            continue
+
+                        page -= 1
+
+                    elif payload == 'right':
+                        if page == len(pages) - 1:
+                            continue
+
+                        page += 1
+
+                    elif payload == 'down':
+                        await message.delete()
+                        return
 
                 await message.edit(content=pages[page] +
                                    f'\n> \n> `Страница {page+1}/{len(pages)}`')

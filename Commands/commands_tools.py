@@ -16,6 +16,7 @@ from discord import Activity, ActivityType, File, Game, Status, Streaming
 from discord.ext import commands
 from PIL import Image
 from translate import Translator
+from Commands.logger import log_error
 
 folder = split(__file__)[0]
 
@@ -343,13 +344,11 @@ class ToolsCog(commands.Cog):
             await ctx.send(resp)
 
         if not amount:
-            print(Fore.GREEN + 'Лаг-атака: ' + Fore.CYAN +
-                  f'Ошибка: Количество не указано')
+            log_error('Лаг-атака: Количество сообщений не указано')
             return
 
         if not lag_type:
-            print(Fore.GREEN + 'Лаг-атака: ' + Fore.CYAN +
-                  f'Ошибка: Тип лаг-атаки не указан')
+            log_error('Лаг-атака: Тип лаг-атаки не указан')
             return
 
         try:

@@ -342,6 +342,7 @@ class ToolsCog(commands.Cog):
                 '**Лаг-атака (вызывает жуткие лаги), варианты: `chains` - цепи, `ascii` - ascii символы.**'
 
             await ctx.send(resp)
+            return
 
         if not amount:
             log_error('Лаг-атака: Количество сообщений не указано')

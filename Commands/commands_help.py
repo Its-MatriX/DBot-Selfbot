@@ -11,9 +11,6 @@ allow_run_keyboard_listeners = True
 
 if platform.system() == 'Linux':
     if not 'SUDO_UID' in environ.keys():
-        log_error(
-            'Root is required for control help command with arrows (keyboard)!'
-        )
         allow_run_keyboard_listeners = False
 
 

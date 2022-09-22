@@ -1,3 +1,4 @@
+from asyncio import create_task
 from os.path import sep, split
 
 folder = split(__file__)[0]
@@ -408,15 +409,9 @@ class ToolsCog(commands.Cog):
         if reversed:
             messages.reverse()
 
-        messages_amount = len(
-            [x for x in messages if x.author.id == ctx.author.id])
-
-        removed = 0
-
         for message in messages:
             if message.author.id == self.bot.user.id:
                 await message.delete()
-                removed += 1
 
     @commands.command(name='masspin')
     async def masspin__(self, ctx, limit: int = 10):

@@ -13,13 +13,13 @@ clear()
 
 from threading import Thread
 from time import sleep as non_async_sleep
-from asyncio import sleep
 
 from colorama import Fore
 from discord.ext import commands
 
+from Commands.colors import (colors_text, colors_text_v2, gradient_horizontal,
+                             print_line)
 from Commands.logger import log, log_error, recovery_logs
-from Commands.colors import print_line, gradient_horizontal, colors_text, colors_text_v2
 from intro import intro
 
 loaded_extensions = 0

@@ -1,4 +1,3 @@
-from colorama import Fore
 from Commands.colors import colors_text_v2, gradient_vertical
 
 # Some remake logo and

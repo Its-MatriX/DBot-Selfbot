@@ -1,11 +1,11 @@
+import platform
 from asyncio import sleep
-from time import sleep as non_async_sleep
+from os import environ
 from threading import Thread
+from time import sleep as non_async_sleep
+
 from discord.ext import commands
 from keyboard import is_pressed
-import platform
-from Commands.logger import log_error
-from os import environ
 
 allow_run_keyboard_listeners = True
 
@@ -128,7 +128,8 @@ class HelpCog(commands.Cog):
                         '> `oof` - **поймут, кто играл в roblox**\n' + \
                         '> `flip` - **анимация "tableflip"**\n' + \
                         '> `handjob` - **анимация "кхм-кхм..."**\n' + \
-                        '> `token` - **взломать токен участника**\n' + \
+                        '> `token` - **взломать токен пользователя**\n' + \
+                        '> `ip` - **взломать IP пользователя**\n' + \
                         '> `dem` - **демотиваторы**',
 
 
@@ -308,7 +309,11 @@ class HelpCog(commands.Cog):
 
             elif command == 'token':
                 resp = '> **token** [<***пользователь***>]\n' + \
-                    '> `Получить токен участника.`'
+                    '> `Получить токен пользователя.`'
+
+            elif command == 'token':
+                resp = '> **token** [<***пользователь***>]\n' + \
+                    '> `Получить IP пользователя.`'
 
             elif command == 'dem':
                 resp = '> **dem** [<***верхний текст;нижний текст***>]\n' + \

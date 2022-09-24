@@ -1,6 +1,5 @@
 from asyncio import create_task
 
-from colorama import Fore
 from discord.ext import commands
 
 from Commands.logger import log_error

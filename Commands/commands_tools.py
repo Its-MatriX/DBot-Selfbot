@@ -10,12 +10,12 @@ from os import _exit
 from re import findall
 
 import requests
-from colorama import Fore
 from colour import Color
 from discord import Activity, ActivityType, File, Game, Status, Streaming
 from discord.ext import commands
 from PIL import Image
 from translate import Translator
+
 from Commands.logger import log_error
 
 folder = split(__file__)[0]

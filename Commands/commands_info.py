@@ -1,6 +1,6 @@
+import requests
 from discord import Status, User, http
 from discord.ext import commands
-import requests
 
 
 class InfoCog(commands.Cog):

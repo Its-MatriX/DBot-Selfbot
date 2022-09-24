@@ -10,7 +10,7 @@ class AnimatorState:
     animation = None
 
 
-def set_custom_status(token, status_text=None, status_icon=None):  
+def set_custom_status(token, status_text=None, status_icon=None):
     if status_text:
         if status_icon:
             body = {

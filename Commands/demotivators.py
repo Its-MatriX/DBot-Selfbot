@@ -1,6 +1,7 @@
-import requests
 import os
-from PIL import Image, ImageOps, ImageDraw, ImageFont
+
+import requests
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 
 class Demotivator:

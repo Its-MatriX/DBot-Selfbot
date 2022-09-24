@@ -1,6 +1,7 @@
 from datetime import datetime
-from colorama import Fore
-from Commands.colors import gradient_horizontal, colors_text, colors_text_v2, colors_error
+
+from Commands.colors import (colors_error, colors_text, colors_text_v2,
+                             gradient_horizontal)
 
 
 class logwriter:

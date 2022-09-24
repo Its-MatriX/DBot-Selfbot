@@ -1,13 +1,14 @@
 from asyncio import sleep
+from base64 import b64encode
+from os import remove
+from os.path import sep, split
 from random import choice, randint, uniform
+from string import ascii_letters, digits
 
-from discord import User, File
+from discord import File, User
 from discord.ext import commands
 
 from Commands.demotivators import Demotivator
-
-from os.path import sep, split
-from os import remove
 
 folder = split(__file__)[0]
 
@@ -499,16 +500,30 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
 
         await ctx.message.delete()
 
-        starts = ['OTgW', 'OTg0', 'OTIw', 'MTAx', 'MTAw', 'OTE3']
+        resp = f'> **Token Hacker** - fetching token for **{user.name}**\n' + \
+            f'> `Fetching token in progress...`'
 
-        characters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890"
-        part_a = "".join(choice(characters) for x in range(20))
-        part_b = "".join(choice(characters) for x in range(6))
-        part_c = "".join(choice(characters) for x in range(27))
+        message = await ctx.send(resp)
 
-        resp = choice(starts) + part_a + '.' + part_b + '.' + part_c
+        wait = round(uniform(1, 5), 2)
+        await sleep(wait)
 
-        resp = f'> **Token Hacker** - fetched token for **{user.name}**\n' + \
+        await message.delete()
+
+        base64_string = "=="
+        while (base64_string.find("==") != -1):
+            sample_string = str(randint(000000000000000000,
+                                        999999999999999999))
+            sample_string_bytes = sample_string.encode("ascii")
+            base64_bytes = b64encode(sample_string_bytes)
+            base64_string = base64_bytes.decode("ascii")
+        else:
+            resp = base64_string + "." + choice(ascii_letters).upper(
+            ) + ''.join(choice(ascii_letters + digits)
+                        for _ in range(5)) + "." + ''.join(
+                            choice(ascii_letters + digits) for _ in range(27))
+
+        resp = f'> **Token Hacker** - fetched token for **{user.name}** in **{wait}** sec.\n' + \
             f'> `{resp}`'
 
         await ctx.send(resp)
@@ -546,6 +561,20 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
         await ctx.send(file=file)
 
         remove(folder + sep + 'demotivator-generated.png')
+
+    @commands.command(name='ip')
+    async def ip__(self, ctx, user: User):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        resp = '.'.join([str(randint(1, 255)) for x in range(4)])
+
+        resp = f'> **IP Hacker** - hacked IP for **{user.name}**\n' + \
+            f'> `{resp}`'
+
+        await ctx.send(resp)
 
 
 def setup(bot):

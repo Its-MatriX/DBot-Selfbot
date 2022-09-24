@@ -1,8 +1,9 @@
-from discord.ext import commands
-from os.path import split, sep
-from discord import User, Member, CustomActivity, Status
-from re import sub
 from os import remove
+from os.path import sep, split
+from re import sub
+
+from discord import CustomActivity, Member, Status, User
+from discord.ext import commands
 
 folder = split(__file__)[0]
 

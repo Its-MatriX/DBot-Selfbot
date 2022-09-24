@@ -461,38 +461,6 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
             await message.edit(content='``' + frame + '``')
             await sleep(.3)
 
-    @commands.command(name='handjob')
-    async def handjob__(self, ctx):
-        if ctx.author != self.bot.user:
-            return
-
-        await ctx.message.delete()
-
-        anim = [
-            '8✊=====D',
-            '8=✊====D',
-            '8==✊===D',
-            '8===✊==D',
-            '8====✊=D',
-            '8=====✊D',
-            '8====✊=D',
-            '8===✊==D',
-            '8==✊===D',
-            '8=✊====D',
-            '8✊=====D',
-            '8=✊====D',
-            '8==✊===D',
-            '8===✊==D',
-            '8====✊=D💦',
-            '8=====✊D💦',
-        ]
-
-        message = await ctx.send(anim[0])
-
-        for frame in anim[1:]:
-            await message.edit(content=frame)
-            await sleep(.3)
-
     @commands.command(name='token')
     async def token__(self, ctx, user: User):
         if ctx.author != self.bot.user:

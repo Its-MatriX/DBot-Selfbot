@@ -1,6 +1,12 @@
+from time import gmtime, strftime, time
+
 import requests
-from discord import Status, User, http
+from discord import Role, Status, User, http
 from discord.ext import commands
+
+
+def rgb_to_hex(r, g, b):
+    return '#%02x%02x%02x' % (r, g, b)
 
 
 class InfoCog(commands.Cog):
@@ -51,11 +57,6 @@ class InfoCog(commands.Cog):
             resp += f'> **ID:** `{user.id}`\n'
             resp += f'> **Бот:** `{"Да" if user.bot else "Нет"}`\n'
             resp += f'> **Аватар:** **{avatar_url}**\n'
-            created_at = round(user.created_at.timestamp())
-            resp += f'> **Создано:** **<t:{created_at}:R>**\n'
-
-            joined_at = round(user.joined_at.timestamp())
-            resp += f'> **Присоединился:** **<t:{joined_at}:R>**\n'
 
             try:
                 if user_fetched.status == Status.online:
@@ -82,12 +83,18 @@ class InfoCog(commands.Cog):
             resp += f'> **Администратор:** `{"Да" if user.guild_permissions.administrator else "Нет"}`'
 
             if user.guild.owner:
-                resp += f'\n> **Владелец:** `{"Да" if user.id == user.guild.owner.id else "Нет"}`'
+                resp += f'\n> **Владелец:** `{"Да" if user.id == user.guild.owner.id else "Нет"}`\n'
+
+            created_at = round(user.created_at.timestamp())
+            resp += f'> **Создано:** **<t:{created_at}:R>**\n'
+
+            joined_at = round(user.joined_at.timestamp())
+            resp += f'> **Присоединился:** **<t:{joined_at}:R>**\n'
 
             if user.premium_since:
                 resp += f'\n> \n> ***Дополнительно (Nitro)***\n'
                 premium_since = round(user.premium_since.timestamp())
-                resp += f'> **Купил Nitro**: **<t:{premium_since}:R>**'
+                resp += f'> **Купил Nitro:** **<t:{premium_since}:R>**'
 
                 user_http = await self.bot.http.request(
                     http.Route("GET", f"/users/{user.id}"))
@@ -101,7 +108,7 @@ class InfoCog(commands.Cog):
                         banner_url)
                     banner_url = requests.get(url).text
 
-                    resp += f'\n> **Баннер**: **{banner_url}**'
+                    resp += f'\n> **Баннер:** **{banner_url}**'
 
         await ctx.send(resp)
 
@@ -182,6 +189,37 @@ class InfoCog(commands.Cog):
 
         resp += f'> **Виджет:** **{widget_url}**\n'
 
+        created_at = round(ctx.guild.created_at.timestamp())
+        resp += f'> **Создано:** **<t:{created_at}:R>**'
+
+        await ctx.send(resp)
+
+    @commands.command(name='role')
+    async def role__(self, ctx, role: Role):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        resp = ''
+
+        resp += f'> **Название:** `{role.name}`\n'
+        resp += f'> **ID:** `{role.id}`\n'
+        resp += f'> **Разрешено упоминать:** `{"Да" if role.mentionable else "Нет"}`\n'
+        resp += f'> **Управляется ботом:** `{"Да" if role.is_bot_managed() else "Нет"}`\n'
+        resp += f'> **Участников:** `{len(role.members)}`\n'
+
+        rgb = role.colour.to_rgb()
+        hex = rgb_to_hex(rgb[0], rgb[1], rgb[2])
+
+        resp += f'> **Цвет:** `{hex}`\n'
+        resp += f'> **Позиция** `{role.position}`\n'
+        resp += f'> **Показывается отдельно:** `{"Да" if role.hoist else "Нет"}`\n'
+        resp += f'> **Выдаётся за буст:** `{"Да" if role.is_premium_subscriber() else "Нет"}`\n'
+
+        created_at = round(role.created_at.timestamp())
+        resp += f'> **Создано:** **<t:{created_at}:R>**'
+
         await ctx.send(resp)
 
     @commands.command(name='ping')
@@ -195,7 +233,6 @@ class InfoCog(commands.Cog):
 
         resp = f'> **Пинг:** `{ping} МС`'
         await ctx.send(resp)
-
 
 def setup(bot):
     bot.add_cog(InfoCog(bot))

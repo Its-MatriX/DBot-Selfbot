@@ -104,7 +104,6 @@ def terminal_resize_listener():
 
 @bot.event
 async def on_connect():
-
     if name == 'nt':
         system(f'title DBot: {bot.user}')
 

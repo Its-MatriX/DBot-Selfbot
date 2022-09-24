@@ -1,13 +1,44 @@
 # default status note:
 # use null for dont use default status
 
-from json import load
-from os import get_terminal_size, listdir, name, system
 from os.path import sep, split, isfile
-from discord import Activity, ActivityType, Status, Streaming, Game
-from requests import get
+from os import system
+from sys import executable
 
 folder = split(__file__)[0]
+
+required = open(folder + sep + 'requirements.txt', 'r').read().split('\n')
+
+from subprocess import run
+
+installed = run([executable, '-m', 'pip', 'freeze'],
+                capture_output=True,
+                text=True).stdout
+
+installed = installed.split('\n')
+installed_ = []
+
+for module in installed:
+    installed_.append(module.split('==')[0].lower())
+
+installed = installed_
+install_modules = False
+
+for req in required:
+    if req.lower() not in installed:
+        print('У вас не установлены все необходимые модули!')
+        input('Нажмите [Enter] для начала установки\n> ')
+        install_modules = True
+        break
+
+if install_modules:
+    for req in required:
+        system(f'{executable} -m pip install {req}')
+
+from json import load
+from os import get_terminal_size, listdir, name
+from discord import Activity, ActivityType, Status, Streaming, Game
+from requests import get
 
 if isfile(folder + sep + 'INDICATOR_UPDATE_INSTALL.txt'):
     import updater
@@ -34,19 +65,25 @@ loaded_extensions = 0
 
 intro()
 
+
+def parse_ver(version):
+    version = version.split('.')
+    return int(version[0] + version[1]) + version[2] / 10
+
+
 try:
     current_version = open(
         folder + sep + 'Commands' + sep + 'dbot_version.txt', 'r')
     current_version_value = current_version.read()
     current_version.close()
-    current_version = float(current_version_value)
+    current_version = parse_ver(current_version_value)
 
     latest_version = get(
         'https://raw.githubusercontent.com/Its-MatriX/DBot-Selfbot/main/Commands/dbot_version.txt'
     ).text
 
     try:
-        latest_version = float(latest_version)
+        latest_version = parse_ver(latest_version)
     except:
         log_error('Не удалось проверить последнюю версию DBot.')
 

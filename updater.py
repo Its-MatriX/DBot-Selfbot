@@ -19,7 +19,14 @@ print(Fore.GREEN + 'DBot Updater')
 print(Fore.CYAN + 'Устанавливаем обновление...')
 print()
 
-import git
+try:
+    import git
+except:
+    input(
+        Fore.RED +
+        'Ошибка обновления: Ошибка импорта Git: программа git, или модуль, не установлены.\nУстановите Git - https://git-scm.com/'
+    )
+    _exit(0)
 
 from os.path import split, sep, isdir
 from os import listdir, rename, remove, system, name

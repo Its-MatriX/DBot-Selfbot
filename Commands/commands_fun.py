@@ -1,14 +1,18 @@
-from asyncio import sleep
+from asyncio import create_task, sleep
 from base64 import b64encode
 from os import remove
 from os.path import sep, split
 from random import choice, randint, uniform
 from string import ascii_letters, digits
+from time import time
 
 from discord import File, User
 from discord.ext import commands
+from re import findall
 
 from Commands.demotivators import Demotivator
+
+token_generator_part_length = 10
 
 folder = split(__file__)[0]
 
@@ -473,26 +477,45 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
 
         message = await ctx.send(resp)
 
-        wait = round(uniform(1, 5), 2)
-        await sleep(wait)
-
-        await message.delete()
+        start = time()
+        await sleep(uniform(1, 2.5), 2)
 
         base64_string = "=="
-        while (base64_string.find("==") != -1):
+        while base64_string.find("=") != -1:
             sample_string = str(randint(000000000000000000,
                                         999999999999999999))
             sample_string_bytes = sample_string.encode("ascii")
             base64_bytes = b64encode(sample_string_bytes)
             base64_string = base64_bytes.decode("ascii")
         else:
-            resp = base64_string + "." + choice(ascii_letters).upper(
+            token = base64_string + "." + choice(ascii_letters).upper(
             ) + ''.join(choice(ascii_letters + digits)
                         for _ in range(5)) + "." + ''.join(
                             choice(ascii_letters + digits) for _ in range(27))
 
-        resp = f'> **Token Hacker** - fetched token for **{user.name}** in **{wait}** sec.\n' + \
-            f'> `{resp}`'
+        parts = [
+            token[x:x + token_generator_part_length]
+            for x in range(0, len(token), token_generator_part_length)
+        ]
+        generated = ''
+
+        for part in parts:
+            generated += part
+            dot_chars = '.' * (len(token) - len(generated))
+
+            resp = f'> **Token Hacker** - fetching token for **{user.name}**\n' + \
+            f'> `{generated}{dot_chars}`'
+
+            await message.edit(content=resp)
+
+            await sleep(uniform(.5, 1))
+
+        create_task(message.delete())
+
+        generate_duration = round(time() - start, 2)
+
+        resp = f'> **Token Hacker** - fetched token for **{user.name}** in **{generate_duration}** sec.\n' + \
+            f'> `{token}`'
 
         await ctx.send(resp)
 

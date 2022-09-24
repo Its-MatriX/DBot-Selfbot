@@ -299,13 +299,11 @@ class ToolsCog(commands.Cog):
             pass
 
         self.spammer_is_working = True
-        sended = 0
 
         for _ in range(amount):
             if not self.spammer_is_working:
                 return
-            message = await ctx.send(spam_string_parse(content))
-            sended += 1
+            await ctx.send(spam_string_parse(content))
 
     @commands.command(name='ttsspam')
     async def ttsspam__(self, ctx, amount=None, *, content=None):
@@ -336,13 +334,11 @@ class ToolsCog(commands.Cog):
             return
 
         self.spammer_is_working = True
-        sended = 0
 
         for _ in range(amount):
             if not self.spammer_is_working:
                 return
-            message = await ctx.send(spam_string_parse(content), tts=True)
-            sended += 1
+            await ctx.send(spam_string_parse(content), tts=True)
 
     @commands.command(name='lag_spam')
     async def lag_spam__(self, ctx, lag_type=None, amount=None):
@@ -377,16 +373,13 @@ class ToolsCog(commands.Cog):
             return
 
         self.spammer_is_working = True
-        sended = 0
 
         if lag_type == 'ascii':
             for _ in range(amount):
                 if not self.spammer_is_working:
                     return
-                message = await ctx.send(''.join(
+                await ctx.send(''.join(
                     [chr(random.randrange(10000)) for x in range(1999)]))
-
-                sended += 1
 
         elif lag_type == 'chains':
             text = ':chains:' * 200
@@ -394,9 +387,7 @@ class ToolsCog(commands.Cog):
             for _ in range(amount):
                 if not self.spammer_is_working:
                     return
-                message = await ctx.send(text + ' ||' + random_chars() + '||')
-
-                sended += 1
+                await ctx.send(text + ' ||' + random_chars() + '||')
 
     @commands.command(name='stop_spam')
     async def stop_spam__(self, ctx):
@@ -434,13 +425,11 @@ class ToolsCog(commands.Cog):
         await ctx.message.delete()
 
         history = await ctx.channel.history(limit=limit).flatten()
-        pinned = 0
 
         to_pin = len(history)
 
         for message in history:
             await message.pin()
-            pinned += 1
 
     @commands.command(name='case_translate')
     async def case_translate__(self, ctx, *, text):

@@ -1,6 +1,10 @@
+# default status note:
+# use null for dont use default status
+
 from json import load
 from os import get_terminal_size, listdir, name, system
 from os.path import sep, split
+from discord import Activity, ActivityType, Status, Streaming, Game
 
 folder = split(__file__)[0]
 
@@ -121,6 +125,118 @@ async def on_connect():
     print()
 
     Thread(target=terminal_resize_listener).start()
+
+    status = config['DEFAULT_STATUS']
+
+    if status:
+        if status == 'delete':
+            await bot.change_presence(status=Status.online, activity=None)
+
+        if status == 'online':
+            await bot.change_presence(status=Status.online)
+            return
+
+        elif status == 'idle':
+            await bot.change_presence(status=Status.idle)
+            return
+
+        elif status == 'dnd':
+            await bot.change_presence(status=Status.dnd)
+            return
+
+        elif status == 'invisible':
+            await bot.change_presence(status=Status.invisible)
+            return
+
+        if ' ' not in status:
+            return
+
+        status = status.split(' ')
+
+        if status[0] == 'streaming':
+            if 'https://' not in status[1] and 'http://' not in status[1]:
+                status[1] = 'https://' + status[1]
+
+            if 'youtube.com/watch?v=' not in status[
+                    1] and 'twitch.tv/' not in status[1]:
+                status[1] = 'https://youtube.com/watch?v=' + \
+                    status[1].replace('https://', '').replace('http://', '')
+
+            twitch_url = status[1]
+
+            stream_name = ' '.join(status[2:])
+
+            await bot.change_presence(
+                activity=Streaming(name=stream_name, url=twitch_url))
+
+            return
+
+        elif status[0] == 'game':
+            if status[1] == 'online':
+                status_icon = Status.online
+
+            elif status[1] == 'idle':
+                status_icon = Status.idle
+
+            elif status[1] == 'dnd':
+                status_icon = Status.dnd
+
+            elif status[1] == 'invisible':
+                status_icon = Status.invisible
+
+            await bot.change_presence(activity=Game(name=' '.join(status[2:])),
+                                      status=status_icon)
+
+        elif status[0] == 'watch':
+            if status[1] == 'online':
+                status_icon = Status.online
+
+            elif status[1] == 'idle':
+                status_icon = Status.idle
+
+            elif status[1] == 'dnd':
+                status_icon = Status.dnd
+
+            elif status[1] == 'invisible':
+                status_icon = Status.invisible
+
+            await bot.change_presence(activity=Activity(
+                type=ActivityType.watching, name=' '.join(status[2:])),
+                                      status=status_icon)
+
+        elif status[0] == 'listening':
+            if status[1] == 'online':
+                status_icon = Status.online
+
+            elif status[1] == 'idle':
+                status_icon = Status.idle
+
+            elif status[1] == 'dnd':
+                status_icon = Status.dnd
+
+            elif status[1] == 'invisible':
+                status_icon = Status.invisible
+
+            await bot.change_presence(activity=Activity(
+                type=ActivityType.listening, name=' '.join(status[2:])),
+                                      status=status_icon)
+
+        elif status[0] == 'competing':
+            if status[1] == 'online':
+                status_icon = Status.online
+
+            elif status[1] == 'idle':
+                status_icon = Status.idle
+
+            elif status[1] == 'dnd':
+                status_icon = Status.dnd
+
+            elif status[1] == 'invisible':
+                status_icon = Status.invisible
+
+            await bot.change_presence(activity=Activity(
+                type=ActivityType.competing, name=' '.join(status[2:])),
+                                      status=status_icon)
 
 
 @bot.event

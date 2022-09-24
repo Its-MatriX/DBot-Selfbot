@@ -4,7 +4,7 @@ isadmin = is_admin()
 request_admin()
 
 from colorama import Fore
-from os import _exit
+from os import _exit, remove
 
 if not isadmin:
     from os.path import split, sep
@@ -32,13 +32,15 @@ folder_app = split(__file__)[0] + sep + 'DBot-Selfbot' + sep
 
 print(Fore.GREEN + 'Скачиваем последнюю версию DBot...')
 
+
 def delf(folder):
     if name == 'nt':
         system(f'del {folder} /f /q /s')
         rmtree(folder)
-    
+
     else:
         rmtree(folder)
+
 
 try:
     git.Git(folder).clone("https://github.com/Its-MatriX/DBot-Selfbot.git")
@@ -49,24 +51,24 @@ except:
     except Exception as e:
         try:
             input(Fore.RED +
-                    f'Не удалось установить обновление! Ошибка: {e}\n> ')
+                  f'Не удалось установить обновление! Ошибка: {e}\n> ')
         except:
             print(Fore.RED +
-                    f'Не удалось установить обновление! Ошибка: {e}\n')
+                  f'Не удалось установить обновление! Ошибка: {e}\n')
         _exit(1)
 
 for file in listdir(folder_app + 'Commands'):
     if file not in 'auto_response.json':
         print(Fore.GREEN + 'Перемещаем',
-            Fore.YELLOW + folder_app + 'Commands' + sep + file, Fore.GREEN + 'в',
-            Fore.YELLOW + folder + 'Commands' + sep + file)
+              Fore.YELLOW + folder_app + 'Commands' + sep + file,
+              Fore.GREEN + 'в', Fore.YELLOW + folder + 'Commands' + sep + file)
         try:
             remove(folder + 'Commands' + sep + file)
         except:
             pass
 
         rename(folder_app + 'Commands' + sep + file,
-            folder + 'Commands' + sep + file)
+               folder + 'Commands' + sep + file)
 
 for file in listdir(folder_app):
     if not isdir(folder_app + file):
@@ -85,7 +87,8 @@ print(Fore.GREEN + 'Удаляем папку', Fore.YELLOW + folder_app)
 delf(folder_app)
 
 if isdir(folder_app):
-    print(Fore.YELLOW + 'Не удалось удалить папку ' + folder_app + ', удалите её самостоятельно.')
+    print(Fore.YELLOW + 'Не удалось удалить папку ' + folder_app +
+          ', удалите её самостоятельно.')
 
 from intro import intro
 
@@ -93,5 +96,6 @@ clear()
 
 intro()
 print(Fore.GREEN + 'Обновление успешно установлено! Перезапустите DBot.')
+remove(folder + sep + 'INDICATOR_UPDATE_INSTALL.txt')
 input()
 _exit(0)

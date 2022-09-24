@@ -7,6 +7,12 @@ from colorama import Fore
 from os import _exit
 
 if not isadmin:
+    from os.path import split, sep
+    folder = split(__file__)[0]
+
+    file = open(folder + sep + 'INDICATOR_UPDATE_INSTALL.txt', 'w')
+    file.close()
+
     _exit(0)
 
 print(Fore.GREEN + 'DBot Updater')
@@ -80,8 +86,12 @@ delf(folder_app)
 
 if isdir(folder_app):
     print(Fore.YELLOW + 'Не удалось удалить папку ' + folder_app + ', удалите её самостоятельно.')
-    
+
+from intro import intro
+
 clear()
+
+intro()
 print(Fore.GREEN + 'Обновление успешно установлено! Перезапустите DBot.')
 input()
 _exit(0)

@@ -3,11 +3,14 @@
 
 from json import load
 from os import get_terminal_size, listdir, name, system
-from os.path import sep, split
+from os.path import sep, split, isfile
 from discord import Activity, ActivityType, Status, Streaming, Game
 from requests import get
 
 folder = split(__file__)[0]
+
+if isfile(folder + sep + 'INDICATOR_UPDATE_INSTALL.txt'):
+    import updater
 
 if name == 'nt':
     system('title DBot: Запускается')

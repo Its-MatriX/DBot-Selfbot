@@ -37,16 +37,17 @@ except:
             _exit(1)
 
 for file in listdir(folder_app + 'Commands'):
-    print(Fore.GREEN + 'Перемещаем',
-          Fore.YELLOW + folder_app + 'Commands' + sep + file, Fore.GREEN + 'в',
-          Fore.YELLOW + folder + 'Commands' + sep + file)
-    try:
-        remove(folder + 'Commands' + sep + file)
-    except:
-        pass
+    if file not in 'auto_response.json':
+        print(Fore.GREEN + 'Перемещаем',
+            Fore.YELLOW + folder_app + 'Commands' + sep + file, Fore.GREEN + 'в',
+            Fore.YELLOW + folder + 'Commands' + sep + file)
+        try:
+            remove(folder + 'Commands' + sep + file)
+        except:
+            pass
 
-    rename(folder_app + 'Commands' + sep + file,
-           folder + 'Commands' + sep + file)
+        rename(folder_app + 'Commands' + sep + file,
+            folder + 'Commands' + sep + file)
 
 for file in listdir(folder_app):
     if not isdir(folder_app + file):
@@ -70,5 +71,6 @@ except:
         Fore.GREEN + '.' + ' Удалите её самостоятельно.')
 
 print()
-print(Fore.GREEN + 'Обновление успешно установлено!')
+print(Fore.GREEN + 'Обновление успешно установлено! Перезапустите DBot.')
 input()
+_exit(0)

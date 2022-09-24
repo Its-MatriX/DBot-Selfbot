@@ -5,6 +5,7 @@ from json import load
 from os import get_terminal_size, listdir, name, system
 from os.path import sep, split
 from discord import Activity, ActivityType, Status, Streaming, Game
+from requests import get
 
 folder = split(__file__)[0]
 
@@ -29,6 +30,45 @@ from intro import intro
 loaded_extensions = 0
 
 intro()
+
+try:
+    current_version = open(
+        folder + sep + 'Commands' + sep + 'dbot_version.txt', 'r')
+    current_version_value = current_version.read()
+    current_version.close()
+    current_version = float(current_version_value)
+
+    latest_version = get(
+        'https://raw.githubusercontent.com/Its-MatriX/DBot-Selfbot/main/Commands/dbot_version.txt'
+    ).text
+
+    try:
+        latest_version = float(latest_version)
+    except:
+        log_error('Не удалось проверить последнюю версию DBot.')
+
+    if latest_version > current_version:
+        log('Ура! Доступно обновление!', 'ОБНОВЛЕНИЕ', show_type=False)
+        log('Хотите выполнить автоматическое обновление?', 'ОБНОВЛЕНИЕ', show_type=False)
+
+        try:
+            while True:
+                answer = input(gradient_horizontal('? [Да/Нет] > ', colors_text_v2))
+                if answer.lower() in ['да', 'д', 'lf', 'l', 'y', 'yes', '1', 'true']:
+                    import updater
+
+                elif answer.lower() in ['нет', 'н', 'ytn', 'y', 'no', '0', 'false']:
+                    break
+
+                else:
+                    print(gradient_horizontal('Неверный ответ.', colors_text_v2))
+
+        except:
+            log_error('Ошибка отправки ввода. Приложение будет запущено в стандартном режиме.', 'ОШИБКА')
+            pass
+
+except:
+    log_error('Не удалось проверить версию DBot.')
 
 try:
     config = load(open(folder + sep + 'config.json', 'r'))
@@ -256,4 +296,8 @@ except Exception as e:
     if name == 'nt':
         system('title DBot: Ошибка логина')
     log_error(e, 'ОШИБКА', 1)
-    input()
+
+    try:
+        input()
+    except:
+        pass

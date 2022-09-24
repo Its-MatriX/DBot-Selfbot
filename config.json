@@ -4,5 +4,6 @@
     "LOG_WEBHOOK": "вебхук",
     "LOG_DELETES": false,
     "LOG_EDITS": false,
-    "ENABLE_CRASH": false
+    "ENABLE_CRASH": false,
+    "DEFAULT_STATUS": "game idle DBot"
 }

@@ -466,7 +466,7 @@ class ToolsCog(commands.Cog):
             await ctx.send(f'**❌ Ошибка вычисления.**\n`Ошибка - {e}`')
             return
 
-        resp = f'**✅ Результат для:** `{expression}`\n`{result}`'
+        resp = f'**Результат для:** `{expression}`\n✅ `{result}`'
         await ctx.send(resp)
 
     @commands.command(name='translate')

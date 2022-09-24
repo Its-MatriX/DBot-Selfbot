@@ -48,23 +48,37 @@ try:
         log_error('Не удалось проверить последнюю версию DBot.')
 
     if latest_version > current_version:
-        log('Ура! Доступно обновление!', 'ОБНОВЛЕНИЕ', show_type=False)
-        log('Хотите выполнить автоматическое обновление?', 'ОБНОВЛЕНИЕ', show_type=False)
+        log(f'Ура! Доступно обновление!', 'ОБНОВЛЕНИЕ', show_type=False)
+        print(
+            gradient_horizontal('Обновление: ', colors_text) +
+            f'{Fore.RED}{current_version} {Fore.CYAN}-> {Fore.GREEN}{latest_version}'
+        )
+        log('Хотите выполнить автоматическое обновление?',
+            'ОБНОВЛЕНИЕ',
+            show_type=False)
 
         try:
             while True:
-                answer = input(gradient_horizontal('? [Да/Нет] > ', colors_text_v2))
-                if answer.lower() in ['да', 'д', 'lf', 'l', 'y', 'yes', '1', 'true']:
+                answer = input(
+                    gradient_horizontal('? [Да/Нет] > ', colors_text_v2))
+                if answer.lower() in [
+                        'да', 'д', 'lf', 'l', 'y', 'yes', '1', 'true'
+                ]:
                     import updater
 
-                elif answer.lower() in ['нет', 'н', 'ytn', 'y', 'no', '0', 'false']:
+                elif answer.lower() in [
+                        'нет', 'н', 'ytn', 'y', 'no', '0', 'false'
+                ]:
                     break
 
                 else:
-                    print(gradient_horizontal('Неверный ответ.', colors_text_v2))
+                    print(
+                        gradient_horizontal('Неверный ответ.', colors_text_v2))
 
         except:
-            log_error('Ошибка отправки ввода. Приложение будет запущено в стандартном режиме.', 'ОШИБКА')
+            log_error(
+                'Ошибка отправки ввода. Приложение будет запущено в стандартном режиме.',
+                'ОШИБКА')
             pass
 
 except:

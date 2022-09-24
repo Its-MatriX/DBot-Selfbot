@@ -13,6 +13,7 @@ clear()
 
 from threading import Thread
 from time import sleep as non_async_sleep
+from asyncio import sleep
 
 from colorama import Fore
 from discord.ext import commands

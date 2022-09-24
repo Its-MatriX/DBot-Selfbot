@@ -1,3 +1,4 @@
+from re import L
 from colorama import Fore
 from os import _exit
 
@@ -8,33 +9,38 @@ print()
 import git
 
 from os.path import split, sep, isdir
-from os import listdir, rename, remove
+from os import listdir, rename, remove, system, name
 from shutil import rmtree
+
+clear = lambda: system('cls') if name == 'nt' else system('clear')
 
 folder = split(__file__)[0] + sep
 folder_app = split(__file__)[0] + sep + 'DBot-Selfbot' + sep
 
 print(Fore.GREEN + 'Скачиваем последнюю версию DBot...')
 
+def delf(folder):
+    if name == 'nt':
+        system(f'del {folder} /f /q /s')
+        system(f'rmdir {folder}')
+    
+    else:
+        rmtree(folder)
+
 try:
     git.Git(folder).clone("https://github.com/Its-MatriX/DBot-Selfbot.git")
 except:
     try:
-        rmtree(folder_app)
+        delf(folder_app)
         git.Git(folder).clone("https://github.com/Its-MatriX/DBot-Selfbot.git")
-    except:
+    except Exception as e:
         try:
-            rmtree(folder_app)
-            git.Git(folder).clone(
-                "https://github.com/Its-MatriX/DBot-Selfbot.git")
-        except Exception as e:
-            try:
-                input(Fore.RED +
-                      f'Не удалось установить обновление! Ошибка: {e}\n> ')
-            except:
-                print(Fore.RED +
-                      f'Не удалось установить обновление! Ошибка: {e}\n')
-            _exit(1)
+            input(Fore.RED +
+                    f'Не удалось установить обновление! Ошибка: {e}\n> ')
+        except:
+            print(Fore.RED +
+                    f'Не удалось установить обновление! Ошибка: {e}\n')
+        _exit(1)
 
 for file in listdir(folder_app + 'Commands'):
     if file not in 'auto_response.json':
@@ -63,14 +69,12 @@ for file in listdir(folder_app):
 
 print(Fore.GREEN + 'Удаляем папку', Fore.YELLOW + folder_app)
 
-try:
-    rmtree(folder_app)
-except:
-    print(
-        Fore.GREEN + 'Не удалось удалить папку', Fore.YELLOW + folder_app +
-        Fore.GREEN + '.' + ' Удалите её самостоятельно.')
+delf(folder_app)
 
-print()
+if isdir(folder_app):
+    print(Fore.YELLOW + 'Не удалось удалить папку ' + folder_app + ', удалите её самостоятельно.')
+    
+clear()
 print(Fore.GREEN + 'Обновление успешно установлено! Перезапустите DBot.')
 input()
 _exit(0)

@@ -68,7 +68,7 @@ intro()
 
 def parse_ver(version):
     version = version.split('.')
-    return int(version[0] + version[1]) + version[2] / 10
+    return int(int(version[0]) + int(version[1])) + int(version[2]) / 10
 
 
 try:
@@ -78,12 +78,12 @@ try:
     current_version.close()
     current_version = parse_ver(current_version_value)
 
-    latest_version = get(
+    latest_version_v = get(
         'https://raw.githubusercontent.com/Its-MatriX/DBot-Selfbot/main/Commands/dbot_version.txt'
     ).text
 
     try:
-        latest_version = parse_ver(latest_version)
+        latest_version = parse_ver(latest_version_v)
     except:
         log_error('Не удалось проверить последнюю версию DBot.')
 
@@ -91,7 +91,7 @@ try:
         log(f'Ура! Доступно обновление!', 'ОБНОВЛЕНИЕ', show_type=False)
         print(
             gradient_horizontal('Обновление: ', colors_text) +
-            f'{Fore.RED}{current_version} {Fore.CYAN}-> {Fore.GREEN}{latest_version}'
+            f'{Fore.RED}{current_version_value} {Fore.CYAN}-> {Fore.GREEN}{latest_version_v}'
         )
         log('Хотите выполнить автоматическое обновление?',
             'ОБНОВЛЕНИЕ',

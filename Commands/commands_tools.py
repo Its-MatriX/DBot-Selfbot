@@ -1,3 +1,4 @@
+from asyncio import create_task
 from os.path import sep, split
 
 folder = split(__file__)[0]
@@ -11,7 +12,7 @@ from re import findall
 
 import requests
 from colour import Color
-from discord import Activity, ActivityType, File, Game, Status, Streaming
+from discord import Activity, ActivityType, File, Game, Status, Streaming, http
 from discord.ext import commands
 from PIL import Image
 from translate import Translator
@@ -118,6 +119,19 @@ class ToolsCog(commands.Cog):
         if content in keys:
             await message.reply(auto_response_messages[content],
                                 mention_author=False)
+
+    @commands.command(name='logout')
+    async def logout__(self, ctx):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        await ctx.send('> **⏹ Выход из аккаунта**')
+
+        await self.bot.close()
+
+        _exit(0)
 
     @commands.command(name='status')
     async def status__(self, ctx, *, status=None):
@@ -653,18 +667,24 @@ class ToolsCog(commands.Cog):
 
         await ctx.send(resp)
 
-    @commands.command(name='logout')
-    async def logout__(self, ctx):
+    @commands.command(name='clear_all')
+    async def clear_all__(self, ctx):
         if ctx.author != self.bot.user:
             return
 
         await ctx.message.delete()
 
-        await ctx.send('> **⏹ Выход из аккаунта**')
+        await ctx.send('ﾠﾠ' + '\n' * 999 + 'ﾠﾠ')
 
-        await self.bot.close()
+    @commands.command(name='readall')
+    async def readall_(self, ctx):
+        if ctx.author != self.bot.user:
+            return
 
-        _exit(0)
+        await ctx.message.delete()
+
+        for guild in self.bot.guilds:
+            await guild.ack()
 
 
 def setup(bot):

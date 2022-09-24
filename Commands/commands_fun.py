@@ -2,7 +2,7 @@ from asyncio import create_task, sleep
 from base64 import b64encode
 from os import remove
 from os.path import sep, split
-from random import choice, randint, uniform
+from random import choice, randint, uniform, choices
 from string import ascii_letters, digits
 from time import time
 
@@ -510,7 +510,7 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
 
             await sleep(uniform(.5, 1))
 
-        create_task(message.delete())
+        await message.delete()
 
         generate_duration = round(time() - start, 2)
 
@@ -566,6 +566,17 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
             f'> `{resp}`'
 
         await ctx.send(resp)
+
+    @commands.command(name='gename')
+    async def gename__(self, ctx):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+        first, second = choices(ctx.guild.members, k=2)
+        first = first.display_name[len(first.display_name) // 2:]
+        second = second.display_name[:len(second.display_name) // 2]
+        await ctx.send(second + first)
 
 
 def setup(bot):

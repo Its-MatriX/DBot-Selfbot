@@ -1,6 +1,13 @@
-from re import L
+from uac_elevator import request_admin, is_admin
+
+isadmin = is_admin()
+request_admin()
+
 from colorama import Fore
 from os import _exit
+
+if not isadmin:
+    _exit(0)
 
 print(Fore.GREEN + 'DBot Updater')
 print(Fore.CYAN + 'Устанавливаем обновление...')
@@ -22,7 +29,7 @@ print(Fore.GREEN + 'Скачиваем последнюю версию DBot...')
 def delf(folder):
     if name == 'nt':
         system(f'del {folder} /f /q /s')
-        system(f'rmdir {folder}')
+        rmtree(folder)
     
     else:
         rmtree(folder)

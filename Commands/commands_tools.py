@@ -676,8 +676,8 @@ class ToolsCog(commands.Cog):
 
         await ctx.send('ﾠﾠ' + '\n' * 999 + 'ﾠﾠ')
 
-    @commands.command(name='readall')
-    async def readall_(self, ctx):
+    @commands.command(name='read_all')
+    async def read_all_(self, ctx):
         if ctx.author != self.bot.user:
             return
 

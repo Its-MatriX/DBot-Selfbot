@@ -414,8 +414,8 @@ class HelpCog(commands.Cog):
                 resp = '> **color** [<***тег/название цвета***>]\n' + \
                     '> `Отображение цвета в виде картинки.`'
 
-            elif command == 'readall':
-                resp = '> **readall**\n' + \
+            elif command == 'read_all':
+                resp = '> **read_all**\n' + \
                     '> `Пометить сообщения на всех серверах как прочитанные.`'
 
             elif command == 'reverse':

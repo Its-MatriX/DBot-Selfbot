@@ -24,7 +24,7 @@ from discord.ext import commands
 
 from Commands.colors import (colors_text, colors_text_v2, gradient_horizontal,
                              print_line)
-from Commands.logger import log, log_error, recovery_logs
+from Commands.logger import log, log_error, recovery_logs, logwriter
 from intro import intro
 
 loaded_extensions = 0
@@ -69,6 +69,7 @@ try:
                 elif answer.lower() in [
                         'нет', 'н', 'ytn', 'y', 'no', '0', 'false'
                 ]:
+                    logwriter.written = ''
                     break
 
                 else:

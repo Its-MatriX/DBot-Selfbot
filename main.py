@@ -15,7 +15,7 @@ except:
     import Commands.requirements_installer
 
 if isfile(folder + sep + 'INDICATOR_UPDATE_INSTALL.txt'):
-    import updater
+    import Commands.updater as updater
 
 if name == 'nt':
     system('title DBot: Запускается')
@@ -34,7 +34,7 @@ try:
     from Commands.colors import (colors_text, colors_text_v2, gradient_horizontal,
                                 print_line)
     from Commands.logger import log, log_error, recovery_logs, logwriter
-    from intro import intro
+    from Commands.intro import intro
 except:
     import Commands.requirements_installer
 
@@ -84,7 +84,7 @@ try:
                     if answer.lower() in [
                             'да', 'д', 'lf', 'l', 'y', 'yes', '1', 'true'
                     ]:
-                        import updater
+                        import Commands.updater as updater
 
                     elif answer.lower() in [
                             'нет', 'н', 'ytn', 'y', 'no', '0', 'false'

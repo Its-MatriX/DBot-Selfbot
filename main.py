@@ -1,26 +1,32 @@
 # default status note:
 # use null for dont use default status
 
-from os.path import sep, split, isfile
 from os import system
+from os.path import sep, split
 
 folder = split(__file__)[0]
 
 try:
     from json import load
-    from os import get_terminal_size, listdir, name
-    from discord import Activity, ActivityType, Status, Streaming, Game
-    from requests import get
-except:
-    import Commands.requirements_installer
+    from os import _exit, get_terminal_size, listdir, name
 
-if isfile(folder + sep + 'INDICATOR_UPDATE_INSTALL.txt'):
-    import updater as updater
+    from discord import Activity, ActivityType, Game, Status, Streaming
+except Exception:
+    from Functions.requirements_installer import \
+        install_modules_from_requirements
+    install_modules_from_requirements()
 
 if name == 'nt':
     system('title DBot: Запускается')
 
-clear = lambda: system('cls') if name == 'nt' else system('clear')
+
+def clear():
+    if name == 'nt':
+        system('cls')
+
+    else:
+        system('clear')
+
 
 clear()
 
@@ -31,101 +37,27 @@ try:
     from colorama import Fore
     from discord.ext import commands
 
-    from Commands.colors import (colors_text, colors_text_v2, gradient_horizontal,
-                                print_line)
-    from Commands.logger import log, log_error, recovery_logs, logwriter
-    from Commands.intro import intro
-except:
-    import Commands.requirements_installer
+    from Functions.colors import (colors_error, colors_text, colors_text_v2,
+                                  gradient_horizontal, print_line)
+    from Functions.intro import intro
+    from Functions.logger import log, log_error, recovery_logs
+except Exception:
+    from Functions.requirements_installer import \
+        install_modules_from_requirements
+    install_modules_from_requirements()
 
 loaded_extensions = 0
 
 intro()
 
-
-def parse_ver(version):
-    version = version.split('.')
-    return int(int(version[0]) + int(version[1])) + int(version[2]) / 10
-
-
-try:
-    current_version = open(
-        folder + sep + 'Commands' + sep + 'dbot_version.txt', 'r')
-    current_version_value = current_version.read()
-    current_version.close()
-    current_version = parse_ver(current_version_value)
-
-    print(gradient_horizontal('Получаем последнюю версию DBot...'))
-
-    latest_version_v = get(
-        'https://raw.githubusercontent.com/Its-MatriX/DBot-Selfbot/main/Commands/dbot_version.txt'
-    ).text
-
-    try:
-        latest_version = parse_ver(latest_version_v)
-    except:
-        log_error('Не удалось проверить последнюю версию DBot.')
-
-    if latest_version > current_version:
-        try:
-            import git
-
-            print()
-
-            log(f'Ура! Доступно обновление!', 'ОБНОВЛЕНИЕ', show_type=False)
-            print(
-                gradient_horizontal('Обновление: ', colors_text) +
-                f'{Fore.RED}{current_version_value} {Fore.CYAN}-> {Fore.GREEN}{latest_version_v}'
-            )
-            log('Хотите выполнить автоматическое обновление?',
-                'ОБНОВЛЕНИЕ',
-                show_type=False)
-
-            try:
-                while True:
-                    answer = input(
-                        gradient_horizontal('? [Да/Нет] > ', colors_text_v2))
-                    if answer.lower() in [
-                            'да', 'д', 'lf', 'l', 'y', 'yes', '1', 'true'
-                    ]:
-                        import updater as updater
-
-                    elif answer.lower() in [
-                            'нет', 'н', 'ytn', 'y', 'no', '0', 'false'
-                    ]:
-                        logwriter.written = ''
-                        break
-
-                    else:
-                        print(
-                            gradient_horizontal('Неверный ответ.', colors_text_v2))
-
-            except:
-                log_error(
-                    'Ошибка отправки ввода. Приложение будет запущено в стандартном режиме.',
-                    'ОШИБКА')
-                pass
-
-        except:
-            print(
-                gradient_horizontal('Доступно обновление: ', colors_text) +
-                f'{Fore.RED}{current_version_value} {Fore.CYAN}-> {Fore.GREEN}{latest_version_v}'
-            )
-
-    else:
-        print(gradient_horizontal('Вы используете последнюю версию DBot!'))
-
-except:
-    log_error('Не удалось проверить версию DBot.')
-
 try:
     config = load(open(folder + sep + 'config.json', 'r'))
 except FileNotFoundError:
     path_config = folder + sep + 'config.json'
-    print(
-        Fore.RED +
-        f'Не удалось найти файл с конфигурацией. Расположение файла должно быть: {path_config}'
-    )
+
+    print(Fore.RED + f'Не удалось найти файл с конфигурацией. ' +
+          'Расположение файла должно быть: {path_config}')
+
     print('Создайте config.json по указанному пути!\n')
     print('Пример config.json:')
     print()
@@ -134,7 +66,8 @@ except FileNotFoundError:
     print('    "LOG_WEBHOOK": "вебхук",')
     print('    "LOG_DELETES": false,')
     print('    "LOG_EDITS": false,')
-    print('    "ENABLE_CRASH": false')
+    print('    "ENABLE_CRASH": false,')
+    print('    "DEFAULT_STATUS": "game idle DBot"')
     print('}')
 
     print()
@@ -204,11 +137,39 @@ async def on_connect():
     extensions = listdir(folder + sep + 'Commands/')
     loaded_extensions = 0
 
-    for file in extensions:
-        if file.split('.')[-1] == 'py' and file.startswith('commands_'):
-            file = '.'.join(file.split('.')[:-1:1])
-            bot.load_extension(f'Commands.{file}')
-            loaded_extensions += 1
+    try:
+        for file in extensions:
+            if file.split('.')[-1] == 'py' and file.startswith('commands_'):
+                file = '.'.join(file.split('.')[:-1:1])
+                bot.load_extension(f'Commands.{file}')
+                loaded_extensions += 1
+    except Exception as e:
+        if 'no module named' in str(e).lower():
+            print(
+                gradient_horizontal('Ошибка инициализации расширений!',
+                                    colors_error))
+            print(
+                gradient_horizontal('Не установлены все необходимые модули. ' +
+                                    'Нажмите [Enter] для начала установки.'))
+
+            input()
+
+            print(Fore.GREEN)
+
+            from Functions.requirements_installer import \
+                install_modules_from_requirements
+            install_modules_from_requirements(False)
+
+            input(
+                gradient_horizontal(
+                    'Модули успешно установлены. Перезапустите DBot.'))
+
+            _exit(0)
+        else:
+            print(Fore.RED +
+                  f'Ошибка инициализации расширения Commands.{file}. ' +
+                  'Попробуйте переустановить DBot.')
+            _exit(1)
 
     print()
 
@@ -341,6 +302,7 @@ async def on_command(ctx):
 try:
     print(gradient_horizontal('Входим в учётную запись...'))
     bot.run(config['TOKEN'])
+
 except Exception as e:
     if name == 'nt':
         system('title DBot: Ошибка логина')
@@ -348,5 +310,5 @@ except Exception as e:
 
     try:
         input()
-    except:
+    except Exception:
         pass

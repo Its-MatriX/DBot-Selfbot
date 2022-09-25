@@ -55,6 +55,8 @@ try:
     current_version.close()
     current_version = parse_ver(current_version_value)
 
+    print(gradient_horizontal('Получаем последнюю версию DBot...'))
+
     latest_version_v = get(
         'https://raw.githubusercontent.com/Its-MatriX/DBot-Selfbot/main/Commands/dbot_version.txt'
     ).text
@@ -67,6 +69,8 @@ try:
     if latest_version > current_version:
         try:
             import git
+
+            print()
 
             log(f'Ура! Доступно обновление!', 'ОБНОВЛЕНИЕ', show_type=False)
             print(
@@ -107,6 +111,9 @@ try:
                 gradient_horizontal('Доступно обновление: ', colors_text) +
                 f'{Fore.RED}{current_version_value} {Fore.CYAN}-> {Fore.GREEN}{latest_version_v}'
             )
+
+    else:
+        print(gradient_horizontal('Вы используете последнюю версию DBot!'))
 
 except:
     log_error('Не удалось проверить версию DBot.')
@@ -332,6 +339,7 @@ async def on_command(ctx):
 
 
 try:
+    print(gradient_horizontal('Входим в учётную запись...'))
     bot.run(config['TOKEN'])
 except Exception as e:
     if name == 'nt':

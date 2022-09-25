@@ -1,4 +1,4 @@
-from uac_elevator import request_admin, is_admin
+from Commands.uac_elevator import request_admin, is_admin
 
 isadmin = is_admin()
 request_admin()
@@ -65,7 +65,7 @@ except:
         _exit(1)
 
 for file in listdir(folder_app + 'Commands'):
-    if file not in 'auto_response.json':
+    if file not in ['auto_response.json', 'updater.py']:
         print(Fore.GREEN + 'Перемещаем',
               Fore.YELLOW + folder_app + 'Commands' + sep + file,
               Fore.GREEN + 'в', Fore.YELLOW + folder + 'Commands' + sep + file)
@@ -79,7 +79,7 @@ for file in listdir(folder_app + 'Commands'):
 
 for file in listdir(folder_app):
     if not isdir(folder_app + file):
-        if file not in ('config.json', 'updater.py'):
+        if file != 'config.json':
             print(Fore.GREEN + 'Перемещаем', Fore.YELLOW + folder_app + file,
                   Fore.GREEN + 'в', Fore.YELLOW + folder + sep + file)
             try:

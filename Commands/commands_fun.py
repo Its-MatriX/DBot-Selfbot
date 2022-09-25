@@ -52,12 +52,16 @@ class FunCog(commands.Cog):
 
     reactions_command_is_working = False
     pings_is_working = False
+    inftype_is_working = False
 
     def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        if self.inftype_is_working == True and message.author.id == self.bot.user.id:
+            self.inftype_is_working = False
+
         try:
             if message.guild:
                 if message.author.id == ReactionTroll['userID']:
@@ -577,6 +581,19 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
         first = first.display_name[len(first.display_name) // 2:]
         second = second.display_name[:len(second.display_name) // 2]
         await ctx.send(second + first)
+
+    @commands.command(name='inftype')
+    async def inftype__(self, ctx):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        self.inftype_is_working = True
+
+        while self.inftype_is_working:
+            await ctx.trigger_typing()
+            await sleep(8)
 
 
 def setup(bot):

@@ -1,9 +1,0 @@
-discord.py-self
-discord.py-self-embed
-requests
-colour
-colorama
-translate
-Pillow
-keyboard
-gitpython

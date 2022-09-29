@@ -1,18 +1,1 @@
-{
-    "reactionTroll": {
-        "enabled": true,
-        "guildID": 0,
-        "userID": 655399818390274060,
-        "reaction": "\ud83d\udca9\ud83e\udd21\ud83e\udd16\ud83d\udc37\ud83d\udc17\ud83c\udff3\ufe0f\u200d\ud83c\udf08"
-    },
-    "repeatTroll": {
-        "enabled": false,
-        "guildID": null,
-        "userID": null
-    },
-    "deleteTroll": {
-        "enabled": false,
-        "guildID": null,
-        "userID": null
-    }
-}
+{}

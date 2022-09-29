@@ -5,5 +5,5 @@
     "LOG_DELETES": false,
     "LOG_EDITS": false,
     "ENABLE_CRASH": false,
-    "DEFAULT_STATUS": "game idle DBot"
+    "DEFAULT_STATUS": "game idle DBot Selfbot"
 }

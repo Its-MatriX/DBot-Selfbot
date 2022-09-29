@@ -9,7 +9,7 @@ class logwriter:
 def log(content, message_type='ИНФО', spaces=3, show_type=True):
     if show_type:
         time_now = datetime.now().strftime('%H:%M:%S')
-        to_write = f'{Fore.GREEN}{time_now} {Fore.CYAN}[{message_type}]{" " * spaces} : {Fore.GREEN}{content}'
+        to_write = f'{Fore.GREEN}{time_now} {Fore.CYAN}[{message_type}]{" " * spaces}{Fore.GREEN}: {Fore.GREEN}{content}'
     else:
         to_write = Fore.GREEN + content
 
@@ -25,7 +25,7 @@ def log(content, message_type='ИНФО', spaces=3, show_type=True):
 def log_error(content, message_type='ОШИБКА', spaces=1, show_type=True):
     if show_type:
         time_now = datetime.now().strftime('%H:%M:%S')
-        to_write = f'{Fore.RED}{time_now} [{message_type}]{" " * spaces} : {content}'
+        to_write = f'{Fore.RED}{time_now} [{message_type}]{" " * spaces}: {content}'
     else:
         to_write = Fore.RED + content
 

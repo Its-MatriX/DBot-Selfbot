@@ -1,20 +1,36 @@
-from asyncio import create_task, sleep
+from asyncio import sleep
 from base64 import b64encode
+from json import dump, load
 from os import remove
 from os.path import sep, split
-from random import choice, randint, uniform, choices
+from random import choice, choices, randint, uniform
 from string import ascii_letters, digits
 from time import time
 
 from discord import File, User
 from discord.ext import commands
-from re import findall
-
 from Functions.demotivators import Demotivator
 
 token_generator_part_length = 10
 
 folder = split(__file__)[0]
+
+use_default_trolls = True
+
+try:
+    file = open(folder + sep + 'troll_config.json', 'r')
+    use_default_trolls = False
+    troll_config = load(file)
+
+    reaction_troll = troll_config['reactionTroll']
+    repeat_troll = troll_config['repeatTroll']
+    delete_troll = troll_config['deleteTroll']
+except:
+    use_default_trolls = True
+
+    file = open(folder + sep + 'troll_config.json', 'w')
+    file.write('{}')
+    file.close()
 
 magicball = [
     "Да", "Нет", "Возможно", "Скорее всего, да", "Скорее всего, нет",
@@ -24,16 +40,17 @@ magicball = [
     "По моим данным - нет."
 ]
 
-ReactionTroll = {
-    'enabled': False,
-    'guildID': None,
-    'userID': None,
-    'reaction': None
-}
+if use_default_trolls:
+    reaction_troll = {
+        'enabled': False,
+        'guildID': None,
+        'userID': None,
+        'reaction': None
+    }
 
-RepeatTroll = {'enabled': False, 'guildID': None, 'userID': None}
+    repeat_troll = {'enabled': False, 'guildID': None, 'userID': None}
 
-MessageDeleteTroll = {'enabled': False, 'guildID': None, 'userID': None}
+    delete_troll = {'enabled': False, 'guildID': None, 'userID': None}
 
 
 def delete_dublicates(source):
@@ -64,49 +81,49 @@ class FunCog(commands.Cog):
 
         try:
             if message.guild:
-                if message.author.id == ReactionTroll['userID']:
-                    if message.guild.id == ReactionTroll['guildID']:
-                        if ReactionTroll['enabled']:
+                if message.author.id == reaction_troll['userID']:
+                    if message.guild.id == reaction_troll['guildID']:
+                        if reaction_troll['enabled']:
                             try:
-                                selected = choice(ReactionTroll['reaction'])
+                                selected = choice(reaction_troll['reaction'])
                                 await message.add_reaction(selected)
                             except Exception as e:
 
                                 if 'unknown message' in e.args.lower():
                                     return
 
-                                ReactionTroll['reaction'] = ReactionTroll[
+                                reaction_troll['reaction'] = reaction_troll[
                                     'reaction'].replace(selected, '')
-                                selected = choice(ReactionTroll['reaction'])
+                                selected = choice(reaction_troll['reaction'])
                                 await message.add_reaction(selected)
 
             else:
-                if message.author.id == ReactionTroll['userID']:
-                    if ReactionTroll['enabled']:
+                if message.author.id == reaction_troll['userID']:
+                    if reaction_troll['enabled']:
                         try:
-                            selected = choice(ReactionTroll['reaction'])
+                            selected = choice(reaction_troll['reaction'])
                             await message.add_reaction(selected)
                         except Exception:
-                            ReactionTroll['reaction'] = ReactionTroll[
+                            reaction_troll['reaction'] = reaction_troll[
                                 'reaction'].replace(selected, '')
-                            selected = choice(ReactionTroll['reaction'])
+                            selected = choice(reaction_troll['reaction'])
                             await message.add_reaction(selected)
 
             if message.guild:
-                if message.author.id == RepeatTroll['userID']:
-                    if message.guild.id == RepeatTroll['guildID']:
-                        if RepeatTroll['enabled']:
+                if message.author.id == repeat_troll['userID']:
+                    if message.guild.id == repeat_troll['guildID']:
+                        if repeat_troll['enabled']:
                             await message.channel.send(message.content)
 
             else:
-                if message.author.id == RepeatTroll['userID']:
-                    if RepeatTroll['enabled']:
+                if message.author.id == repeat_troll['userID']:
+                    if repeat_troll['enabled']:
                         await message.channel.send(message.content)
 
             if message.guild:
-                if message.author.id == MessageDeleteTroll['userID']:
-                    if message.guild.id == MessageDeleteTroll['guildID']:
-                        if MessageDeleteTroll['enabled']:
+                if message.author.id == delete_troll['userID']:
+                    if message.guild.id == delete_troll['guildID']:
+                        if delete_troll['enabled']:
                             await message.delete()
 
             else:
@@ -129,13 +146,22 @@ class FunCog(commands.Cog):
             if user_:
                 user = user_
 
-        ReactionTroll['enabled'] = True
+        reaction_troll['enabled'] = True
         try:
-            ReactionTroll['guildID'] = ctx.guild.id
+            reaction_troll['guildID'] = ctx.guild.id
         except Exception:
-            ReactionTroll['guildID'] = 0
-        ReactionTroll['userID'] = int(user.id)
-        ReactionTroll['reaction'] = react
+            reaction_troll['guildID'] = 0
+        reaction_troll['userID'] = int(user.id)
+        reaction_troll['reaction'] = react
+
+        save_config = {
+            'reactionTroll': reaction_troll,
+            'repeatTroll': repeat_troll,
+            'deleteTroll': delete_troll
+        }
+
+        file = open(folder + sep + 'troll_config.json', 'w')
+        dump(save_config, file, indent=4)
 
         await ctx.message.delete()
 
@@ -149,12 +175,21 @@ class FunCog(commands.Cog):
             if user_:
                 user = user_
 
-        RepeatTroll['enabled'] = True
+        repeat_troll['enabled'] = True
         try:
-            RepeatTroll['guildID'] = ctx.guild.id
+            repeat_troll['guildID'] = ctx.guild.id
         except Exception:
-            ReactionTroll['guildID'] = 0
-        RepeatTroll['userID'] = int(user.id)
+            reaction_troll['guildID'] = 0
+        repeat_troll['userID'] = int(user.id)
+
+        save_config = {
+            'reactionTroll': reaction_troll,
+            'repeatTroll': repeat_troll,
+            'deleteTroll': delete_troll
+        }
+
+        file = open(folder + sep + 'troll_config.json', 'w')
+        dump(save_config, file, indent=4)
 
         await ctx.message.delete()
 
@@ -168,12 +203,21 @@ class FunCog(commands.Cog):
             if user_:
                 user = user_
 
-        MessageDeleteTroll['enabled'] = True
+        delete_troll['enabled'] = True
         try:
-            MessageDeleteTroll['guildID'] = ctx.guild.id
+            delete_troll['guildID'] = ctx.guild.id
         except Exception:
-            MessageDeleteTroll['guildID'] = 0
-        MessageDeleteTroll['userID'] = int(user.id)
+            delete_troll['guildID'] = 0
+        delete_troll['userID'] = int(user.id)
+
+        save_config = {
+            'reactionTroll': reaction_troll,
+            'repeatTroll': repeat_troll,
+            'deleteTroll': delete_troll
+        }
+
+        file = open(folder + sep + 'troll_config.json', 'w')
+        dump(save_config, file, indent=4)
 
         await ctx.message.delete()
 
@@ -182,9 +226,29 @@ class FunCog(commands.Cog):
         if ctx.author != self.bot.user:
             return
 
-        ReactionTroll['enabled'] = False
-        RepeatTroll['enabled'] = False
-        MessageDeleteTroll['enabled'] = False
+        global repeat_troll
+        global delete_troll
+        global reaction_troll
+
+        reaction_troll = {
+            'enabled': False,
+            'guildID': None,
+            'userID': None,
+            'reaction': None
+        }
+
+        repeat_troll = {'enabled': False, 'guildID': None, 'userID': None}
+
+        delete_troll = {'enabled': False, 'guildID': None, 'userID': None}
+
+        save_config = {
+            'reactionTroll': reaction_troll,
+            'repeatTroll': repeat_troll,
+            'deleteTroll': delete_troll
+        }
+
+        file = open(folder + sep + 'troll_config.json', 'w')
+        dump(save_config, file, indent=4)
 
         await ctx.message.delete()
 

@@ -37,8 +37,6 @@ try:
     from colorama import Fore
     from discord.ext import commands
 
-    from Functions.colors import (colors_error, colors_text, colors_text_v2,
-                                  gradient_horizontal, print_line)
     from Functions.intro import intro
     from Functions.logger import log, log_error, recovery_logs
 except Exception:
@@ -88,24 +86,17 @@ bot.remove_command('help')
 
 bot.config = config
 
+
 def start_screen():
     intro()
 
-    print(Fore.GREEN + gradient_horizontal('Логин: ', colors_text_v2) +
-          gradient_horizontal(str(bot.user), colors_text))
-
-    print(Fore.GREEN + gradient_horizontal('ID: ', colors_text_v2) +
-          Fore.CYAN + gradient_horizontal(str(bot.user.id), colors_text))
-
-    print(Fore.GREEN + gradient_horizontal('Префикс: ', colors_text_v2) +
-          Fore.CYAN +
-          gradient_horizontal(config['COMMAND_PREFIX'], colors_text))
-
+    print(Fore.GREEN + 'Логин: ' + Fore.CYAN + str(bot.user))
+    print(Fore.GREEN + 'ID: ' + Fore.CYAN + str(bot.user.id))
+    print(Fore.GREEN + 'Префикс: ' + Fore.CYAN + config['COMMAND_PREFIX'])
     print()
 
-    print(Fore.GREEN +
-          gradient_horizontal('Загружено расшрений: ', colors_text_v2) +
-          Fore.CYAN + gradient_horizontal(str(loaded_extensions), colors_text))
+    print(Fore.GREEN + 'Загружено расширений: ' + Fore.CYAN +
+          str(loaded_extensions))
 
 
 def terminal_resize_listener():
@@ -120,7 +111,7 @@ def terminal_resize_listener():
             start_screen()
 
             print()
-            print_line(terminal_cols)
+            print(Fore.CYAN + '—' * terminal_cols)
             recovery_logs()
 
         non_async_sleep(.2)
@@ -144,12 +135,9 @@ async def on_connect():
                 loaded_extensions += 1
     except Exception as e:
         if 'no module named' in str(e).lower():
-            print(
-                gradient_horizontal('Ошибка инициализации расширений!',
-                                    colors_error))
-            print(
-                gradient_horizontal('Не установлены все необходимые модули. ' +
-                                    'Нажмите [Enter] для начала установки.'))
+            print(Fore.RED + 'Ошибка загрузки расширений!')
+            print(Fore.RED + 'Не установлены все необходимые модули. ' +
+                  'Нажмите [Enter] для начала установки')
 
             input()
 
@@ -159,9 +147,8 @@ async def on_connect():
                 install_modules_from_requirements
             install_modules_from_requirements(False)
 
-            input(
-                gradient_horizontal(
-                    'Модули успешно установлены. Перезапустите DBot.'))
+            input(Fore.GREEN +
+                  'Модули успешно установлены. Перезапустите DBot.')
 
             _exit(0)
         else:
@@ -299,7 +286,7 @@ async def on_command(ctx):
 
 
 try:
-    print(gradient_horizontal('Входим в учётную запись...'))
+    print(Fore.GREEN + 'Входим в учётную запись...')
     bot.run(config['TOKEN'])
 
 except Exception as e:

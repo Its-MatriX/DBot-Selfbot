@@ -1,7 +1,5 @@
 from datetime import datetime
-
-from Functions.colors import (colors_error, colors_text, colors_text_v2,
-                             gradient_horizontal)
+from colorama import Fore
 
 
 class logwriter:
@@ -11,9 +9,9 @@ class logwriter:
 def log(content, message_type='ИНФО', spaces=3, show_type=True):
     if show_type:
         time_now = datetime.now().strftime('%H:%M:%S')
-        to_write = f'{gradient_horizontal(time_now, colors_text)} {gradient_horizontal("[" + message_type + "]", colors_text_v2)}{" " * spaces} : {gradient_horizontal(content, colors_text)}'
+        to_write = f'{Fore.GREEN}{time_now} {Fore.CYAN}[{message_type}]{" " * spaces} : {Fore.GREEN}{content}'
     else:
-        to_write = gradient_horizontal(content, colors_text)
+        to_write = Fore.GREEN + content
 
     print(to_write)
 
@@ -27,9 +25,9 @@ def log(content, message_type='ИНФО', spaces=3, show_type=True):
 def log_error(content, message_type='ОШИБКА', spaces=1, show_type=True):
     if show_type:
         time_now = datetime.now().strftime('%H:%M:%S')
-        to_write = f'{gradient_horizontal(time_now, colors_text)} {gradient_horizontal("[" + message_type + "]", colors_error)}{" " * spaces} : {gradient_horizontal(content, colors_text)}'
+        to_write = f'{Fore.RED}{time_now} [{message_type}]{" " * spaces} : {content}'
     else:
-        to_write = gradient_horizontal(content, colors_text)
+        to_write = Fore.RED + content
 
     print(to_write)
 

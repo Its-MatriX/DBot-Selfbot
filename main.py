@@ -88,7 +88,6 @@ bot.remove_command('help')
 
 bot.config = config
 
-
 def start_screen():
     intro()
 

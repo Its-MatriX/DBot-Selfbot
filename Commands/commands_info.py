@@ -80,7 +80,7 @@ class InfoCog(commands.Cog):
 
             resp += f'> **Высшая роль:** `{user.top_role.name}`\n'
             resp += f'> **Имеет ролей:** `{len(user.roles)}`\n'
-            resp += f'> **Администратор:** `{"Да" if user.guild_permissions.administrator else "Нет"}`'
+            resp += f'> **Администратор:** `{"Да" if user.guild_permissions.administrator else "Нет"}`\n'
 
             if user.guild.owner:
                 resp += f'\n> **Владелец:** `{"Да" if user.id == user.guild.owner.id else "Нет"}`\n'

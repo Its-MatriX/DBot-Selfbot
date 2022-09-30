@@ -7,23 +7,47 @@ import io
 import random
 from base64 import b64decode, b64encode
 from json import dump, load
-from os import _exit
+from os import _exit, remove
 from re import findall
 
 import requests
 from colour import Color
-from discord import Activity, ActivityType, File, Game, Status, Streaming, http
+from discord import (Activity, ActivityType, File, Game, Status, Streaming,
+                     File, GroupChannel)
 from discord.ext import commands
 from PIL import Image
 from translate import Translator
+from time import time
 
 from Functions.logger import log_error
 
 folder = split(__file__)[0]
 
-file = open(folder + sep + 'auto_response.json', 'r')
-auto_response_messages = load(file)
-file.close()
+try:
+    file = open(folder + sep + 'auto_response.json', 'r')
+    auto_response_messages = load(file)
+    file.close()
+except:
+    open(folder + sep + 'auto_response.json', 'w').write('{}')
+    auto_response_messages = {}
+
+try:
+    file = open(folder + sep + 'config_commands.json', 'r')
+    config_commands = load(file)
+    file.close()
+
+    enable_djm = config_commands['enableDJM']
+except:
+    open(folder + sep + 'auto_response.json', 'w').write('{}')
+
+    baseconfig = {'enableDJM': False}
+    file = open(folder + sep + 'config_commands.json', 'w')
+    dump(baseconfig, file, indent=4)
+    file.close()
+
+    config_commands = baseconfig
+
+    enable_djm = config_commands['enableDJM']
 
 case_translate_layout_en_ru = dict(
     zip(
@@ -110,6 +134,7 @@ class ToolsCog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.allow_groups = [x.id for x in self.bot.private_channels]
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -120,17 +145,22 @@ class ToolsCog(commands.Cog):
             await message.reply(auto_response_messages[content],
                                 mention_author=False)
 
+        global enable_djm
+
+        if isinstance(message.channel, GroupChannel):
+            if message.channel.id not in self.allow_groups:
+                if enable_djm:
+                    await message.channel.leave()
+
     @commands.command(name='logout')
     async def logout__(self, ctx):
         if ctx.author != self.bot.user:
             return
 
         await ctx.message.delete()
-
         await ctx.send('> **⏹ Выход из аккаунта**')
 
         await self.bot.close()
-
         _exit(0)
 
     @commands.command(name='status')
@@ -674,6 +704,123 @@ class ToolsCog(commands.Cog):
 
         for guild in self.bot.guilds:
             await guild.ack()
+
+    @commands.command(name='messages')
+    async def messages__(self, ctx, limit: int = 50, format='json'):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        messages = await ctx.channel.history(limit=limit).flatten()
+
+        massive = []
+
+        for message in messages:
+            if message.reference:
+                massive.append({
+                    'content':
+                    message.content,
+                    'id':
+                    message.id,
+                    'author_id':
+                    message.author.id,
+                    'author':
+                    str(message.author),
+                    'attachments': [x.url for x in message.attachments],
+                    'channel_id':
+                    message.channel.id,
+                    'guild_id':
+                    message.guild.id,
+                    'created_at_timestamp':
+                    message.created_at.timestamp(),
+                    'mentions': [x.id for x in message.mentions],
+                    'mention_everyone':
+                    message.mention_everyone,
+                    'pinned':
+                    message.pinned,
+                    'reference_message': {
+                        'id': message.reference.message_id,
+                        'channel_id': message.reference.channel_id,
+                        'guild_id': message.reference.guild_id
+                    }
+                })
+
+            else:
+                massive.append({
+                    'content':
+                    message.content,
+                    'id':
+                    message.id,
+                    'author_id':
+                    message.author.id,
+                    'author':
+                    str(message.author),
+                    'attachments': [x.url for x in message.attachments],
+                    'channel_id':
+                    message.channel.id,
+                    'guild_id':
+                    message.guild.id,
+                    'created_at_timestamp':
+                    message.created_at.timestamp(),
+                    'mentions': [x.id for x in message.mentions],
+                    'mention_everyone':
+                    message.mention_everyone,
+                    'pinned':
+                    message.pinned,
+                    'reference_message':
+                    None
+                })
+
+        timenow = time()
+
+        file = open(
+            folder + sep + f'messages_{ctx.channel.id}_{round(timenow)}.json',
+            'w')
+
+        dump(massive, file, indent=4)
+
+        await sleep(.3)
+
+        file = File(
+            fp=folder + sep +
+            f'messages_{ctx.channel.id}_{round(timenow)}.json',
+            filename=f'messages_{ctx.channel.id}_{round(timenow)}.{format}')
+
+        await ctx.channel.send(f'**Сохранено {len(massive)} сообщений**',
+                               file=file)
+
+        file.close()
+
+        remove(folder + sep +
+               f'messages_{ctx.channel.id}_{round(timenow)}.json')
+
+    @commands.command(name='djm')
+    async def djm__(self, ctx, enable: bool):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        global enable_djm
+
+        enable_djm = enable
+
+        config_commands['enableDJM'] = enable_djm
+
+        file = open(folder + sep + 'config_commands.json', 'w')
+        dump(config_commands, file, indent=4)
+
+    @commands.command(name='djm_leave')
+    async def djm_leave(self, ctx):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        if isinstance(ctx.channel, GroupChannel):
+            self.allow_groups.remove(ctx.channel.id)
+            await ctx.channel.leave()
 
 
 def setup(bot):

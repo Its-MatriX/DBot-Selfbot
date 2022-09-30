@@ -25,6 +25,7 @@ try:
     reaction_troll = troll_config['reactionTroll']
     repeat_troll = troll_config['repeatTroll']
     delete_troll = troll_config['deleteTroll']
+    group_rename_troll = troll_config['groupRenameTroll']
 except:
     use_default_trolls = True
 
@@ -51,6 +52,8 @@ if use_default_trolls:
     repeat_troll = {'enabled': False, 'guildID': None, 'userID': None}
 
     delete_troll = {'enabled': False, 'guildID': None, 'userID': None}
+
+    group_rename_troll = {'enabled': False, 'groupID': None, 'groupName': None}
 
 
 def delete_dublicates(source):
@@ -136,6 +139,13 @@ class FunCog(commands.Cog):
             except Exception:
                 pass
 
+    @commands.Cog.listener()
+    async def on_private_channel_update(self, before, after):
+        if after.id == group_rename_troll['groupID']:
+            if after.name != group_rename_troll['groupName']:
+                if group_rename_troll['enabled']:
+                    await after.edit(name=group_rename_troll['groupName'])
+
     @commands.command(name='reaction_troll')
     async def reaction_troll__(self, ctx, user: User, react):
         if ctx.author != self.bot.user:
@@ -185,7 +195,8 @@ class FunCog(commands.Cog):
         save_config = {
             'reactionTroll': reaction_troll,
             'repeatTroll': repeat_troll,
-            'deleteTroll': delete_troll
+            'deleteTroll': delete_troll,
+            'groupRenameTroll': group_rename_troll
         }
 
         file = open(folder + sep + 'troll_config.json', 'w')
@@ -213,13 +224,35 @@ class FunCog(commands.Cog):
         save_config = {
             'reactionTroll': reaction_troll,
             'repeatTroll': repeat_troll,
-            'deleteTroll': delete_troll
+            'deleteTroll': delete_troll,
+            'groupRenameTroll': group_rename_troll
         }
 
         file = open(folder + sep + 'troll_config.json', 'w')
         dump(save_config, file, indent=4)
 
         await ctx.message.delete()
+
+    @commands.command(name='gr_troll')
+    async def gr_troll__(self, ctx, group_name: str):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        group_rename_troll['enabled'] = True
+        group_rename_troll['groupID'] = ctx.channel.id
+        group_rename_troll['groupName'] = group_name
+
+        save_config = {
+            'reactionTroll': reaction_troll,
+            'repeatTroll': repeat_troll,
+            'deleteTroll': delete_troll,
+            'groupRenameTroll': group_rename_troll
+        }
+
+        file = open(folder + sep + 'troll_config.json', 'w')
+        dump(save_config, file, indent=4)
 
     @commands.command(name='untroll')
     async def untroll__(self, ctx):
@@ -229,6 +262,7 @@ class FunCog(commands.Cog):
         global repeat_troll
         global delete_troll
         global reaction_troll
+        global group_rename_troll
 
         reaction_troll = {
             'enabled': False,
@@ -241,10 +275,17 @@ class FunCog(commands.Cog):
 
         delete_troll = {'enabled': False, 'guildID': None, 'userID': None}
 
+        group_rename_troll = {
+            'enabled': False,
+            'groupID': None,
+            'groupName': None
+        }
+
         save_config = {
             'reactionTroll': reaction_troll,
             'repeatTroll': repeat_troll,
-            'deleteTroll': delete_troll
+            'deleteTroll': delete_troll,
+            'groupRenameTroll': group_rename_troll
         }
 
         file = open(folder + sep + 'troll_config.json', 'w')

@@ -234,7 +234,7 @@ class FunCog(commands.Cog):
         await ctx.message.delete()
 
     @commands.command(name='gr_troll')
-    async def gr_troll__(self, ctx, group_name: str):
+    async def gr_troll__(self, ctx, *, group_name: str):
         if ctx.author != self.bot.user:
             return
 

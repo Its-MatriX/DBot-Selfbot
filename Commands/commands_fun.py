@@ -658,7 +658,7 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
                    delete_file=True,
                    font_name=datafolder + sep + 'times.ttf')
 
-        file = File(folder + sep + 'demotivator-generated.png')
+        file = File(datafolder + sep + 'demotivator-generated.png')
         await ctx.send(file=file)
 
         remove(datafolder + sep + 'demotivator-generated.png')

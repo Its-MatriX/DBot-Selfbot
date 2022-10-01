@@ -5,5 +5,6 @@
     "LOG_DELETES": false,
     "LOG_EDITS": false,
     "ENABLE_CRASH": false,
-    "DEFAULT_STATUS": "game idle DBot Selfbot"
+    "DEFAULT_STATUS": "game idle DBot Selfbot",
+    "SNIPE_NITRO": true
 }

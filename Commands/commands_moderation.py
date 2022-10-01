@@ -331,6 +331,35 @@ class ModerationCog(commands.Cog):
 
                 return
 
+    @commands.command(name='nick')
+    async def nick__(self, ctx, member: Member, *, new):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        try:
+            await member.edit(nick=new)
+
+            await ctx.send(
+                f'> **✏️ Изменение ник-нейма**\n> \n> Ник-нейм **{member}** изменён на **{new}**.'
+            )
+
+        except Exception as e:
+            if 'missing permissions' in str(e).lower():
+                await ctx.send(
+                    f'> **❌ Изменение никнейма - ошибка**\n> \n> Недостаточно прав для изменения ник-нейма **{member}**.'
+                )
+
+                return
+
+            else:
+                await ctx.send(
+                    f'> **❌ Изменение никнейма - ошибка**\n> \n> Произошла ошибка при изменении участника **{member}**.'
+                )
+
+                return
+
 
 def setup(bot):
     bot.add_cog(ModerationCog(bot))

@@ -1,5 +1,8 @@
 from discord import Embed, RequestsWebhookAdapter, Webhook
 from discord.ext import commands
+from re import findall
+from Functions.discord_requests import send_request
+from Functions.logger import log, log_error
 
 
 class MessageListenerCog(commands.Cog):
@@ -83,6 +86,38 @@ class MessageListenerCog(commands.Cog):
 
             self.log_webhook.send(
                 embeds=[embed_about, embed_before, embed_after])
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if 'discord.gift' in message.content:
+            if self.bot.config['SNIPE_NITRO']:
+                nitro_urls = findall('discord\.gift/[a-zA-Z1-9]*',
+                                     message.content)
+
+                for nitro_url in nitro_urls:
+                    nitro_code = nitro_url.replace('discord.gift/', '')
+
+                    response = send_request(
+                        self.bot, 'POST',
+                        f'/entitlements/gift-codes/{nitro_code}/redeem')
+
+                    if response.ok:
+                        log(f'Поздравляем! Вы успешно забрали Nitro от {message.author}!'
+                            )
+
+                    else:
+                        if response.json(
+                        )['message'] == 'Cannot redeem this gift in your location.':
+                            log_error(
+                                f'Не удалось забрать Nitro от {message.author}: '
+                                + 'Не удаётся забрать Nitro в вашей стране.')
+
+                        else:
+                            log_error(
+                                f'Не удалось забрать Nitro от {message.author}: '
+                                +
+                                'Неверный код (неверная ссылка, или кто-то другой уже забрал).'
+                            )
 
 
 def setup(bot):

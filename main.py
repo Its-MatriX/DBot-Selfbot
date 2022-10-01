@@ -16,7 +16,6 @@ except Exception:
         install_modules_from_requirements
     install_modules_from_requirements()
 
-
 if name == 'nt':
     system('title DBot: Запускается')
 
@@ -27,6 +26,7 @@ def clear():
 
     else:
         system('clear')
+
 
 clear()
 

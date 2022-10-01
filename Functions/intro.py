@@ -1,3 +1,5 @@
+from time import sleep
+
 intro_text = '''▓█████▄  ▄▄▄▄    ▒█████  ▄▄▄█████▓
 ▒██▀ ██▌▓█████▄ ▒██▒  ██▒▓  ██▒ ▓▒
 ░██   █▌▒██▒ ▄██▒██░  ██▒▒ ▓██░ ▒░
@@ -33,10 +35,13 @@ colors = [
 ]
 
 
-def intro():
+def intro(resize_window = False):
     lines = intro_text.split('\n')
     index = 0
 
     for line in lines:
         print(get_color(colors[index], 'fg') + line)
         index += 1
+
+        if not resize_window:
+            sleep(.02*index)

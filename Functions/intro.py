@@ -32,6 +32,7 @@ colors = [
     123, 117, 111, 105, 99, 93
 ]
 
+
 def intro():
     lines = intro_text.split('\n')
     index = 0

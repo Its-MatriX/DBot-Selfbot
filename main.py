@@ -65,7 +65,8 @@ except FileNotFoundError:
     print('    "LOG_DELETES": false,')
     print('    "LOG_EDITS": false,')
     print('    "ENABLE_CRASH": false,')
-    print('    "DEFAULT_STATUS": "game idle DBot"')
+    print('    "DEFAULT_STATUS": "game idle DBot",')
+    print('    "SNIPE_NITRO": true')
     print('}')
 
     print()

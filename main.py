@@ -27,7 +27,6 @@ def clear():
     else:
         system('clear')
 
-
 clear()
 
 try:
@@ -89,7 +88,7 @@ bot.config = config
 
 
 def start_screen():
-    intro()
+    intro(True)
 
     print(Fore.GREEN + 'Логин: ' + Fore.CYAN + str(bot.user))
     print(Fore.GREEN + 'ID: ' + Fore.CYAN + str(bot.user.id))
@@ -286,8 +285,9 @@ async def on_command(ctx):
     log(ctx.invoked_with, 'КОМАНДА', 0)
 
 
+print(Fore.GREEN + 'Входим в учётную запись...')
+
 try:
-    print(Fore.GREEN + 'Входим в учётную запись...')
     bot.run(config['TOKEN'])
 
 except Exception as e:

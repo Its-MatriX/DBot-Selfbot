@@ -144,7 +144,7 @@ class ModerationCog(commands.Cog):
 
             else:
                 await ctx.send(
-                    f'> **❌ Бан - ошибка**\n> \n> Укажите тег **{user}**, чтоба найти его среди прочих **{user}**.'
+                    f'> **❌ Бан - ошибка**\n> \n> Укажите тег **{user}**, чтобы найти его среди прочих **{user}**.'
                 )
 
                 return
@@ -185,7 +185,7 @@ class ModerationCog(commands.Cog):
 
             else:
                 await ctx.send(
-                    f'> **❌ Разбан - ошибка**\n> \n> Укажите тег **{user}**, чтоба найти его среди прочих **{user}**.'
+                    f'> **❌ Разбан - ошибка**\n> \n> Укажите тег **{user}**, чтобы найти его среди прочих **{user}**.'
                 )
 
                 return

@@ -6,7 +6,7 @@ from discord import CustomActivity, Member, Status, User
 from discord.ext import commands
 
 folder = split(__file__)[0]
-
+datafolder = split(folder)[0] + sep + 'Data'
 
 class CopyCog(commands.Cog):
 
@@ -22,7 +22,7 @@ class CopyCog(commands.Cog):
 
         extension = str(user.avatar_url).split('.')[-1]
         path = sub(r'\?size\=\d+', '',
-                   folder + sep + 'user_avatar.' + extension)
+                   datafolder + sep + 'user_avatar.' + extension)
 
         await user.avatar_url.save(path)
 
@@ -91,7 +91,7 @@ class CopyCog(commands.Cog):
 
         extension = str(user.avatar_url).split('.')[-1]
         path = sub(r'\?size\=\d+', '',
-                   folder + sep + 'user_avatar.' + extension)
+                   datafolder + sep + 'user_avatar.' + extension)
 
         await user.avatar_url.save(path)
 

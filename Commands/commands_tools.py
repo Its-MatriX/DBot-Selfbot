@@ -22,26 +22,27 @@ from time import time
 from Functions.logger import log_error
 
 folder = split(__file__)[0]
+datafolder = split(folder)[0] + sep + 'Data'
 
 try:
-    file = open(folder + sep + 'auto_response.json', 'r')
+    file = open(datafolder + sep + 'auto_response.json', 'r')
     auto_response_messages = load(file)
     file.close()
 except:
-    open(folder + sep + 'auto_response.json', 'w').write('{}')
+    open(datafolder + sep + 'auto_response.json', 'w').write('{}')
     auto_response_messages = {}
 
 try:
-    file = open(folder + sep + 'config_commands.json', 'r')
+    file = open(datafolder + sep + 'config_commands.json', 'r')
     config_commands = load(file)
     file.close()
 
     enable_djm = config_commands['enableDJM']
 except:
-    open(folder + sep + 'auto_response.json', 'w').write('{}')
+    open(datafolder + sep + 'auto_response.json', 'w').write('{}')
 
     baseconfig = {'enableDJM': False}
-    file = open(folder + sep + 'config_commands.json', 'w')
+    file = open(datafolder + sep + 'config_commands.json', 'w')
     dump(baseconfig, file, indent=4)
     file.close()
 
@@ -775,7 +776,7 @@ class ToolsCog(commands.Cog):
         timenow = time()
 
         file = open(
-            folder + sep + f'messages_{ctx.channel.id}_{round(timenow)}.json',
+            datafolder + sep + f'messages_{ctx.channel.id}_{round(timenow)}.json',
             'w')
 
         dump(massive, file, indent=4)
@@ -783,7 +784,7 @@ class ToolsCog(commands.Cog):
         await sleep(.3)
 
         file = File(
-            fp=folder + sep +
+            fp=datafolder + sep +
             f'messages_{ctx.channel.id}_{round(timenow)}.json',
             filename=f'messages_{ctx.channel.id}_{round(timenow)}.{format}')
 
@@ -792,7 +793,7 @@ class ToolsCog(commands.Cog):
 
         file.close()
 
-        remove(folder + sep +
+        remove(datafolder + sep +
                f'messages_{ctx.channel.id}_{round(timenow)}.json')
 
     @commands.command(name='djm')
@@ -808,7 +809,7 @@ class ToolsCog(commands.Cog):
 
         config_commands['enableDJM'] = enable_djm
 
-        file = open(folder + sep + 'config_commands.json', 'w')
+        file = open(datafolder + sep + 'config_commands.json', 'w')
         dump(config_commands, file, indent=4)
 
     @commands.command(name='djm_leave')

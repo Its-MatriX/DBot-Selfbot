@@ -14,11 +14,12 @@ from Functions.demotivators import Demotivator
 token_generator_part_length = 10
 
 folder = split(__file__)[0]
+datafolder = split(folder)[0] + sep + 'Data'
 
 use_default_trolls = True
 
 try:
-    file = open(folder + sep + 'troll_config.json', 'r')
+    file = open(datafolder + sep + 'troll_config.json', 'r')
     use_default_trolls = False
     troll_config = load(file)
 
@@ -29,7 +30,7 @@ try:
 except:
     use_default_trolls = True
 
-    file = open(folder + sep + 'troll_config.json', 'w')
+    file = open(datafolder + sep + 'troll_config.json', 'w')
     file.write('{}')
     file.close()
 
@@ -170,7 +171,7 @@ class FunCog(commands.Cog):
             'deleteTroll': delete_troll
         }
 
-        file = open(folder + sep + 'troll_config.json', 'w')
+        file = open(datafolder + sep + 'troll_config.json', 'w')
         dump(save_config, file, indent=4)
 
         await ctx.message.delete()
@@ -199,7 +200,7 @@ class FunCog(commands.Cog):
             'groupRenameTroll': group_rename_troll
         }
 
-        file = open(folder + sep + 'troll_config.json', 'w')
+        file = open(datafolder + sep + 'troll_config.json', 'w')
         dump(save_config, file, indent=4)
 
         await ctx.message.delete()
@@ -228,7 +229,7 @@ class FunCog(commands.Cog):
             'groupRenameTroll': group_rename_troll
         }
 
-        file = open(folder + sep + 'troll_config.json', 'w')
+        file = open(datafolder + sep + 'troll_config.json', 'w')
         dump(save_config, file, indent=4)
 
         await ctx.message.delete()
@@ -251,7 +252,7 @@ class FunCog(commands.Cog):
             'groupRenameTroll': group_rename_troll
         }
 
-        file = open(folder + sep + 'troll_config.json', 'w')
+        file = open(datafolder + sep + 'troll_config.json', 'w')
         dump(save_config, file, indent=4)
 
     @commands.command(name='untroll')
@@ -288,7 +289,7 @@ class FunCog(commands.Cog):
             'groupRenameTroll': group_rename_troll
         }
 
-        file = open(folder + sep + 'troll_config.json', 'w')
+        file = open(datafolder + sep + 'troll_config.json', 'w')
         dump(save_config, file, indent=4)
 
         await ctx.message.delete()
@@ -652,15 +653,15 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
 
         dem = Demotivator(top_text, bottom_text)
         dem.create(attachment.url,
-                   result_filename='Commands/demotivator-generated.png',
+                   result_filename='Data/demotivator-generated.png',
                    use_url=True,
                    delete_file=True,
-                   font_name=folder + sep + 'times.ttf')
+                   font_name=datafolder + sep + 'times.ttf')
 
         file = File(folder + sep + 'demotivator-generated.png')
         await ctx.send(file=file)
 
-        remove(folder + sep + 'demotivator-generated.png')
+        remove(datafolder + sep + 'demotivator-generated.png')
 
     @commands.command(name='ip')
     async def ip__(self, ctx, user: User):

@@ -1,16 +1,18 @@
-from time import sleep
+intro_text = ''' _____  ____        _      _____      _  __ _           _   
+|  __ \|  _ \      | |    / ____|    | |/ _| |         | |
+| |  | | |_) | ___ | |_  | (___   ___| | |_| |__   ___ | | 
+| |  | |  _ < / _ \| __|  \___ \ / _ \ |  _| '_ \ / _ \| __|
+| |__| | |_) | (_) | |_   ____) |  __/ | | | |_) | (_) | | 
+|_____/|____/ \___/ \__| |_____/ \___|_|_| |_.__/ \___/ \__|
+'''
 
-intro_text = '''▓█████▄  ▄▄▄▄    ▒█████  ▄▄▄█████▓
-▒██▀ ██▌▓█████▄ ▒██▒  ██▒▓  ██▒ ▓▒
-░██   █▌▒██▒ ▄██▒██░  ██▒▒ ▓██░ ▒░
-░▓█▄   ▌▒██░█▀  ▒██   ██░░ ▓██▓ ░
-░▒████▓ ░▓█  ▀█▓░ ████▓▒░  ▒██▒ ░
- ▒▒▓  ▒ ░▒▓███▀▒░ ▒░▒░▒░   ▒ ░░
- ░ ▒  ▒ ▒░▒   ░   ░ ▒ ▒░     ░
- ░ ░  ░  ░    ░ ░ ░ ░ ▒    ░
-   ░     ░          ░ ░
- ░            ░
- '''
+intro_text_mini = ''' _____  ____        _ 
+|  __ \|  _ \      | |
+| |  | | |_) | ___ | |
+| |  | |  _ < / _ \| __|
+| |__| | |_) | (_) | |_
+|_____/|____/ \___/ \__|
+'''
 
 
 def fore(color):
@@ -35,13 +37,20 @@ colors = [
 ]
 
 
-def intro(resize_window = False):
-    lines = intro_text.split('\n')
-    index = 0
+def intro(mini = False):
 
-    for line in lines:
-        print(get_color(colors[index], 'fg') + line)
-        index += 1
+    if not mini:
+        lines = intro_text.split('\n')
+        index = 0
 
-        if not resize_window:
-            sleep(.02*index)
+        for line in lines:
+            print(get_color(colors[index], 'fg') + line)
+            index += 1
+
+    else:
+        lines = intro_text_mini.split('\n')
+        index = 0
+
+        for line in lines:
+            print(get_color(colors[index], 'fg') + line)
+            index += 1

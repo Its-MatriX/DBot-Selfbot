@@ -3,7 +3,6 @@
 
 from os import system
 from os.path import sep, split
-from time import sleep
 
 folder = split(__file__)[0]
 

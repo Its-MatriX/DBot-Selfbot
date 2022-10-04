@@ -776,8 +776,8 @@ class ToolsCog(commands.Cog):
         timenow = time()
 
         file = open(
-            datafolder + sep + f'messages_{ctx.channel.id}_{round(timenow)}.json',
-            'w')
+            datafolder + sep +
+            f'messages_{ctx.channel.id}_{round(timenow)}.json', 'w')
 
         dump(massive, file, indent=4)
 

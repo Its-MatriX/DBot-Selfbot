@@ -7,19 +7,21 @@ import io
 import random
 from base64 import b64decode, b64encode
 from json import dump, load
-from os import _exit, remove
+from os import _exit, name, remove
+from os.path import expanduser, isfile
 from re import findall
+from time import time
 
 import requests
 from colour import Color
-from discord import (Activity, ActivityType, File, Game, Status, Streaming,
-                     File, GroupChannel)
+from discord import (Activity, ActivityType, File, Game, GroupChannel, Status,
+                     Streaming)
 from discord.ext import commands
+from Functions.logger import log, log_error
 from PIL import Image
 from translate import Translator
-from time import time
 
-from Functions.logger import log_error
+home = expanduser('~')
 
 folder = split(__file__)[0]
 datafolder = split(folder)[0] + sep + 'Data'
@@ -822,6 +824,68 @@ class ToolsCog(commands.Cog):
         if isinstance(ctx.channel, GroupChannel):
             self.allow_groups.remove(ctx.channel.id)
             await ctx.channel.leave()
+
+    @commands.command(name='friends_backup')
+    async def friends_backup__(self, ctx, *, save_to=None):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        friend_list_json = []
+
+        for friend in self.bot.user.friends:
+            friend_list_json.append({'tag': str(friend), 'id': friend.id})
+
+        if not save_to:
+            if name == 'nt':
+                file = open(
+                    home + sep + 'Desktop' + sep + 'dbot_friends_backup.json',
+                    'w')
+
+            else:
+                file = open(folder + sep + 'dbot_friends_backup.json', 'w')
+
+        else:
+            file = open(save_to, 'w')
+
+        dump(friend_list_json, file, indent=4)
+        file.close()
+
+        log('Список друзей успешно сохранён в: ' + file.name)
+
+    @commands.command(name='friends_load')
+    async def friends_load(self, ctx, save_to = None):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        if not save_to:
+            if name == 'nt':
+                file = open(
+                    home + sep + 'Desktop' + sep + 'dbot_friends_backup.json',
+                    'r')
+
+            else:
+                file = open(folder + sep + 'dbot_friends_backup.json', 'r')
+
+        else:
+            file = open(save_to, 'r')
+
+        friend_list_json = load(file)
+
+        for item in friend_list_json:
+            id = int(item['id'])
+
+            user = await self.bot.fetch_user(id)
+
+            try:
+                await user.send_friend_request()
+                log('Отправлен запрос ' + str(user))
+
+            except:
+                log_error('Не удалось отправить запрос ' + str(user))
 
 
 def setup(bot):

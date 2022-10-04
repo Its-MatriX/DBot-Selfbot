@@ -3,6 +3,7 @@
 
 from os import system
 from os.path import sep, split
+from time import sleep
 
 folder = split(__file__)[0]
 
@@ -88,8 +89,8 @@ bot.remove_command('help')
 bot.config = config
 
 
-def start_screen():
-    intro(True)
+def start_screen(use_mini_intro=False):
+    intro(use_mini_intro)
 
     print(Fore.GREEN + 'Логин: ' + Fore.CYAN + str(bot.user))
     print(Fore.GREEN + 'ID: ' + Fore.CYAN + str(bot.user.id))
@@ -97,7 +98,8 @@ def start_screen():
     print()
 
     print(Fore.GREEN + 'Загружено расширений: ' + Fore.CYAN +
-          str(loaded_extensions))
+          str(loaded_extensions) + ' (команд: ' + str(len(bot.all_commands)) +
+          ')')
 
 
 def terminal_resize_listener():
@@ -108,8 +110,11 @@ def terminal_resize_listener():
 
         if terminal_cols != terminal_cols_old:
             terminal_cols_old = get_terminal_size().columns
+
+            use_mini_intro = terminal_cols_old < 70
+
             clear()
-            start_screen()
+            start_screen(use_mini_intro)
 
             print()
             print(Fore.CYAN + '—' * terminal_cols)

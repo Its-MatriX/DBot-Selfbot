@@ -83,7 +83,7 @@ class InfoCog(commands.Cog):
             resp += f'> **Администратор:** `{"Да" if user.guild_permissions.administrator else "Нет"}`\n'
 
             if user.guild.owner:
-                resp += f'\n> **Владелец:** `{"Да" if user.id == user.guild.owner.id else "Нет"}`\n'
+                resp += f'> **Владелец:** `{"Да" if user.id == user.guild.owner.id else "Нет"}`\n'
 
             created_at = round(user.created_at.timestamp())
             resp += f'> **Создано:** **<t:{created_at}:R>**\n'

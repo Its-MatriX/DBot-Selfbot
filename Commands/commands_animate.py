@@ -1,8 +1,8 @@
 from threading import Thread
 from time import sleep
 
-import requests
 from discord.ext import commands
+from Functions.discord_requests import send_request
 
 
 class AnimatorState:
@@ -10,7 +10,11 @@ class AnimatorState:
     animation = None
 
 
-def set_custom_status(token, status_text=None, status_icon=None):
+class MainBot:
+    bot = None
+
+
+def set_custom_status(status_text=None, status_icon=None):
     if status_text:
         if status_icon:
             body = {
@@ -27,16 +31,12 @@ def set_custom_status(token, status_text=None, status_icon=None):
         else:
             return None
 
-    headers = {'Authorization': token}
-
-    resp = requests.patch('https://discord.com/api/v9/users/@me/settings',
-                          json=body,
-                          headers=headers)
+    resp = send_request(MainBot.bot, 'PATCH', '/users/@me/settings', body)
 
     return resp.status_code
 
 
-def animate(delay, token, statuses):
+def animate(delay, statuses):
     while AnimatorState.is_working:
         for status in statuses:
             if not AnimatorState.is_working:
@@ -67,8 +67,8 @@ def animate(delay, token, statuses):
                 else:
                     status_text = status
 
-            Thread(target=lambda: set_custom_status(token, status_text,
-                                                    status_icon)).start()
+            Thread(target=lambda: set_custom_status(status_text, status_icon)
+                   ).start()
             sleep(delay)
 
 
@@ -76,6 +76,7 @@ class AnimationCog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        MainBot.bot = bot
 
     @commands.command(name='animate')
     async def animate__(self, ctx, delay: float, *, animation: str):
@@ -99,8 +100,7 @@ class AnimationCog(commands.Cog):
         AnimatorState.is_working = True
 
         animation = animation.split('\n')
-        Thread(target=lambda: animate(delay, self.bot.http.token, animation)
-               ).start()
+        Thread(target=lambda: animate(delay, animation)).start()
 
     @commands.command(name='stop_animate')
     async def stop_animate__(self, ctx):

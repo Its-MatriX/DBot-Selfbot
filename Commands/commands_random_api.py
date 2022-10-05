@@ -12,7 +12,12 @@ datafolder = split(folder)[0] + sep + 'Data'
 
 
 async def send_file(url, ctx):
-    content = get(url).content
+    try:
+        content = get(url, timeout=5).content
+    except:
+        await ctx.send(url)
+        return
+
     open(datafolder + sep + 'random_api_temp.png', 'wb').write(content)
 
     await ctx.send(file=File(datafolder + sep +

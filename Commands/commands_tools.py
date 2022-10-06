@@ -855,7 +855,7 @@ class ToolsCog(commands.Cog):
         log('Список друзей успешно сохранён в: ' + file.name)
 
     @commands.command(name='friends_load')
-    async def friends_load(self, ctx, save_to = None):
+    async def friends_load(self, ctx, save_to=None):
         if ctx.author != self.bot.user:
             return
 

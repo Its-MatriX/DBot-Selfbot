@@ -138,29 +138,27 @@ async def on_connect():
                 file = '.'.join(file.split('.')[:-1:1])
                 bot.load_extension(f'Commands.{file}')
                 loaded_extensions += 1
+    except ModuleNotFoundError:
+        print(Fore.RED + 'Ошибка загрузки расширений!')
+        print(Fore.RED + 'Не установлены все необходимые модули. ' +
+              'Нажмите [Enter] для начала установки')
+
+        input()
+
+        print(Fore.GREEN)
+
+        from Functions.requirements_installer import \
+            install_modules_from_requirements
+        install_modules_from_requirements(False)
+
+        input(Fore.GREEN + 'Модули успешно установлены. Перезапустите DBot.')
+
+        _exit(0)
+
     except Exception as e:
-        if 'no module named' in str(e).lower():
-            print(Fore.RED + 'Ошибка загрузки расширений!')
-            print(Fore.RED + 'Не установлены все необходимые модули. ' +
-                  'Нажмите [Enter] для начала установки')
-
-            input()
-
-            print(Fore.GREEN)
-
-            from Functions.requirements_installer import \
-                install_modules_from_requirements
-            install_modules_from_requirements(False)
-
-            input(Fore.GREEN +
-                  'Модули успешно установлены. Перезапустите DBot.')
-
-            _exit(0)
-        else:
-            print(Fore.RED +
-                  f'Ошибка инициализации расширения Commands.{file}. ' +
-                  'Попробуйте переустановить DBot.')
-            _exit(1)
+        print(Fore.RED + f'Ошибка инициализации расширения Commands.{file}. ' +
+              'Попробуйте переустановить DBot.' + f'\nОшибка: {e}')
+        _exit(1)
 
     print()
 

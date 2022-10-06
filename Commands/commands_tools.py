@@ -15,7 +15,7 @@ from time import time
 import requests
 from colour import Color
 from discord import (Activity, ActivityType, File, Game, GroupChannel, Status,
-                     Streaming)
+                     Streaming, Emoji)
 from discord.ext import commands
 from Functions.logger import log, log_error
 from PIL import Image
@@ -894,6 +894,9 @@ class ToolsCog(commands.Cog):
 
         await ctx.message.delete()
 
+        if '~' not in name:
+            name += '~0'
+
         if name == '--list':
             if not guild_id:
                 emojis = ctx.guild.emojis
@@ -912,16 +915,39 @@ class ToolsCog(commands.Cog):
             guild = self.bot.get_guild(guild_id)
             emojis = guild.emojis
 
+        emojis_ = []
+
+        for emoji in emojis:
+            id = 0
+            while True:
+                name_ = emoji.name + '~' + str(id)
+
+                if name_ in [x[0] for x in emojis_]:
+                    id += 1
+                    continue
+
+                emojis_.append([name_, emoji.id])
+                break
+
+        emojis = emojis_
+
         selected = None
 
         for emoji in emojis:
-            if emoji.name == name:
-                selected = emoji
+            if emoji[0] == name:
+                selected = emoji[1]
                 break
 
         if not selected:
             log_error(f'Эмодзи {name} не найден.')
             return
+
+        if not guild_id:
+            selected = await ctx.guild.fetch_emoji(selected)
+
+        else:
+            guild = self.bot.get_guild(guild_id)
+            selected = await guild.fetch_emoji(selected)
 
         await ctx.send(f'{selected.url}?size=48')
 

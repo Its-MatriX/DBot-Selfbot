@@ -1,5 +1,4 @@
-from time import gmtime, strftime, time
-
+from Functions.logger import log_error
 import requests
 from discord import Role, Status, User, http
 from discord.ext import commands

@@ -8,7 +8,7 @@ import random
 from base64 import b64decode, b64encode
 from json import dump, load
 from os import _exit, name, remove
-from os.path import expanduser, isfile
+from os.path import expanduser
 from re import findall
 from time import time
 
@@ -886,6 +886,44 @@ class ToolsCog(commands.Cog):
 
             except:
                 log_error('Не удалось отправить запрос ' + str(user))
+
+    @commands.command(name='emoji')
+    async def emoji__(self, ctx, name, guild_id: int = None):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        if name == '--list':
+            if not guild_id:
+                emojis = ctx.guild.emojis
+
+            else:
+                guild = self.bot.get_guild(guild_id)
+                emojis = guild.emojis
+
+            await ctx.send('; '.join([x.name for x in emojis]))
+            return
+
+        if not guild_id:
+            emojis = ctx.guild.emojis
+
+        else:
+            guild = self.bot.get_guild(guild_id)
+            emojis = guild.emojis
+
+        selected = None
+
+        for emoji in emojis:
+            if emoji.name == name:
+                selected = emoji
+                break
+
+        if not selected:
+            log_error(f'Эмодзи {name} не найден.')
+            return
+
+        await ctx.send(f'{selected.url}?size=48')
 
 
 def setup(bot):

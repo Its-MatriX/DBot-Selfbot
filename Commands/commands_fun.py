@@ -74,6 +74,7 @@ class FunCog(commands.Cog):
     reactions_command_is_working = False
     pings_is_working = False
     inftype_is_working = False
+    move_troll_is_working = False
 
     def __init__(self, bot):
         self.bot = bot
@@ -264,15 +265,22 @@ class FunCog(commands.Cog):
 
         moved_to = None
 
-        for x in range(moves):
-            while True:
-                move_to = choice(ctx.guild.voice_channels)
+        self.move_troll_is_working = True
 
-                if move_to != moved_to:
-                    break
+        try:
+            for x in range(moves):
+                while True:
+                    move_to = choice(ctx.guild.voice_channels)
 
-            await member.move_to(move_to)
-            moved_to = move_to
+                    if move_to != moved_to:
+                        break
+
+                await member.move_to(move_to)
+                moved_to = move_to
+        except:
+            pass
+
+        self.move_troll_is_working = False
 
     @commands.command(name='untroll')
     async def untroll__(self, ctx):
@@ -283,6 +291,8 @@ class FunCog(commands.Cog):
         global delete_troll
         global reaction_troll
         global group_rename_troll
+
+        self.move_troll_is_working = False
 
         reaction_troll = {
             'enabled': False,

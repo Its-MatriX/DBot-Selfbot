@@ -19,8 +19,11 @@ def start_rich_presence():
                large_image='icon',
                large_text='DBot Icon',
                buttons=[{
-                   'label': 'Скачать',
+                   'label': 'Скачать DBot',
                    'url': 'https://github.com/Its-MatriX/DBot-Selfbot'
+               }, {
+                   'label': 'Сервер',
+                   'url': 'https://discord.gg/EC4tDfQYwf'
                }])
 
     while True:

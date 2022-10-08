@@ -1,36 +1,40 @@
-# Для примера, Rich Presence для Discord. Можете удалить, или можете не удалять, если хотите поддержать нас.
-
-from discord.ext import commands
+from pypresence import Presence
+import time
 from threading import Thread
-import DiscordRPC
-from time import time
+from discord.ext import commands
+from asyncio import new_event_loop, set_event_loop
 
 
-def rich_presence():
-    try:
-        rpc = DiscordRPC.RPC.Set_ID(
-            app_id=1023113143486005319)  # Connecting to DBot application
+def start_rich_presence():
+    loop = new_event_loop()
+    set_event_loop(loop)
 
-        rpc.set_activity(state=f"Удобный, многофункциональный",
-                        details="DBot Selfbot",
-                        large_image='icon',
-                        buttons=DiscordRPC.button(
-                            '✨ Скачать ✨', 'Присоединиться к серверу',
-                            'https://github.com/Its-MatriX/DBot-Selfbot',
-                            'https://discord.gg/EC4tDfQYwf'),
-                        timestamp=round(time()))
+    client_id = "1023113143486005319"
+    RPC = Presence(client_id)
 
-        rpc.run()
+    RPC.connect()
+    RPC.update(details='DBot - Discord Selfbot',
+               state='Удобный, многофункциональный.',
+               start=time.time(),
+               large_image='icon',
+               large_text='DBot Icon',
+               buttons=[{
+                   'label': 'Скачать',
+                   'url': 'https://github.com/Its-MatriX/DBot-Selfbot'
+               }, {
+                   'label': 'Присоединиться к серверу',
+                   'url': 'https://discord.gg/EC4tDfQYwf'
+               }])
 
-    except:
-        pass
+    while True:
+        time.sleep(15)
 
 
 class RichPresenceCog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        Thread(target=rich_presence).start()
+        Thread(target=start_rich_presence).start()
 
 
 def setup(bot):

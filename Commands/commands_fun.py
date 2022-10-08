@@ -7,7 +7,7 @@ from random import choice, choices, randint, uniform
 from string import ascii_letters, digits
 from time import time
 
-from discord import File, User
+from discord import File, User, Member
 from discord.ext import commands
 from Functions.demotivators import Demotivator
 
@@ -254,6 +254,25 @@ class FunCog(commands.Cog):
 
         file = open(datafolder + sep + 'troll_config.json', 'w')
         dump(save_config, file, indent=4)
+
+    @commands.command(name='move_troll')
+    async def move_troll(self, ctx, member: Member, moves: int):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        moved_to = None
+
+        for x in range(moves):
+            while True:
+                move_to = choice(ctx.guild.voice_channels)
+
+                if move_to != moved_to:
+                    break
+
+            await member.move_to(move_to)
+            moved_to = move_to
 
     @commands.command(name='untroll')
     async def untroll__(self, ctx):

@@ -23,7 +23,7 @@ class MessageListenerCog(commands.Cog):
             return
 
         if self.log_deletes:
-            if not isinstance(message.channel, [GroupChannel, DMChannel]):
+            if not isinstance(message.channel, (GroupChannel, DMChannel)):
                 embed = Embed(title='Сообщение удалено', color=0xFF0000)
 
                 resp = f'**Автор:** {message.author.mention} `({message.author.id})`\n' + \
@@ -119,7 +119,7 @@ class MessageListenerCog(commands.Cog):
             return
 
         if self.log_edits:
-            if not isinstance(after.channel, [GroupChannel, DMChannel]):
+            if not isinstance(after.channel, (GroupChannel, DMChannel)):
                 embed_about = Embed(title='Сообщение изменено', color=0xFFFF00)
 
                 resp = f'**Автор:** {after.author.mention} `({after.author.id})`\n' + \

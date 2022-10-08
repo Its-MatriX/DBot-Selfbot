@@ -1,4 +1,4 @@
-from discord import Embed, RequestsWebhookAdapter, Webhook
+from discord import Embed, RequestsWebhookAdapter, Webhook, DMChannel, GroupChannel
 from discord.ext import commands
 from re import findall
 from Functions.discord_requests import send_request
@@ -23,35 +23,95 @@ class MessageListenerCog(commands.Cog):
             return
 
         if self.log_deletes:
-            embed = Embed(title='Сообщение удалено', color=0xFF0000)
+            if not isinstance(message.channel, [GroupChannel, DMChannel]):
+                embed = Embed(title='Сообщение удалено', color=0xFF0000)
 
-            resp = f'**Автор:** {message.author.mention} `({message.author.id})`\n' + \
-                   f'**Канал:** {message.channel.mention} `({message.channel.id})`\n' + \
-                   f'**Сервер:** `{message.guild.name} ({message.guild.id})`'
+                resp = f'**Автор:** {message.author.mention} `({message.author.id})`\n' + \
+                    f'**Канал:** {message.channel.mention} `({message.channel.id})`\n' + \
+                    f'**Сервер:** `{message.guild.name} ({message.guild.id})`'
 
-            embed.description = resp
+                embed.description = resp
 
-            if message.content != '':
-                embed.add_field(name='Контент:',
-                                value=message.content,
-                                inline=False)
+                if message.content != '':
+                    embed.add_field(name='Контент:',
+                                    value=message.content,
+                                    inline=False)
 
-            attach_resp = ''
-            attach_id = 1
+                attach_resp = ''
+                attach_id = 1
 
-            for attachment in message.attachments:
-                attach_resp += f'[№{attach_id}]({attachment.url}) '
-                attach_id += 1
+                for attachment in message.attachments:
+                    attach_resp += f'[№{attach_id}]({attachment.url}) '
+                    attach_id += 1
 
-            if attach_resp != '':
-                embed.add_field(name='Вложения:',
-                                value=attach_resp,
-                                inline=False)
+                if attach_resp != '':
+                    embed.add_field(name='Вложения:',
+                                    value=attach_resp,
+                                    inline=False)
 
-            try:
-                self.log_webhook.send(embed=embed)
-            except Exception as e:
-                log_error(f'Ошибка логгера сообщений: {e}')
+                try:
+                    self.log_webhook.send(embed=embed)
+                except Exception as e:
+                    log_error(f'Ошибка логгера сообщений: {e}')
+
+            elif isinstance(message.channel, GroupChannel):
+                embed = Embed(title='Сообщение удалено', color=0xFF0000)
+
+                resp = f'**Автор:** {message.author.mention} `({message.author.id})`\n' + \
+                    f'**Канал:** {message.channel.mention} `({message.channel.id}, группа)`\n'
+
+                embed.description = resp
+
+                if message.content != '':
+                    embed.add_field(name='Контент:',
+                                    value=message.content,
+                                    inline=False)
+
+                attach_resp = ''
+                attach_id = 1
+
+                for attachment in message.attachments:
+                    attach_resp += f'[№{attach_id}]({attachment.url}) '
+                    attach_id += 1
+
+                if attach_resp != '':
+                    embed.add_field(name='Вложения:',
+                                    value=attach_resp,
+                                    inline=False)
+
+                try:
+                    self.log_webhook.send(embed=embed)
+                except Exception as e:
+                    log_error(f'Ошибка логгера сообщений: {e}')
+
+            elif isinstance(message.channel, DMChannel):
+                embed = Embed(title='Сообщение удалено', color=0xFF0000)
+
+                resp = f'**Автор:** {message.author.mention} `({message.author.id}, личные сообщения)`'
+
+                embed.description = resp
+
+                if message.content != '':
+                    embed.add_field(name='Контент:',
+                                    value=message.content,
+                                    inline=False)
+
+                attach_resp = ''
+                attach_id = 1
+
+                for attachment in message.attachments:
+                    attach_resp += f'[№{attach_id}]({attachment.url}) '
+                    attach_id += 1
+
+                if attach_resp != '':
+                    embed.add_field(name='Вложения:',
+                                    value=attach_resp,
+                                    inline=False)
+
+                try:
+                    self.log_webhook.send(embed=embed)
+                except Exception as e:
+                    log_error(f'Ошибка логгера сообщений: {e}')
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
@@ -59,39 +119,107 @@ class MessageListenerCog(commands.Cog):
             return
 
         if self.log_edits:
-            embed_about = Embed(title='Сообщение изменено', color=0xFFFF00)
+            if not isinstance(after.channel, [GroupChannel, DMChannel]):
+                embed_about = Embed(title='Сообщение изменено', color=0xFFFF00)
 
-            resp = f'**Автор:** {after.author.mention} `({after.author.id})`\n' + \
-                   f'**Канал:** {after.channel.mention} `({after.channel.id})`\n' + \
-                   f'**Сервер:** `{after.guild.name} ({after.guild.id})`'
+                resp = f'**Автор:** {after.author.mention} `({after.author.id})`\n' + \
+                    f'**Канал:** {after.channel.mention} `({after.channel.id})`\n' + \
+                    f'**Сервер:** `{after.guild.name} ({after.guild.id})`'
 
-            embed_about.description = resp
+                embed_about.description = resp
 
-            attach_resp = ''
-            attach_id = 1
+                attach_resp = ''
+                attach_id = 1
 
-            for attachment in before.attachments:
-                attach_resp += f'[№{attach_id}]({attachment.url}) '
-                attach_id += 1
+                for attachment in before.attachments:
+                    attach_resp += f'[№{attach_id}]({attachment.url}) '
+                    attach_id += 1
 
-            if attach_resp != '':
-                embed_about.add_field(name='Вложения:',
-                                      value=attach_resp,
-                                      inline=False)
+                if attach_resp != '':
+                    embed_about.add_field(name='Вложения:',
+                                          value=attach_resp,
+                                          inline=False)
 
-            embed_before = Embed(title='До:',
-                                 description=before.content,
-                                 color=0x2ECC70)
+                embed_before = Embed(title='До:',
+                                     description=before.content,
+                                     color=0x2ECC70)
 
-            embed_after = Embed(title='После:',
-                                description=after.content,
-                                color=0x2ECCBE)
+                embed_after = Embed(title='После:',
+                                    description=after.content,
+                                    color=0x2ECCBE)
 
-            try:
-                self.log_webhook.send(
-                    embeds=[embed_about, embed_before, embed_after])
-            except Exception as e:
-                log_error(f'Ошибка логгера сообщений: {e}')
+                try:
+                    self.log_webhook.send(
+                        embeds=[embed_about, embed_before, embed_after])
+                except Exception as e:
+                    log_error(f'Ошибка логгера сообщений: {e}')
+
+            elif isinstance(after.channel, GroupChannel):
+                embed_about = Embed(title='Сообщение изменено', color=0xFFFF00)
+
+                resp = f'**Автор:** {after.author.mention} `({after.author.id})`\n' + \
+                    f'**Канал:** {after.channel} `({after.channel.id}, группа)`'
+
+                embed_about.description = resp
+
+                attach_resp = ''
+                attach_id = 1
+
+                for attachment in before.attachments:
+                    attach_resp += f'[№{attach_id}]({attachment.url}) '
+                    attach_id += 1
+
+                if attach_resp != '':
+                    embed_about.add_field(name='Вложения:',
+                                          value=attach_resp,
+                                          inline=False)
+
+                embed_before = Embed(title='До:',
+                                     description=before.content,
+                                     color=0x2ECC70)
+
+                embed_after = Embed(title='После:',
+                                    description=after.content,
+                                    color=0x2ECCBE)
+
+                try:
+                    self.log_webhook.send(
+                        embeds=[embed_about, embed_before, embed_after])
+                except Exception as e:
+                    log_error(f'Ошибка логгера сообщений: {e}')
+
+            elif isinstance(after.channel, DMChannel):
+                embed_about = Embed(title='Сообщение изменено', color=0xFFFF00)
+
+                resp = f'**Автор:** {after.author.mention} `({after.author.id}, личные сообщения)`'
+
+                embed_about.description = resp
+
+                attach_resp = ''
+                attach_id = 1
+
+                for attachment in before.attachments:
+                    attach_resp += f'[№{attach_id}]({attachment.url}) '
+                    attach_id += 1
+
+                if attach_resp != '':
+                    embed_about.add_field(name='Вложения:',
+                                          value=attach_resp,
+                                          inline=False)
+
+                embed_before = Embed(title='До:',
+                                     description=before.content,
+                                     color=0x2ECC70)
+
+                embed_after = Embed(title='После:',
+                                    description=after.content,
+                                    color=0x2ECCBE)
+
+                try:
+                    self.log_webhook.send(
+                        embeds=[embed_about, embed_before, embed_after])
+                except Exception as e:
+                    log_error(f'Ошибка логгера сообщений: {e}')
 
     @commands.Cog.listener()
     async def on_message(self, message):

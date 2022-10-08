@@ -165,13 +165,13 @@ class ToolsCog(commands.Cog):
 
         try:
             while self.spammer_is_working:
+                non_async_sleep(.1)
+                
                 if is_pressed('ctrl+alt+s'):
                     self.spammer_is_working = False
                     self.stop_spam_keyboard_listener_is_working = False
-                    
-                    return
 
-            non_async_sleep(.1)
+                    break
 
         except:
             is_error = True

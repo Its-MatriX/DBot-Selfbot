@@ -11,15 +11,26 @@ from os import _exit, name, remove
 from os.path import expanduser
 from re import findall
 from time import time
+from time import sleep as non_async_sleep
 
 import requests
 from colour import Color
 from discord import (Activity, ActivityType, File, Game, GroupChannel, Status,
-                     Streaming, Emoji)
+                     Streaming)
 from discord.ext import commands
 from Functions.logger import log, log_error
 from PIL import Image
 from translate import Translator
+from keyboard import is_pressed
+from threading import Thread
+from os import environ
+import platform
+
+allow_run_keyboard_listeners = True
+
+if platform.system() == 'Linux':
+    if not 'SUDO_UID' in environ.keys():
+        allow_run_keyboard_listeners = False
 
 home = expanduser('~')
 
@@ -134,10 +145,34 @@ def spam_string_parse(message):
 class ToolsCog(commands.Cog):
 
     spammer_is_working = False
+    stop_spam_keyboard_listener_is_working = False
 
     def __init__(self, bot):
         self.bot = bot
         self.allow_groups = [x.id for x in self.bot.private_channels]
+
+    def listen_stop_spam(self):
+        if not allow_run_keyboard_listeners:
+            return
+
+        if self.stop_spam_keyboard_listener_is_working:
+            return
+
+        log('Нажмите [Ctrl+Alt+S] для остановки спам-атаки.', 'СПАМ')
+
+        self.stop_spam_keyboard_listener_is_working = True
+
+        try:
+            while self.spammer_is_working:
+                if is_pressed('ctrl+alt+s'):
+                    self.spammer_is_working = False
+
+            non_async_sleep(.1)
+
+        except:
+            pass
+
+        self.stop_spam_keyboard_listener_is_working = False
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -311,12 +346,13 @@ class ToolsCog(commands.Cog):
         await ctx.message.delete()
 
         if not amount and not content:
-            resp = '🔥 **spam <*количество*> <*текст/модификаторы*>:** `спам`\n' + \
-                '**Модификаторы:**\n' + \
-                '`?digit` - *цифра*\n' + \
-                '`?letter` - *латинская буква*\n' + \
-                '`?prep` - *знак препинания*\n' + \
-                '`?char <мин.>, <макс>` - *символ со случайным индексом*\n'
+            resp = '> **spam** [<***количество***> <***\\*текст***>]\n' + \
+                    '> `Спамит в канал.`\n> \n' + \
+                    '> **Модификаторы:**\n' + \
+                    '> `?digit`** - *цифра***\n' + \
+                    '> `?letter`** - *латинская буква***\n' + \
+                    '> `?prep`** - *знак препинания***\n' + \
+                    '> `?char <мин.>, <макс>`** - *символ со случайным индексом***'
 
             await ctx.send(resp)
             return
@@ -333,6 +369,8 @@ class ToolsCog(commands.Cog):
 
         self.spammer_is_working = True
 
+        Thread(target=self.listen_stop_spam).start()
+
         for _ in range(amount):
             if not self.spammer_is_working:
                 return
@@ -346,12 +384,14 @@ class ToolsCog(commands.Cog):
         await ctx.message.delete()
 
         if not amount and not content:
-            resp = '🔥 **spam <*количество*> <*текст/модификаторы*>:** `спам (+TTS)`\n' + \
-                '**Модификаторы:**\n' + \
-                '`?digit` - *цифра*\n' + \
-                '`?letter` - *латинская буква*\n' + \
-                '`?prep` - *знак препинания*\n' + \
-                '`?char <мин.>, <макс>` - *символ со случайным индексом*\n'
+            resp = '> **ttsspam** [<***количество***> <***\\*текст***>]\n' + \
+                    '> `Спамит в канал. (+TTS, требуются права отправки tts сообщений)`\n> \n' + \
+                    '> **Модификаторы:**\n' + \
+                    '> `?digit`** - *цифра***\n' + \
+                    '> `?letter`** - *латинская буква***\n' + \
+                    '> `?prep`** - *знак препинания***\n' + \
+                    '> `?char <мин.>, <макс>`** - *символ со случайным индексом***\n> \n' + \
+                    '> **? - При отправке TTS сообщения, оно будет воспроизведено у всех участников, которые находятся в канале.**'
 
             await ctx.send(resp)
             return
@@ -368,6 +408,8 @@ class ToolsCog(commands.Cog):
 
         self.spammer_is_working = True
 
+        Thread(target=self.listen_stop_spam).start()
+
         for _ in range(amount):
             if not self.spammer_is_working:
                 return
@@ -381,8 +423,10 @@ class ToolsCog(commands.Cog):
         await ctx.message.delete()
 
         if not amount and not lag_type:
-            resp = '☠️ **lag_spam:** `лаг-атака`\n' + \
-                '**Лаг-атака (вызывает жуткие лаги), варианты: `chains` - цепи, `ascii` - ascii символы.**'
+            resp = '> **lag_spam** [<***тип лагов (ascii | chains)***> <***количество***>]\n' + \
+                    '> `Запускает лаг-атаку на канал. У всех, кто будет находиться в канале, будет сильно лагать (тормозить).`\n> \n' + \
+                    '> `chains`** - сообщения с эмодзи цепей (очень сильные лаги)**\n' + \
+                    '> `ascii`** - сообщения со случайными символами (слабые лаги)**'
 
             await ctx.send(resp)
             return
@@ -407,10 +451,13 @@ class ToolsCog(commands.Cog):
 
         self.spammer_is_working = True
 
+        Thread(target=self.listen_stop_spam).start()
+
         if lag_type == 'ascii':
             for _ in range(amount):
                 if not self.spammer_is_working:
                     return
+
                 await ctx.send(''.join(
                     [chr(random.randrange(10000)) for x in range(1999)]))
 
@@ -420,6 +467,7 @@ class ToolsCog(commands.Cog):
             for _ in range(amount):
                 if not self.spammer_is_working:
                     return
+
                 await ctx.send(text + ' ||' + random_chars() + '||')
 
     @commands.command(name='stop_spam')

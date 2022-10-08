@@ -21,9 +21,6 @@ def start_rich_presence():
                buttons=[{
                    'label': 'Скачать',
                    'url': 'https://github.com/Its-MatriX/DBot-Selfbot'
-               }, {
-                   'label': 'Присоединиться к серверу',
-                   'url': 'https://discord.gg/EC4tDfQYwf'
                }])
 
     while True:

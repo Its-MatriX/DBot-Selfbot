@@ -138,6 +138,7 @@ async def on_connect():
                 file = '.'.join(file.split('.')[:-1:1])
                 bot.load_extension(f'Commands.{file}')
                 loaded_extensions += 1
+                
     except ModuleNotFoundError:
         print(Fore.RED + 'Ошибка загрузки расширений!')
         print(Fore.RED + 'Не установлены все необходимые модули. ' +

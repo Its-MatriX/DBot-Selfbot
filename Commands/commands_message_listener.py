@@ -48,7 +48,10 @@ class MessageListenerCog(commands.Cog):
                                 value=attach_resp,
                                 inline=False)
 
-            self.log_webhook.send(embed=embed)
+            try:
+                self.log_webhook.send(embed=embed)
+            except Exception as e:
+                log_error(f'Ошибка логгера сообщений: {e}')
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
@@ -84,8 +87,11 @@ class MessageListenerCog(commands.Cog):
                                 description=after.content,
                                 color=0x2ECCBE)
 
-            self.log_webhook.send(
-                embeds=[embed_about, embed_before, embed_after])
+            try:
+                self.log_webhook.send(
+                    embeds=[embed_about, embed_before, embed_after])
+            except Exception as e:
+                log_error(f'Ошибка логгера сообщений: {e}')
 
     @commands.Cog.listener()
     async def on_message(self, message):

@@ -10,7 +10,7 @@ def rich_presence():
         app_id=1023113143486005319)  # Connecting to DBot application
 
     rpc.set_activity(state="Многофункциональный Selfbot.",
-                     details="DBot",
+                     details="DBot - Discord Selfbot",
                      large_image='icon',
                      buttons=DiscordRPC.button(
                          'Скачать', 'Наш сервер',

@@ -161,18 +161,25 @@ class ToolsCog(commands.Cog):
         log('Нажмите [Ctrl+Alt+S] для остановки спам-атаки.', 'СПАМ')
 
         self.stop_spam_keyboard_listener_is_working = True
+        is_error = False
 
         try:
             while self.spammer_is_working:
                 if is_pressed('ctrl+alt+s'):
                     self.spammer_is_working = False
+                    self.stop_spam_keyboard_listener_is_working = False
+                    
+                    return
 
             non_async_sleep(.1)
 
         except:
-            pass
+            is_error = True
 
         self.stop_spam_keyboard_listener_is_working = False
+
+        if not is_error:
+            log('Спам-атака остановлена.', 'СПАМ')
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -478,6 +485,8 @@ class ToolsCog(commands.Cog):
         await ctx.message.delete()
 
         self.spammer_is_working = False
+
+        log('Спам-атака остановлена.', 'СПАМ')
 
     @commands.command(name='clear')
     async def clear__(self,

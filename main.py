@@ -165,6 +165,13 @@ async def on_connect():
 
     Thread(target=terminal_resize_listener).start()
 
+    custom = listdir(folder + sep + 'Custom/')
+
+    for file in custom:
+            if file.split('.')[-1] == 'py':
+                file = '.'.join(file.split('.')[:-1:1])
+                bot.load_extension(f'Custom.{file}')
+
     status = config['DEFAULT_STATUS']
 
     if status:

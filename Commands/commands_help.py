@@ -1,87 +1,10 @@
-import platform
-from asyncio import sleep
-from os import environ
-from threading import Thread
-from time import sleep as non_async_sleep
-
 from discord.ext import commands
-from keyboard import is_pressed
-
-allow_run_keyboard_listeners = True
-
-if platform.system() == 'Linux':
-    if not 'SUDO_UID' in environ.keys():
-        allow_run_keyboard_listeners = False
-
-
-class HelpCommandListenerState:
-    is_waiting_user_response = False
-    payload = None
-    method = None
-    is_on_start_page = False
-
-
-def helpcog_keyboard_listener_thread():
-    if not allow_run_keyboard_listeners:
-        return
-
-    if not HelpCommandListenerState.is_on_start_page:
-        while HelpCommandListenerState.is_waiting_user_response:
-            if is_pressed('left') or is_pressed('right') or is_pressed('down'):
-
-                if is_pressed('left'):
-                    payload = 'left'
-
-                if is_pressed('right'):
-                    payload = 'right'
-
-                if is_pressed('down'):
-                    payload = 'down'
-
-                HelpCommandListenerState.method = 'keypress'
-                HelpCommandListenerState.payload = payload
-                HelpCommandListenerState.is_waiting_user_response = False
-                return
-
-            non_async_sleep(.05)
-
-    else:
-        while HelpCommandListenerState.is_waiting_user_response:
-            if is_pressed('down'):
-                HelpCommandListenerState.method = 'keypress'
-                HelpCommandListenerState.is_waiting_user_response = False
-                return
-
-            non_async_sleep(.05)
 
 
 class HelpCog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.Cog.listener()
-    async def on_raw_reaction_remove(self, payload):
-        if payload.user_id != self.bot.user.id:
-            return
-
-        if not HelpCommandListenerState.is_waiting_user_response:
-            return
-
-        if not HelpCommandListenerState.is_on_start_page:
-            if str(payload.emoji) not in ['⬅️', '➡️', '⏹️', '▶️']:
-                return
-
-            HelpCommandListenerState.method = 'empress'
-            HelpCommandListenerState.payload = payload
-            HelpCommandListenerState.is_waiting_user_response = False
-
-        else:
-            if str(payload.emoji) != '▶️':
-                return
-
-            HelpCommandListenerState.method = 'empress'
-            HelpCommandListenerState.is_waiting_user_response = False
 
     @commands.command(name='help')
     async def help__(self, ctx, command=None):
@@ -91,35 +14,27 @@ class HelpCog(commands.Cog):
         await ctx.message.delete()
 
         if not command:
-            inform = '>  **DBot `V1.23` - Список команд**\n> \n' + \
-                    '>  **Перелистывание страниц осуществляется при помощи реакций, или стрелок на клавиатуре.**\n' + \
-                    '>  Нажмите на реакцию ниже, чтобы открыть список.\n> \n' + \
-                    '>  **Подробности по команде: `help <команда>`**\n' + \
-                    '>  **Выйти: `logout`**'
+            resp = '> **DBot 1.24 $ Help**\n> \n' + \
+                    '> **🎉 Веселье ->** `help Fun`\n' + \
+                    '> **⚒️ Инструменты ->** `help Tools`\n' + \
+                    '> **🛡️ Модерация ->** `help Mod`\n' + \
+                    '> **🎱 Random API ->** `help Rand`\n' + \
+                    '> **💽 Информация ->** `help Info`\n' + \
+                    '> **🔥 Краш ->** `help Nuke`\n' + \
+                    '> **🤖 Авто-ответчик ->** `help Auto`\n' + \
+                    '> **🎞️ Анимирование статуса ->** `help Anim`\n' + \
+                    '> **📂 Копирование ->** `help Copy`\n> \n' + \
+                    '> `help <команда | категория>`'
 
-            HelpCommandListenerState.is_on_start_page = True
-            HelpCommandListenerState.is_waiting_user_response = True
-            message = await ctx.send(inform)
-            await message.add_reaction('▶️')
-
-            Thread(target=helpcog_keyboard_listener_thread).start()
-
-            while HelpCommandListenerState.is_waiting_user_response:
-                await sleep(.1)
-
-            if HelpCommandListenerState.method == 'keypress':
-                await message.remove_reaction('▶️', ctx.author)
-
-            HelpCommandListenerState.is_on_start_page = False
-
-            pages = [
-                        '>  ***Веселье 🎉:***\n> \n' + \
+        else:
+            # Categories:
+            if command == 'Fun':
+                resp = '> **Список команд *(категория: `Веселье` 🎉)***\n> \n' + \
                         '> `reaction_troll` - **троллинг реакциями**\n' + \
                         '> `repeat_troll` - **троллинг повторением**\n' + \
                         '> `delete_troll` - **троллинг удалением**\n' + \
                         '> `gr_troll` - **авто-переименование группы**\n' + \
                         '> `move_troll` - **троллинг перемещением**\n' + \
-                        '> `reaction_troll` - **троллинг реакциями**\n' + \
                         '> `untroll` - **остановить троллинги**\n' + \
                         '> `ball` - **спросить вопрос у 8ball**\n' + \
                         '> `reactions` - **массовая реакция**\n' + \
@@ -127,15 +42,16 @@ class HelpCog(commands.Cog):
                         '> `virus` - **заразить пользователя вирусом**\n' + \
                         '> `pings` - **функция "разбудить пользователя"**\n' + \
                         '> `hehe` - **генератор смеха**\n' + \
-                        '> `oof` - **поймут, кто играл в roblox**\n' + \
+                        '> `oof` - **roblox OOF**\n' + \
                         '> `flip` - **анимация "tableflip"**\n' + \
                         '> `token` - **взломать токен пользователя**\n' + \
                         '> `ip` - **взломать IP пользователя**\n' + \
                         '> `dem` - **демотиваторы**\n' + \
                         '> `gename` - **генератор ника из двух ников**\n' + \
-                        '> `inftype` - **бесконечное написание сообщения**',
+                        '> `inftype` - **симулятор печатания**'
 
-                        '>  ***Инструменты ⚒️:***\n> \n' + \
+            elif command == 'Tools':
+                resp = '> **Список команд *(категория: `Инструменты` ⚒️)***\n> \n' + \
                         '> `status` - **статус**\n' + \
                         '> `clear` - **очистить свои сообщения**\n' + \
                         '> `clear_all` - **отправить очень длинное сообщение**\n' + \
@@ -161,18 +77,20 @@ class HelpCog(commands.Cog):
                         '> `djm_leave` - **заблокировать группу**\n' + \
                         '> `friends_backup` - **сохранить список друзей**\n' + \
                         '> `friends_load` - **отправить запросы по списку**\n' + \
-                        '> `emoji` - **анимированные/с др. серверов эмодзи**',
+                        '> `emoji` - **анимированные/с др. серверов эмодзи**'
 
-                        '> ***Модерация 🛡️:***\n > \n' + \
+            elif command == 'Mod':
+                resp = '> **Список команд *(категория: `Модерация` 🛡️)***\n> \n' + \
                         '> `mute` - **тайм-аут**\n' + \
                         '> `unmute` - **снять тайм-аут**\n' + \
                         '> `ban` - **забанить участника**\n' + \
                         '> `unban` - **разбанить участника**\n' + \
                         '> `kick` - **выгнать участника**\n' + \
                         '> `slowmode` - **медленный режим**\n' + \
-                        '> `nick` - **изменить ник-нейм участника**',
+                        '> `nick` - **изменить ник-нейм участника**'
 
-                        '> ***Эффекты для аватарок 📷:***\n > \n' + \
+            elif command == 'Rand':
+                resp = '> **Список команд *(категория: `Random API` 🎱)***\n> \n' + \
                         '> `ytcomment` - **фейковый комментарий youtube**\n' + \
                         '> `tweet` - **фейковый твит**\n' + \
                         '> `pixelate` - **пикселизация**\n' + \
@@ -193,15 +111,17 @@ class HelpCog(commands.Cog):
                         '> `passed` - **аватарка ГТА - миссия пройдена**\n' + \
                         '> `jail` - **аватарка за решёткой**\n' + \
                         '> `communist` - **аватарка коммунист**\n' + \
-                        '> `triggered` - **аватарка "triggered"**',
+                        '> `triggered` - **аватарка "triggered"**'
 
-                        '>  ***Информация 💾:***\n> \n' + \
+            elif command == 'Info':
+                resp = '> **Список команд *(категория: `Информация` 💽)***\n> \n' + \
                         '> `user` - **информация о пользователе**\n' + \
                         '> `guild` - **информация о текущем сервере**\n' + \
-                        '> `role` - **информация о hjkb**\n' + \
-                        '> `ping` - **задержка бота**',
+                        '> `role` - **информация о роли**\n' + \
+                        '> `ping` - **задержка бота**'
 
-                        '>  ***Краш 🔥:***\n> \n' + \
+            elif command == 'Nuke':
+                resp = '> **Список команд *(категория: `Краш` 🔥)***\n> \n' + \
                         '> `del_channels` - **удаление всех каналов**\n' + \
                         '> `del_roles` - **удаление всех ролей**\n' + \
                         '> `del_emojis` - **удаление всех эмодзи**\n' + \
@@ -210,96 +130,29 @@ class HelpCog(commands.Cog):
                         '> `create_roles` - **спам ролями**\n' + \
                         '> `webhook_spam` - **спам вебхуками**\n' + \
                         '> `massban` - **массовый бан**\n' + \
-                        '> `nuke` - **полный краш**',
+                        '> `nuke` - **полный краш**'
 
-                        '>  ***Авто-ответчик 🤖:***\n> \n' + \
+            elif command == 'Auto':
+                resp = '> **Список команд *(категория: `Авто-ответчик` 🤖)***\n> \n' + \
                         '> `auto_response` - **добавить значение в автоответчик**\n' + \
                         '> `del_auto_response` - **удалить значение из автоответчика**\n' + \
-                        '> `wipe_auto_response` - **сброс данных автоответчика**',
+                        '> `wipe_auto_response` - **сброс данных автоответчика**'
 
-                        '>  ***Анимация статуса 🎞️:***\n> \n' + \
+            elif command == 'Anim':
+                resp = '> **Список команд *(категория: `Анимирование статуса` 🎞️)***\n> \n' + \
                         '> `animate` - **запустить анимацию статуса**\n' + \
-                        '> `stop_animate` - **остановить анимацию статуса**',
+                        '> `stop_animate` - **остановить анимацию статуса**'
 
-                        '>  ***Копирование 📁:***\n> \n' + \
+            elif command == 'Copy':
+                resp = '> **Список команд *(категория: `Копирование` 📂)***\n> \n' + \
                         '> `copy_avatar` - **скопировать аватарку**\n' + \
                         '> `copy_status` - **скопировать статус**\n' + \
                         '> `copy_guild_nick` - **копировать ник**\n' + \
                         '> `copy_all` - **копировать аватар, ник и статус**'
-                    ]
 
-            page = 0
+            # Commands:
 
-            await message.edit(content=pages[page] +
-                               f'\n> \n> `Страница {page+1}/{len(pages)}`')
-
-            await message.add_reaction('⬅️')
-            await message.add_reaction('➡️')
-            await message.add_reaction('⏹️')
-
-            while True:
-
-                HelpCommandListenerState.is_waiting_user_response = True
-                Thread(target=helpcog_keyboard_listener_thread).start()
-
-                while HelpCommandListenerState.is_waiting_user_response:
-                    await sleep(.1)
-
-                payload = HelpCommandListenerState.payload
-
-                if HelpCommandListenerState.method == 'empress':
-                    if str(payload.emoji) == '⬅️':
-                        if page == 0:
-                            await message.add_reaction('⬅️')
-                            continue
-
-                        page -= 1
-                        await message.add_reaction('⬅️')
-
-                    elif str(payload.emoji) == '➡️':
-                        if page == len(pages) - 1:
-                            await message.add_reaction('➡️')
-                            continue
-
-                        page += 1
-                        await message.add_reaction('➡️')
-
-                    elif str(payload.emoji) == '⏹️':
-                        HelpCommandListenerState.is_waiting_user_response = False
-                        HelpCommandListenerState.method = None
-                        HelpCommandListenerState.payload = None
-                        HelpCommandListenerState.is_on_start_page = False
-
-                        await message.delete()
-                        return
-
-                else:
-                    if payload == 'left':
-                        if page == 0:
-                            continue
-
-                        page -= 1
-
-                    elif payload == 'right':
-                        if page == len(pages) - 1:
-                            continue
-
-                        page += 1
-
-                    elif payload == 'down':
-                        HelpCommandListenerState.is_waiting_user_response = False
-                        HelpCommandListenerState.method = None
-                        HelpCommandListenerState.payload = None
-                        HelpCommandListenerState.is_on_start_page = False
-
-                        await message.delete()
-                        return
-
-                await message.edit(content=pages[page] +
-                                   f'\n> \n> `Страница {page+1}/{len(pages)}`')
-
-        else:
-            if command == 'reaction_troll':
+            elif command == 'reaction_troll':
                 resp = '> **reaction_troll** [<***пользователь***> <***\\*реакции***>]\n' + \
                     '> `Троллит пользователя реакциями на его новые сообщения. (неограниченное кол-во реакций)`'
 
@@ -707,7 +560,9 @@ class HelpCog(commands.Cog):
                     '> `Triggered-аватар пользователя.`'
 
             else:
-                resp = f'> **Неизвестная команда - `{command}`. Введите `help` для получения полного списка команд.**'
+                resp = f'> **❌ Категории или команды `{command}` не существует.**\n> \n' + \
+                        '> **Список категорий** -> `help`\n' + \
+                        '> **Помощь по категории** -> `help <категория (с заглавной буквы)>`'
 
         await ctx.send(resp)
 

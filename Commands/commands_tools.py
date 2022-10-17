@@ -166,7 +166,7 @@ class ToolsCog(commands.Cog):
         try:
             while self.spammer_is_working:
                 non_async_sleep(.1)
-                
+
                 if is_pressed('ctrl+alt+s'):
                     self.spammer_is_working = False
                     self.stop_spam_keyboard_listener_is_working = False
@@ -383,6 +383,9 @@ class ToolsCog(commands.Cog):
                 return
             await ctx.send(spam_string_parse(content))
 
+        self.spammer_is_working = False
+        self.stop_spam_keyboard_listener_is_working = False
+
     @commands.command(name='ttsspam')
     async def ttsspam__(self, ctx, amount=None, *, content=None):
         if ctx.author != self.bot.user:
@@ -421,6 +424,9 @@ class ToolsCog(commands.Cog):
             if not self.spammer_is_working:
                 return
             await ctx.send(spam_string_parse(content), tts=True)
+
+        self.spammer_is_working = False
+        self.stop_spam_keyboard_listener_is_working = False
 
     @commands.command(name='lag_spam')
     async def lag_spam__(self, ctx, lag_type=None, amount=None):
@@ -477,6 +483,9 @@ class ToolsCog(commands.Cog):
 
                 await ctx.send(text + ' ||' + random_chars() + '||')
 
+        self.spammer_is_working = False
+        self.stop_spam_keyboard_listener_is_working = False
+
     @commands.command(name='stop_spam')
     async def stop_spam__(self, ctx):
         if ctx.author != self.bot.user:
@@ -485,6 +494,7 @@ class ToolsCog(commands.Cog):
         await ctx.message.delete()
 
         self.spammer_is_working = False
+        self.stop_spam_keyboard_listener_is_working = False
 
         log('Спам-атака остановлена.', 'СПАМ')
 

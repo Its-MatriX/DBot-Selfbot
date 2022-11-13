@@ -1,1 +1,23 @@
-{}
+{
+    "reactionTroll": {
+        "enabled": false,
+        "guildID": null,
+        "userID": null,
+        "reaction": null
+    },
+    "repeatTroll": {
+        "enabled": false,
+        "guildID": null,
+        "userID": null
+    },
+    "deleteTroll": {
+        "enabled": false,
+        "guildID": null,
+        "userID": null
+    },
+    "groupRenameTroll": {
+        "enabled": false,
+        "groupID": null,
+        "groupName": null
+    }
+}

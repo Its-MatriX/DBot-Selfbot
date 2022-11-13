@@ -44,37 +44,104 @@ except Exception:
         install_modules_from_requirements
     install_modules_from_requirements()
 
+from theme import LOGIN_INFO_KEY_COLOR
+
+login_info_key_color = Fore.GREEN if LOGIN_INFO_KEY_COLOR == 1 else (
+    Fore.BLUE if LOGIN_INFO_KEY_COLOR == 2 else
+    (Fore.CYAN if LOGIN_INFO_KEY_COLOR == 3 else
+     (Fore.MAGENTA if LOGIN_INFO_KEY_COLOR == 4 else
+      (Fore.YELLOW if LOGIN_INFO_KEY_COLOR == 5 else
+       (Fore.WHITE if LOGIN_INFO_KEY_COLOR == 0 else None)))))
+
+if not login_info_key_color:
+    log_error('Неверное значение для LOGIN_INFO_KEY_COLOR в "theme.py", ' + \
+                              'значение должно быть в диапазоне от 0 до 5.')
+
+    try:
+        input()
+
+    except:
+        pass
+
+    _exit(1)
+
+from theme import LOGIN_INFO_VAL_COLOR
+
+login_info_val_color = Fore.CYAN if LOGIN_INFO_VAL_COLOR == 1 else (
+    Fore.BLUE if LOGIN_INFO_VAL_COLOR == 2 else
+    (Fore.GREEN if LOGIN_INFO_VAL_COLOR == 3 else
+     (Fore.MAGENTA if LOGIN_INFO_VAL_COLOR == 4 else
+      (Fore.YELLOW if LOGIN_INFO_VAL_COLOR == 5 else
+       (Fore.WHITE if LOGIN_INFO_VAL_COLOR == 0 else None)))))
+
+if not login_info_val_color:
+    log_error('Неверное значение для LOGIN_INFO_VAL_COLOR в "theme.py", ' + \
+                              'значение должно быть в диапазоне от 1 до 5.')
+
+    try:
+        input()
+
+    except:
+        pass
+
+    _exit(1)
+
+from theme import SEP_LINE_COLOR
+
+sep_line_color = Fore.CYAN if SEP_LINE_COLOR == 1 else (
+    Fore.BLUE if SEP_LINE_COLOR == 2 else
+    (Fore.GREEN if SEP_LINE_COLOR == 3 else
+     (Fore.MAGENTA if SEP_LINE_COLOR == 4 else
+      (Fore.YELLOW if SEP_LINE_COLOR == 5 else
+       (Fore.WHITE if SEP_LINE_COLOR == 0 else None)))))
+
+if not sep_line_color:
+    log_error('Неверное значение для SEP_LINE_COLOR в "theme.py", ' + \
+                              'значение должно быть в диапазоне от 0 до 5.')
+
+    try:
+        input()
+
+    except:
+        pass
+
+    _exit(1)
+
+from theme import ALWAYS_MINI_INTRO
+
 loaded_extensions = 0
 
-intro()
+intro(ALWAYS_MINI_INTRO)
 
 try:
-    config = load(open(folder + sep + 'config.json', 'r'))
+    config = eval(open(folder + sep + 'config.py', 'r').read())
+
 except FileNotFoundError:
-    path_config = folder + sep + 'config.json'
+    path_config = folder + sep + 'config.py'
 
-    print(Fore.RED + f'Не удалось найти файл с конфигурацией. ' +
-          'Расположение файла должно быть: {path_config}')
+    print(Fore.RED + 'Не удалось найти файл с конфигурацией. ' +
+          f'Расположение файла должно быть: {path_config}')
 
-    print('Создайте config.json по указанному пути!\n')
-    print('Пример config.json:')
+    print('Создайте config.py по указанному пути!\n')
+    print('Пример config.py:')
     print()
     print(Fore.CYAN + '{')
     print('    "TOKEN": "токен",')
     print('    "LOG_WEBHOOK": "вебхук",')
-    print('    "LOG_DELETES": false,')
-    print('    "LOG_EDITS": false,')
-    print('    "ENABLE_CRASH": false,')
+    print('    "LOG_DELETES": False,')
+    print('    "LOG_EDITS": False,')
+    print('    "ENABLE_CRASH": False,')
     print('    "DEFAULT_STATUS": "game idle DBot",')
-    print('    "SNIPE_NITRO": true')
+    print('    "SNIPE_NITRO": True')
     print('}')
 
     print()
 
     input(Fore.GREEN + 'Нажмите [Enter] для выхода > ')
     exit(0)
+
 except Exception as e:
-    print(Fore.RED + f'Ошибка чтения файла config.json')
+    print(Fore.RED + f'Ошибка чтения файла config.py')
     print(f'Ошибка: {e}')
 
     print()
@@ -91,14 +158,17 @@ bot.config = config
 def start_screen(use_mini_intro=False):
     intro(use_mini_intro)
 
-    print(Fore.GREEN + 'Логин: ' + Fore.CYAN + str(bot.user))
-    print(Fore.GREEN + 'ID: ' + Fore.CYAN + str(bot.user.id))
-    print(Fore.GREEN + 'Префикс: ' + Fore.CYAN + config['COMMAND_PREFIX'])
+    print(login_info_key_color + 'Логин: ' + login_info_val_color +
+          str(bot.user))
+    print(login_info_key_color + 'ID: ' + login_info_val_color +
+          str(bot.user.id))
+    print(login_info_key_color + 'Префикс: ' + login_info_val_color +
+          config['COMMAND_PREFIX'])
     print()
 
-    print(Fore.GREEN + 'Загружено расширений: ' + Fore.CYAN +
-          str(loaded_extensions) + ' (команд: ' + str(len(bot.all_commands)) +
-          ')')
+    print(login_info_key_color + 'Загружено расширений: ' +
+          login_info_val_color + str(loaded_extensions) + ' (команд: ' +
+          str(len(bot.all_commands)) + ')')
 
 
 def terminal_resize_listener():
@@ -113,10 +183,10 @@ def terminal_resize_listener():
             use_mini_intro = terminal_cols_old < 70
 
             clear()
-            start_screen(use_mini_intro)
+            start_screen(use_mini_intro if not ALWAYS_MINI_INTRO else True)
 
             print()
-            print(Fore.CYAN + '—' * terminal_cols)
+            print(sep_line_color + '—' * terminal_cols)
             recovery_logs()
 
         non_async_sleep(.2)
@@ -138,7 +208,7 @@ async def on_connect():
                 file = '.'.join(file.split('.')[:-1:1])
                 bot.load_extension(f'Commands.{file}')
                 loaded_extensions += 1
-                
+
     except ModuleNotFoundError:
         print(Fore.RED + 'Ошибка загрузки расширений!')
         print(Fore.RED + 'Не установлены все необходимые модули. ' +
@@ -164,13 +234,6 @@ async def on_connect():
     print()
 
     Thread(target=terminal_resize_listener).start()
-
-    custom = listdir(folder + sep + 'Custom/')
-
-    for file in custom:
-            if file.split('.')[-1] == 'py':
-                file = '.'.join(file.split('.')[:-1:1])
-                bot.load_extension(f'Custom.{file}')
 
     status = config['DEFAULT_STATUS']
 
@@ -295,8 +358,6 @@ async def on_command_error(ctx, error):
 async def on_command(ctx):
     log(ctx.invoked_with, 'КОМАНДА', 0)
 
-
-print(Fore.GREEN + 'Входим в учётную запись...')
 
 try:
     bot.run(config['TOKEN'])

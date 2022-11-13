@@ -25,6 +25,8 @@ from keyboard import is_pressed
 from threading import Thread
 from os import environ
 import platform
+from pyperclip import copy
+from qrcode import make as make_qrcode
 
 allow_run_keyboard_listeners = True
 
@@ -171,15 +173,15 @@ class ToolsCog(commands.Cog):
                     self.spammer_is_working = False
                     self.stop_spam_keyboard_listener_is_working = False
 
+                    if not is_error:
+                        log('Спам-атака остановлена.', 'СПАМ')
+
                     break
 
         except:
             is_error = True
 
         self.stop_spam_keyboard_listener_is_working = False
-
-        if not is_error:
-            log('Спам-атака остановлена.', 'СПАМ')
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -472,7 +474,7 @@ class ToolsCog(commands.Cog):
                     return
 
                 await ctx.send(''.join(
-                    [chr(random.randrange(10000)) for x in range(1999)]))
+                    [chr(random.randrange(100000)) for x in range(1999)]))
 
         elif lag_type == 'chains':
             text = ':chains:' * 200
@@ -525,8 +527,6 @@ class ToolsCog(commands.Cog):
         await ctx.message.delete()
 
         history = await ctx.channel.history(limit=limit).flatten()
-
-        to_pin = len(history)
 
         for message in history:
             await message.pin()
@@ -922,13 +922,13 @@ class ToolsCog(commands.Cog):
         log('Список друзей успешно сохранён в: ' + file.name)
 
     @commands.command(name='friends_load')
-    async def friends_load(self, ctx, save_to=None):
+    async def friends_load(self, ctx, *, load_from=None):
         if ctx.author != self.bot.user:
             return
 
         await ctx.message.delete()
 
-        if not save_to:
+        if not load_from:
             if name == 'nt':
                 file = open(
                     home + sep + 'Desktop' + sep + 'dbot_friends_backup.json',
@@ -938,7 +938,7 @@ class ToolsCog(commands.Cog):
                 file = open(folder + sep + 'dbot_friends_backup.json', 'r')
 
         else:
-            file = open(save_to, 'r')
+            file = open(load_from, 'r')
 
         friend_list_json = load(file)
 
@@ -964,17 +964,6 @@ class ToolsCog(commands.Cog):
         if '~' not in name:
             name += '~0'
 
-        if name == '--list':
-            if not guild_id:
-                emojis = ctx.guild.emojis
-
-            else:
-                guild = self.bot.get_guild(guild_id)
-                emojis = guild.emojis
-
-            await ctx.send('; '.join([x.name for x in emojis]))
-            return
-
         if not guild_id:
             emojis = ctx.guild.emojis
 
@@ -986,6 +975,7 @@ class ToolsCog(commands.Cog):
 
         for emoji in emojis:
             id = 0
+
             while True:
                 name_ = emoji.name + '~' + str(id)
 
@@ -1017,6 +1007,42 @@ class ToolsCog(commands.Cog):
             selected = await guild.fetch_emoji(selected)
 
         await ctx.send(f'{selected.url}?size=48')
+
+    @commands.command(name='raw')
+    async def raw__(self, ctx):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        if not ctx.message.reference:
+            resp = '**❌ Вы должны ответить на сообщение, которое хотите скопировать.**'
+            await ctx.send(resp)
+            return
+
+        message = await ctx.channel.fetch_message(
+            ctx.message.reference.message_id)
+
+        try:
+            copy(message.content)
+
+        except:
+            await ctx.send('```' + message.content + '```')
+
+    @commands.command(name='qr')
+    async def qr__(self, ctx, *, text):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        qr = make_qrcode(text)
+        qr.save(datafolder + sep + 'qrcode.png')
+
+        file = File(datafolder + sep + 'qrcode.png')
+        await ctx.send(file=file)
+
+        remove(datafolder + sep + 'qrcode.png')
 
 
 def setup(bot):

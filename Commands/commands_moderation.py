@@ -360,6 +360,19 @@ class ModerationCog(commands.Cog):
 
                 return
 
+    @commands.command(name='recreate_channel')
+    async def recreate_channel__(self, ctx):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        cloned_channel = await ctx.channel.clone()
+        await cloned_channel.edit(category=ctx.channel.category,
+                                  position=ctx.channel.position)
+
+        await ctx.channel.delete()
+
 
 def setup(bot):
     bot.add_cog(ModerationCog(bot))

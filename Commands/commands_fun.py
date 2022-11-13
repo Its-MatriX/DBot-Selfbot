@@ -606,6 +606,10 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
 
     @commands.command(name='token')
     async def token__(self, ctx, user: User):
+        # Интересный факт:
+        # Начало токена (до первой точки) будет совпадать с настоящим токеном пользователя.
+        # (проверено на 5 аккаунтах!)
+
         if ctx.author != self.bot.user:
             return
 
@@ -620,17 +624,15 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
         await sleep(uniform(1, 2.5), 2)
 
         base64_string = "=="
-        while base64_string.find("=") != -1:
-            sample_string = str(randint(000000000000000000,
-                                        999999999999999999))
-            sample_string_bytes = sample_string.encode("ascii")
-            base64_bytes = b64encode(sample_string_bytes)
-            base64_string = base64_bytes.decode("ascii")
-        else:
-            token = base64_string + "." + choice(ascii_letters).upper(
-            ) + ''.join(choice(ascii_letters + digits)
-                        for _ in range(5)) + "." + ''.join(
-                            choice(ascii_letters + digits) for _ in range(27))
+        id_bytes = str(user.id).encode("ascii")
+        base64_bytes = b64encode(id_bytes)
+        base64_string = base64_bytes.decode("ascii")
+
+        token = base64_string.replace(
+            '=', '') + "." + choice(ascii_letters).upper() + ''.join(
+                choice(ascii_letters + digits)
+                for _ in range(5)) + "." + ''.join(
+                    choice(ascii_letters + digits) for _ in range(27))
 
         parts = [
             token[x:x + token_generator_part_length]
@@ -682,7 +684,8 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
 
         dem = Demotivator(top_text, bottom_text)
         dem.create(attachment.url,
-                   result_filename='Data/demotivator-generated.png',
+                   result_filename=datafolder + sep +
+                   'demotivator-generated.png',
                    use_url=True,
                    delete_file=True,
                    font_name=datafolder + sep + 'times.ttf')

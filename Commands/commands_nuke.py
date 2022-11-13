@@ -26,7 +26,7 @@ async def SPAM_WEBHOOK(channel, message):
         log_error(f'SPAM_WEBHOOk: {e}', 'ОШИБКА', 1)
         return
 
-    while True:
+    for _ in range(5):
         await webhook.send(message, tts=True)
 
 
@@ -59,7 +59,7 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+            log_error(f'Краш-команды не включены. Включите их в Config.PY',
                       'ОШИБКА', 1)
             return
 
@@ -74,7 +74,7 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+            log_error(f'Краш-команды не включены. Включите их в Config.PY',
                       'ОШИБКА', 1)
             return
 
@@ -89,7 +89,7 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+            log_error(f'Краш-команды не включены. Включите их в Config.PY',
                       'ОШИБКА', 1)
             return
 
@@ -104,7 +104,7 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+            log_error(f'Краш-команды не включены. Включите их в Config.PY',
                       'ОШИБКА', 1)
             return
 
@@ -119,7 +119,7 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+            log_error(f'Краш-команды не включены. Включите их в Config.PY',
                       'ОШИБКА', 1)
             return
 
@@ -134,7 +134,7 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+            log_error(f'Краш-команды не включены. Включите их в Config.PY',
                       'ОШИБКА', 1)
             return
 
@@ -149,7 +149,7 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+            log_error(f'Краш-команды не включены. Включите их в Config.PY',
                       'ОШИБКА', 1)
             return
 
@@ -164,7 +164,7 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+            log_error(f'Краш-команды не включены. Включите их в Config.PY',
                       'ОШИБКА', 1)
             return
 
@@ -179,7 +179,7 @@ class NukerCog(commands.Cog):
             return
 
         if not self.bot.config['ENABLE_CRASH']:
-            log_error(f'Краш-команды не включены. Включите их в Config.JSON',
+            log_error(f'Краш-команды не включены. Включите их в Config.PY',
                       'ОШИБКА', 1)
             return
 

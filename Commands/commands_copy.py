@@ -1,12 +1,14 @@
 from os import remove
 from os.path import sep, split
 from re import sub
+from requests import get
 
 from discord import CustomActivity, Member, Status, User
 from discord.ext import commands
 
 folder = split(__file__)[0]
 datafolder = split(folder)[0] + sep + 'Data'
+
 
 class CopyCog(commands.Cog):
 
@@ -102,6 +104,19 @@ class CopyCog(commands.Cog):
         await self.bot.user.edit(avatar=avatar_bytes)
 
         remove(path)
+
+    @commands.command(name='ecopy')
+    async def ecopy__(self, ctx, toclone):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        toclone = self.bot.get_guild(int(toclone))
+
+        for emoji in ctx.guild.emojis:
+            image = get(emoji.url).content
+            toclone.create_custom_emoji(name=emoji.name, image=image)
 
 
 def setup(bot):

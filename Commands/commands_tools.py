@@ -27,6 +27,7 @@ from os import environ
 import platform
 from pyperclip import copy
 from qrcode import make as make_qrcode
+from Functions.discord_requests import send_request
 
 allow_run_keyboard_listeners = True
 
@@ -1043,6 +1044,35 @@ class ToolsCog(commands.Cog):
         await ctx.send(file=file)
 
         remove(datafolder + sep + 'qrcode.png')
+
+    @commands.command(name='hypesquad')
+    async def hypesquad__(self, ctx, house):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        if house in ['bravery', '1', 'храбрость', 'brav']:
+            send_request(self.bot,
+                         'POST',
+                         '/hypesquad/online',
+                         json={'house_id': 1})
+
+        elif house in ['brilliance', '2', 'блеск', 'bril', 'brlc']:
+            send_request(self.bot,
+                         'POST',
+                         '/hypesquad/online',
+                         json={'house_id': 2})
+
+        elif house in ['balance', '3', 'баланс', 'bal', 'balanc']:
+            send_request(self.bot,
+                         'POST',
+                         '/hypesquad/online',
+                         json={'house_id': 3})
+
+        elif house in ['leave', 'выйти', 'off', '0', 'выкл', 'выйт']:
+            send_request(self.bot, 'DELETE', '/hypesquad/online')
+            return
 
 
 def setup(bot):

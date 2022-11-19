@@ -1052,25 +1052,25 @@ class ToolsCog(commands.Cog):
 
         await ctx.message.delete()
 
-        if house in ['bravery', '1', 'храбрость', 'brav']:
+        if house in ['bravery', '1']:
             send_request(self.bot,
                          'POST',
                          '/hypesquad/online',
                          json={'house_id': 1})
 
-        elif house in ['brilliance', '2', 'блеск', 'bril', 'brlc']:
+        elif house in ['brilliance', '2']:
             send_request(self.bot,
                          'POST',
                          '/hypesquad/online',
                          json={'house_id': 2})
 
-        elif house in ['balance', '3', 'баланс', 'bal', 'balanc']:
+        elif house in ['balance', '3']:
             send_request(self.bot,
                          'POST',
                          '/hypesquad/online',
                          json={'house_id': 3})
 
-        elif house in ['leave', 'выйти', 'off', '0', 'выкл', 'выйт']:
+        elif house in ['leave', 'выйти', 'off', '0']:
             send_request(self.bot, 'DELETE', '/hypesquad/online')
             return
 

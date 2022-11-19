@@ -16,7 +16,7 @@ from time import sleep as non_async_sleep
 import requests
 from colour import Color
 from discord import (Activity, ActivityType, File, Game, GroupChannel, Status,
-                     Streaming)
+                     Streaming, User)
 from discord.ext import commands
 from Functions.logger import log, log_error
 from PIL import Image
@@ -1073,6 +1073,23 @@ class ToolsCog(commands.Cog):
         elif house in ['leave', 'выйти', 'off', '0']:
             send_request(self.bot, 'DELETE', '/hypesquad/online')
             return
+
+    @commands.command(name='cdm')
+    async def cdm__(self, ctx, user: User):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        uid = user.id
+
+        resp = send_request(self.bot,
+                            'POST',
+                            '/users/@me/channels',
+                            json={'recipients': [uid]})
+
+        if not resp.ok:
+            raise NameError(str(resp.json()['message']))
 
 
 def setup(bot):

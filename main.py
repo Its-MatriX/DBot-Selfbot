@@ -11,6 +11,7 @@ try:
     from os import _exit, get_terminal_size, listdir, name
 
     from discord import Activity, ActivityType, Game, Status, Streaming
+    from theme import ENABLE_OLD_TERMINAL_MODE
 except Exception:
     from Functions.requirements_installer import \
         install_modules_from_requirements
@@ -158,38 +159,74 @@ bot.config = config
 def start_screen(use_mini_intro=False):
     intro(use_mini_intro)
 
-    print(login_info_key_color + 'Логин: ' + login_info_val_color +
-          str(bot.user))
-    print(login_info_key_color + 'ID: ' + login_info_val_color +
-          str(bot.user.id))
-    print(login_info_key_color + 'Префикс: ' + login_info_val_color +
-          config['COMMAND_PREFIX'])
-    print()
+    if not ENABLE_OLD_TERMINAL_MODE:
+        print(login_info_val_color + 'Основное:')
+        print(login_info_key_color + '    Логин: ' + login_info_val_color +
+              str(bot.user))
+        print(login_info_key_color + '    ID: ' + login_info_val_color +
+              str(bot.user.id))
+        print(login_info_key_color + '    Префикс: ' + login_info_val_color +
+              config['COMMAND_PREFIX'])
+        print(login_info_key_color + '    Загружено расширений: ' +
+              login_info_val_color + str(loaded_extensions) + ' (команд: ' +
+              str(len(bot.all_commands)) + ')')
 
-    print(login_info_key_color + 'Загружено расширений: ' +
-          login_info_val_color + str(loaded_extensions) + ' (команд: ' +
-          str(len(bot.all_commands)) + ')')
+        print()
+
+        print(login_info_val_color + 'Настройки:')
+        print(login_info_key_color + '    Стандартный статус: ' +
+              login_info_val_color +
+              (config['DEFAULT_STATUS']
+               if config['DEFAULT_STATUS'] else 'Не указан'))
+        print(login_info_key_color + '    Nitro-снайпер: ' +
+              login_info_val_color +
+              ('Включен' if config['SNIPE_NITRO'] == True else 'Выключен'))
+
+    else:
+        print('Основное:')
+        print('    Логин: ' + str(bot.user))
+        print('    ID: ' + str(bot.user.id))
+        print('    Префикс: ' + config['COMMAND_PREFIX'])
+        print('    Загружено расширений: ' + str(loaded_extensions) +
+              ' (команд: ' + str(len(bot.all_commands)) + ')')
+
+        print()
+
+        print('Настройки:')
+        print('    Стандартный статус: ' +
+              (config['DEFAULT_STATUS']
+               if config['DEFAULT_STATUS'] else 'Не указан'))
+        print('    Nitro-снайпер: ' +
+              ('Включен' if config['SNIPE_NITRO'] == True else 'Выключен'))
 
 
 def terminal_resize_listener():
     terminal_cols_old = 0
 
-    while True:
-        terminal_cols = get_terminal_size().columns
+    if not ENABLE_OLD_TERMINAL_MODE:
+        while True:
+            terminal_cols = get_terminal_size().columns
 
-        if terminal_cols != terminal_cols_old:
-            terminal_cols_old = get_terminal_size().columns
+            if terminal_cols != terminal_cols_old:
+                terminal_cols_old = get_terminal_size().columns
 
-            use_mini_intro = terminal_cols_old < 70
+                use_mini_intro = terminal_cols_old < 70
 
-            clear()
-            start_screen(use_mini_intro if not ALWAYS_MINI_INTRO else True)
+                clear()
+                start_screen(use_mini_intro if not ALWAYS_MINI_INTRO else True)
 
-            print()
-            print(sep_line_color + '—' * terminal_cols)
-            recovery_logs()
+                print()
 
-        non_async_sleep(.2)
+                print(sep_line_color + '—' * terminal_cols)
+
+                recovery_logs()
+
+            non_async_sleep(.2)
+
+    else:
+        clear()
+        start_screen(False)
+        print()
 
 
 @bot.event

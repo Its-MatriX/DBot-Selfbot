@@ -1,8 +1,7 @@
 from discord.ext import commands
-from random import choice, randint, seed
+from random import choice
 from requests import get
 from Functions.logger import log_error
-from discord import User
 
 
 class NSFWCog(commands.Cog):

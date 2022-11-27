@@ -10,6 +10,7 @@ from time import time
 from discord import File, User, Member
 from discord.ext import commands
 from Functions.demotivators import Demotivator
+from Functions.bool_converter import convert_to_bool
 
 token_generator_part_length = 10
 
@@ -69,12 +70,46 @@ def delete_dublicates(source):
     return resp
 
 
+__cursed_chars = (769, 771, 772, 773, 774, 775, 776, 777, 778, 782, 783, 785,
+                  786, 789, 791, 793, 794, 796, 799, 800, 801, 802, 803, 804,
+                  805, 807, 808, 810, 812, 816, 817, 818, 819, 820, 821, 822,
+                  823, 824, 826, 829, 830, 832, 833, 835, 836, 837, 839, 841,
+                  842, 844, 846, 850, 852, 853, 854, 855, 857, 859, 860, 861,
+                  864)
+
+__alpha_scary_type = {
+    'б': '6',
+    'с': 's',
+    'з': 'z',
+    'ч': '4',
+    'и': 'u',
+    'п': 'n',
+    'в': 'v',
+    'т': 't',
+    'д': 'd',
+    'к': 'k',
+    'о': '0'
+}
+
+
+def convert_scary_type(text):
+    out = ''
+
+    for char in text:
+        out += __alpha_scary_type.get(char) if __alpha_scary_type.get(
+            char) else char + ''.join(
+                [chr(choice(__cursed_chars)) for x in range(randint(0, 3))])
+
+    return out
+
+
 class FunCog(commands.Cog):
 
     reactions_command_is_working = False
     pings_is_working = False
     inftype_is_working = False
     move_troll_is_working = False
+    enable_scary_type = False
 
     def __init__(self, bot):
         self.bot = bot
@@ -140,6 +175,12 @@ class FunCog(commands.Cog):
                     return
             except Exception:
                 pass
+
+        if self.enable_scary_type:
+            if message.author == self.bot.user:
+                if not message.content.startswith(self.bot.command_prefix):
+                    await message.edit(
+                        content=convert_scary_type(message.content))
 
     @commands.Cog.listener()
     async def on_private_channel_update(self, before, after):
@@ -732,6 +773,17 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
         while self.inftype_is_working:
             await ctx.trigger_typing()
             await sleep(8)
+
+    @commands.command(name='scarytype')
+    async def scarytype__(self, ctx, enable: str):
+        if ctx.author != self.bot.user:
+            return
+
+        enable = convert_to_bool(enable)
+
+        await ctx.message.delete()
+
+        self.enable_scary_type = enable
 
 
 def setup(bot):

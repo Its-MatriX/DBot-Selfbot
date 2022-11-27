@@ -9,7 +9,7 @@ from base64 import b64decode, b64encode
 from json import dump, load
 from os import _exit, name, remove
 from os.path import expanduser
-from re import findall
+from re import findall, sub
 from time import time
 from time import sleep as non_async_sleep
 
@@ -28,6 +28,7 @@ import platform
 from pyperclip import copy
 from qrcode import make as make_qrcode
 from Functions.discord_requests import send_request
+from Functions.bool_converter import convert_to_bool
 
 allow_run_keyboard_listeners = True
 
@@ -145,10 +146,39 @@ def spam_string_parse(message):
     return message
 
 
+def grammarfix(text):
+    text = list(text)
+    text[0] = text[0].upper()
+
+    if text[-1] not in ['.', '!', '?']:
+        text.append('.')
+
+    text = ''.join(text)
+    text = sub('\.{2,}', '...', text)
+
+    text = list(text)
+
+    lastchar = ''
+    index = 0
+
+    for char in text:
+        if lastchar in ['.', '!', '?']:
+            char = char.upper()
+            text[index] = char
+
+        index += 1
+
+        if char != ' ':
+            lastchar = char
+
+    return ''.join(text)
+
+
 class ToolsCog(commands.Cog):
 
     spammer_is_working = False
     stop_spam_keyboard_listener_is_working = False
+    grammar_fix_is_working = False
 
     def __init__(self, bot):
         self.bot = bot
@@ -199,6 +229,15 @@ class ToolsCog(commands.Cog):
             if message.channel.id not in self.allow_groups:
                 if enable_djm:
                     await message.channel.leave()
+
+        try:
+            if message.author == self.bot.user:
+                if self.grammar_fix_is_working:
+                    if message.content != grammarfix(message.content):
+                        await message.edit(content=grammarfix(message.content))
+
+        except:
+            pass
 
     @commands.command(name='logout')
     async def logout__(self, ctx):
@@ -505,9 +544,11 @@ class ToolsCog(commands.Cog):
     async def clear__(self,
                       ctx,
                       history_limit: int = 100,
-                      reversed: bool = False):
+                      reversed: str = 'off'):
         if ctx.author != self.bot.user:
             return
+
+        reversed = convert_to_bool(reversed)
 
         await ctx.message.delete()
 
@@ -867,16 +908,17 @@ class ToolsCog(commands.Cog):
                f'messages_{ctx.channel.id}_{round(timenow)}.json')
 
     @commands.command(name='djm')
-    async def djm__(self, ctx, enable: bool):
+    async def djm__(self, ctx, enable: str):
         if ctx.author != self.bot.user:
             return
+
+        enable = convert_to_bool(enable)
 
         await ctx.message.delete()
 
         global enable_djm
 
         enable_djm = enable
-
         config_commands['enableDJM'] = enable_djm
 
         file = open(datafolder + sep + 'config_commands.json', 'w')
@@ -1074,22 +1116,45 @@ class ToolsCog(commands.Cog):
             send_request(self.bot, 'DELETE', '/hypesquad/online')
             return
 
-    @commands.command(name='cdm')
-    async def cdm__(self, ctx, user: User):
+    @commands.command(name='group_spam')
+    async def group_spam__(self, ctx, amount, *, users):
         if ctx.author != self.bot.user:
             return
 
         await ctx.message.delete()
 
-        uid = user.id
+        users = [
+            int(x) for x in sub(
+                '\s+', ' ',
+                users.replace('<@', '').replace('!', '').replace(
+                    '>', '')).split(' ')
+        ]
+        amount = int(amount)
 
-        resp = send_request(self.bot,
-                            'POST',
-                            '/users/@me/channels',
-                            json={'recipients': [uid]})
+        for x in range(amount):
+            resp = send_request(self.bot,
+                                'POST',
+                                '/users/@me/channels',
+                                json={'recipients': users})
 
-        if not resp.ok:
-            raise NameError(str(resp.json()['message']))
+            if not resp.ok:
+                if resp.status_code == 429:
+                    retry_after = resp.json()['retry_after']
+                    await sleep(retry_after)
+
+                else:
+                    raise ValueError(resp.json()['message'])
+
+    @commands.command(name='grammar')
+    async def grammar__(self, ctx, enable: str):
+        if ctx.author != self.bot.user:
+            return
+
+        enable = convert_to_bool(enable)
+
+        await ctx.message.delete()
+
+        self.grammar_fix_is_working = enable
 
 
 def setup(bot):

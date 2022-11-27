@@ -1,22 +1,8 @@
-# Note: "theme.py"
-# Цвет заголовка (HEADER_COLOR)
-# 1 - Стандартный (градиент)
-# 2 - Синий
-# 3 - Голубой
-# 4 - Зелёный
-# 5 - Фиолетовый
-# 6 - Жёлтый
-
-# Стиль заголовка (HEADER_STYLE)
-# 1 - Стандартный
-# 2 - Bloody
-# 3 - Colossal
-# 4 - DOS Rebel
-
 from theme import LOGO_COLOR, LOGO_STYLE
 from colorama import Fore
 from Functions.logger import log_error
 from os import _exit
+from theme import ENABLE_OLD_TERMINAL_MODE
 
 IntroText_Default = ''' _____  ____        _      _____      _  __ _           _   
 |  __ \|  _ \      | |    / ____|    | |/ _| |         | |
@@ -151,7 +137,11 @@ def intro(mini=False):
 
         for line in lines:
             if LOGO_COLOR == 1:
-                print(get_color(colors[index], 'fg') + line)
+                if not ENABLE_OLD_TERMINAL_MODE:
+                    print(get_color(colors[index], 'fg') + line)
+
+                else:
+                    print(line)
 
             else:
                 if LOGO_COLOR == 2:
@@ -215,7 +205,11 @@ def intro(mini=False):
 
         for line in lines:
             if LOGO_COLOR == 1:
-                print(get_color(colors[index], 'fg') + line)
+                if not ENABLE_OLD_TERMINAL_MODE:
+                    print(get_color(colors[index], 'fg') + line)
+
+                else:
+                    print(line)
 
             else:
                 if LOGO_COLOR == 2:

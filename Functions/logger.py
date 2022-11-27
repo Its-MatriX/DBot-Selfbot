@@ -1,13 +1,23 @@
 from datetime import datetime
 from colorama import Fore
+from theme import ENABLE_OLD_TERMINAL_MODE
 
 
 def log_error(content, message_type='ОШИБКА', spaces=1, show_type=True):
     if show_type:
         time_now = datetime.now().strftime('%H:%M:%S')
-        to_write = f'{Fore.RED}{time_now} [{message_type}]{" " * spaces}: {content}'
+
+        if not ENABLE_OLD_TERMINAL_MODE:
+            to_write = f'{Fore.RED}{time_now} [{message_type}]{" " * spaces}: {content}'
+
+        else:
+            to_write = f'{time_now} [{message_type}]{" " * spaces}: {content}'
     else:
-        to_write = Fore.RED + content
+        if not ENABLE_OLD_TERMINAL_MODE:
+            to_write = Fore.RED + content
+
+        else:
+            to_write += content
 
     print(to_write)
 
@@ -70,9 +80,18 @@ class logwriter:
 def log(content, message_type='ИНФО', spaces=3, show_type=True):
     if show_type:
         time_now = datetime.now().strftime('%H:%M:%S')
-        to_write = f'{logs_time_and_content_color}{time_now} {logs_type_color}[{message_type}]{" " * spaces}{logs_time_and_content_color}: {content}'
+
+        if not ENABLE_OLD_TERMINAL_MODE:
+            to_write = f'{logs_time_and_content_color}{time_now} {logs_type_color}[{message_type}]{" " * spaces}{logs_time_and_content_color}: {content}'
+
+        else:
+            to_write = f'{time_now} [{message_type}]{" " * spaces}: {content}'
     else:
-        to_write = Fore.GREEN + content
+        if not ENABLE_OLD_TERMINAL_MODE:
+            to_write = Fore.GREEN + content
+
+        else:
+            to_write += content
 
     print(to_write)
 

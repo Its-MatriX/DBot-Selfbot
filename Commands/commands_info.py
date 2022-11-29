@@ -212,7 +212,7 @@ class InfoCog(commands.Cog):
         hex = rgb_to_hex(rgb[0], rgb[1], rgb[2])
 
         resp += f'> **Цвет:** `{hex}`\n'
-        resp += f'> **Позиция** `{role.position}`\n'
+        resp += f'> **Позиция:** `{role.position}`\n'
         resp += f'> **Показывается отдельно:** `{"Да" if role.hoist else "Нет"}`\n'
         resp += f'> **Выдаётся за буст:** `{"Да" if role.is_premium_subscriber() else "Нет"}`\n'
 

@@ -1,6 +1,8 @@
 # default status note:
 # use null for dont use default status
 
+__version__ = '1.26'
+
 from os import system
 from os.path import sep, split
 
@@ -18,7 +20,7 @@ except Exception:
     install_modules_from_requirements()
 
 if name == 'nt':
-    system('title DBot: Запускается')
+    system(f'title DBot / {__version__}: Запускается')
 
 
 def clear():
@@ -232,7 +234,7 @@ def terminal_resize_listener():
 @bot.event
 async def on_connect():
     if name == 'nt':
-        system(f'title DBot: {bot.user}')
+        system(f'title DBot / {__version__}: {bot.user}')
 
     global loaded_extensions
 
@@ -401,7 +403,7 @@ try:
 
 except Exception as e:
     if name == 'nt':
-        system('title DBot: Ошибка логина')
+        system(f'title DBot / {__version__}: Ошибка логина')
     log_error(e, 'ОШИБКА', 1)
 
     try:

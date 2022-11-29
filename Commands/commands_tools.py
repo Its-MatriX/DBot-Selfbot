@@ -16,7 +16,7 @@ from time import sleep as non_async_sleep
 import requests
 from colour import Color
 from discord import (Activity, ActivityType, File, Game, GroupChannel, Status,
-                     Streaming, User)
+                     Streaming, Guild)
 from discord.ext import commands
 from Functions.logger import log, log_error
 from PIL import Image
@@ -29,6 +29,7 @@ from pyperclip import copy
 from qrcode import make as make_qrcode
 from Functions.discord_requests import send_request
 from Functions.bool_converter import convert_to_bool
+from Functions.attribute_parser import parse_attributes
 
 allow_run_keyboard_listeners = True
 
@@ -1155,6 +1156,43 @@ class ToolsCog(commands.Cog):
         await ctx.message.delete()
 
         self.grammar_fix_is_working = enable
+
+    @commands.command(name='edit')
+    async def edit__(self, ctx, mentionable, *, attributes):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        mentionable = int(
+            mentionable.replace('<',
+                                '').replace('>', '').replace('!', '').replace(
+                                    '#', '').replace('&', '').replace('@', ''))
+
+        _mentionable = mentionable
+
+        _mentionable = self.bot.get_guild(_mentionable)
+
+        if not _mentionable:
+            _mentionable = mentionable
+
+            guild = ctx.guild
+            _mentionable = guild.get_role(_mentionable)
+
+            if not _mentionable:
+                _mentionable = mentionable
+                _mentionable = guild.get_channel(_mentionable)
+
+                if not _mentionable:
+                    _mentionable = mentionable
+                    _mentionable = await guild.fetch_member(_mentionable)
+
+                    if not _mentionable:
+                        raise TypeError('Unknown Mentionable')
+
+        mentionable = _mentionable
+
+        await mentionable.edit(**parse_attributes(attributes))
 
 
 def setup(bot):

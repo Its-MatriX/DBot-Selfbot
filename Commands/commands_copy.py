@@ -116,7 +116,7 @@ class CopyCog(commands.Cog):
 
         for emoji in ctx.guild.emojis:
             image = get(emoji.url).content
-            toclone.create_custom_emoji(name=emoji.name, image=image)
+            await toclone.create_custom_emoji(name=emoji.name, image=image)
 
 
 def setup(bot):

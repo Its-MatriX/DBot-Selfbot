@@ -1194,6 +1194,18 @@ class ToolsCog(commands.Cog):
 
         await mentionable.edit(**parse_attributes(attributes))
 
+    @commands.command(name='bulksend')
+    async def bulksend__(self, ctx, *, text):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        text = text.split('\n')
+
+        for text_part in text:
+            await ctx.send(text_part)
+
 
 def setup(bot):
     bot.add_cog(ToolsCog(bot))

@@ -13,6 +13,7 @@ from Functions.demotivators import Demotivator
 from Functions.bool_converter import convert_to_bool
 from Functions.logger import log_error
 from pyfiglet import figlet_format
+from webbrowser import open_new_tab
 
 token_generator_part_length = 10
 
@@ -788,11 +789,15 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
         self.enable_scary_type = enable
 
     @commands.command(name='figlet')
-    async def figlet__(self, ctx, font, *, text):
+    async def figlet__(self, ctx, font, *, text=None):
         if ctx.author != self.bot.user:
             return
 
         await ctx.message.delete()
+
+        if font == 'help' and not text:
+            open_new_tab('http://www.figlet.org/examples.html')
+            return
 
         converted = figlet_format(text=text, font=font)
         converted = '```' + (converted.replace('`', '\'')) + '```'

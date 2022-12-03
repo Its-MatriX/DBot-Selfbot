@@ -13,6 +13,7 @@ try:
     from os import _exit, get_terminal_size, listdir, name
 
     from discord import Activity, ActivityType, Game, Status, Streaming
+    from discord.errors import Forbidden
     from theme import ENABLE_OLD_TERMINAL_MODE
 except Exception:
     from Functions.requirements_installer import \
@@ -389,13 +390,35 @@ async def on_connect():
 
 @bot.event
 async def on_command_error(ctx, error):
-    lines = str(error).split('\n') if '\n' in str(error) else [str(error)]
-    log_error('; '.join(lines), 'ОШИБКА', 1)
+    if isinstance(error, commands.MissingRequiredArgument):
+        log_error(f'Недостаточно параметров для команды "{ctx.invoked_with}"')
+
+    elif isinstance(error, commands.BadArgument):
+        log_error(
+            f'Неправильно указаны параметры для команды "{ctx.invoked_with}"')
+
+    elif isinstance(error, commands.CommandNotFound):
+        log_error(f'Команды "{ctx.invoked_with}" не существует')
+
+    elif isinstance(error, Forbidden):
+        log_error(
+            f'Недостаточно прав для выполнения команды "{ctx.invoked_with}"')
+
+    else:
+        lines = str(error).split('\n') if '\n' in str(error).replace(
+            'Command raised an exception: ', '') else [str(error)]
+        log_error('; '.join(lines), 'ОШИБКА', 1)
 
 
 @bot.event
 async def on_command(ctx):
     log(ctx.invoked_with, 'КОМАНДА', 0)
+
+
+@bot.event
+async def on_message_edit(before, after):
+    if after.author.id == bot.user.id and before.author.id == bot.user.id:
+        await bot.process_commands(after)
 
 
 try:

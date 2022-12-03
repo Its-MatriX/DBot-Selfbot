@@ -11,6 +11,8 @@ from discord import File, User, Member
 from discord.ext import commands
 from Functions.demotivators import Demotivator
 from Functions.bool_converter import convert_to_bool
+from Functions.logger import log_error
+from pyfiglet import figlet_format
 
 token_generator_part_length = 10
 
@@ -784,6 +786,22 @@ Successfully Injected {virus}-virus.exe into {user.display_name}'''.split('\n')
         await ctx.message.delete()
 
         self.enable_scary_type = enable
+
+    @commands.command(name='figlet')
+    async def figlet__(self, ctx, font, *, text):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+
+        converted = figlet_format(text=text, font=font)
+        converted = '```' + (converted.replace('`', '\'')) + '```'
+
+        if len(converted) > 2000:
+            log_error('"figlet": слишком длинный вывод')
+            return
+
+        await ctx.send(converted)
 
 
 def setup(bot):

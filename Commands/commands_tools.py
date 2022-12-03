@@ -30,6 +30,7 @@ from qrcode import make as make_qrcode
 from Functions.discord_requests import send_request
 from Functions.bool_converter import convert_to_bool
 from Functions.attribute_parser import parse_attributes
+from Functions.timestamp_converter import convert_timestamp
 
 allow_run_keyboard_listeners = True
 
@@ -1205,6 +1206,14 @@ class ToolsCog(commands.Cog):
 
         for text_part in text:
             await ctx.send(text_part)
+
+    @commands.command(name='timestamp')
+    async def timestamp__(self, ctx, mode, *, data):
+        if ctx.author != self.bot.user:
+            return
+
+        await ctx.message.delete()
+        await ctx.send(convert_timestamp(data, mode))
 
 
 def setup(bot):

@@ -20,7 +20,7 @@ from discord import (Activity, ActivityType, File, Game, GroupChannel, Status,
 from discord.ext import commands
 from Functions.logger import log, log_error
 from PIL import Image
-from translate import Translator
+from googletrans import Translator
 from keyboard import is_pressed
 from threading import Thread
 from os import environ
@@ -600,15 +600,9 @@ class ToolsCog(commands.Cog):
 
         await ctx.message.delete()
 
-        check_to_safe = expression.replace(' ', '').replace('\'', '"')
-
-        if 'bot' in check_to_safe:
-            await ctx.send(
-                '**❌ Вы не можете вычислить выражения с переменной `bot`.**')
-            return
-
         try:
-            result = str(eval(expression))
+            result = str(eval(expression)).replace(self.bot.http.token,
+                                                   '<TOKEN>')
         except Exception as e:
             await ctx.send(f'**❌ Ошибка вычисления.**\n`Ошибка - {e}`')
             return
@@ -617,14 +611,15 @@ class ToolsCog(commands.Cog):
         await ctx.send(resp)
 
     @commands.command(name='translate')
-    async def translate__(self, ctx, lang_from, lang_to, *, text):
+    async def translate__(self, ctx, *, text):
         if ctx.author != self.bot.user:
             return
 
         await ctx.message.delete()
 
-        translator = Translator(from_lang=lang_from, to_lang=lang_to)
-        resp = translator.translate(text)
+        translator = Translator()
+        translated = translator.translate(text, dest=self.bot.discord_locale)
+        resp = translated.text
 
         resp_upper = 0
         resp_lower = 0
@@ -638,7 +633,7 @@ class ToolsCog(commands.Cog):
         if resp_upper > resp_lower:
             resp = resp.lower()
 
-        resp = f'**Перевод с `{lang_from}` в `{lang_to}`**\n' + resp
+        resp = f'**Перевод с `{translated.src}` в `{translated.dest}`**\n' + resp
 
         await ctx.send(resp)
 

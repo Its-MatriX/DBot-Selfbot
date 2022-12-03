@@ -4,7 +4,6 @@ from time import sleep
 from discord.ext import commands
 from Functions.discord_requests import send_request
 
-
 class AnimatorState:
     is_working = False
     animation = None
